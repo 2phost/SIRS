@@ -1,0 +1,3 @@
+content pgpsirs chrome/content/
+overlay chrome://messenger/content/messenger.xul chrome://pgpsirs/content/myhelloworld.xul
+locale pgpsirs pt-PT chrome/locale/pt-PT/
