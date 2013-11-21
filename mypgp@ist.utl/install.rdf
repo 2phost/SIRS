@@ -4,8 +4,8 @@
      xmlns:em="http://www.mozilla.org/2004/em-rdf#">
 
   <Description about="urn:mozilla:install-manifest">
-    <em:id>pgpsirs@ist.utl</em:id>
-    <em:name>PGP Extension</em:name>
+    <em:id>mypgp@ist.utl</em:id>
+    <em:name>MYPGP</em:name>
     <em:version>1.0</em:version>
     <em:creator>SIRS</em:creator>
    
@@ -17,5 +17,13 @@
       </Description>
     </em:targetApplication>
    
+	<!-- Front End MetaData -->
+	<em:name>PGP SIRS</em:name>
+	<em:description>PGP message encryption and authentication</em:description>
+   <em:creator>SIRS Team</em:creator>
+
+	<!-- Front End Integration Hooks (used by Extension Manager)-->
+	<em:aboutURL>chrome://mypgp/content/mypgpAbout.xul</em:aboutURL>
+
   </Description>      
 </RDF>

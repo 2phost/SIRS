@@ -1,15 +1,15 @@
 <?xml version="1.0"?>
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
 
-<!DOCTYPE window SYSTEM "chrome://pgpsirs/locale/pgpsirs.dtd">
+<!DOCTYPE window SYSTEM "chrome://mypgp/locale/mypgp.dtd">
 
 <window
-    id="PGPSirsAboout"
+    id="MyPGPAboout"
     title="&pgpsirs.about.title;"
     orient="horizontal"
     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
-	<script type="application/x-javascript" src="chrome://pgpsirs/content/pgpsirsAbout.js"/>
+	<script type="application/x-javascript" src="chrome://mypgp/content/mypgpAbout.js"/>
 	
 	<label>TODO Colocar algo sobre o projecto.</label>
 

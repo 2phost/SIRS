@@ -1,0 +1,5 @@
+content mypgp chrome/content/
+locale mypgp pt-PT chrome/locale/pt-PT/
+
+# Resource module registration
+resource mypgp modules/
