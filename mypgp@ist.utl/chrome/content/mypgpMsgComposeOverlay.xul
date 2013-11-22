@@ -5,6 +5,7 @@
 <overlay id="mypgpMsgComposeOverlay"
     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
+	<script type="application/x-javascript" src="chrome://mypgp/content/mypgpMsgComposeOverlay.js"/>
     
 	<menubar id="mail-menubar">
 
@@ -18,7 +19,8 @@
 					<menuitem id="mypgp_secure_send"
             		type="checkbox"
               		label="&mypgp.secure.label;"
-              		accesskey="&mypgp.secure.accesskey;" />
+              		accesskey="&mypgp.secure.accesskey;"
+						oncommand="MyPGP.msg.doButton('toggleSecure');" />
 
 				</menupopup>
 		</menu>

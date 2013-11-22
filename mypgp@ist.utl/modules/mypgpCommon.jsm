@@ -1,3 +1,5 @@
+var EXPORTED_SYMBOLS = [ "MypgpCommon" ];
+
 const Cc = Components.classes;
 const Ci = Components.interfaces;
 
@@ -22,13 +24,13 @@ var MypgpCommon = {
 
 		var d = new Date();
 		var datStr=d.getFullYear()+"-"+f00(d.getMonth()+1, 2)+"-"+f00(d.getDate(),2)+" "+f00(d.getHours(),2)+":"+f00(d.getMinutes(),2)+":"+f00(d.getSeconds(),2)+"."+f00(d.getMilliseconds(),3)+" ";
-		if (gLogLevel >= 1)
+		if (logLevel >= 1)
 			dump(datStr+str);
 	},
 	
 	DEBUG_LOG: function (str)
 	{
-		if (LogLevel >= 1)
+		if (logLevel >= 1)
 			this.WRITE_LOG("[DEBUG] "+str);
 	},
 
@@ -44,7 +46,7 @@ var MypgpCommon = {
 		}
 		catch (ex) {}
 
-		if (gLogLevel >= 2)
+		if (logLevel >= 2)
 			this.WRITE_LOG("[ERROR] "+str);
 	}
 
