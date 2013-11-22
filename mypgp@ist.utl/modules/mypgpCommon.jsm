@@ -24,8 +24,14 @@ var MypgpCommon = {
 
 		var d = new Date();
 		var datStr=d.getFullYear()+"-"+f00(d.getMonth()+1, 2)+"-"+f00(d.getDate(),2)+" "+f00(d.getHours(),2)+":"+f00(d.getMinutes(),2)+":"+f00(d.getSeconds(),2)+"."+f00(d.getMilliseconds(),3)+" ";
-		if (logLevel >= 1)
+		if (logLevel >= 1){
+			try {
+				var consoleSvc = Cc["@mozilla.org/consoleservice;1"].getService(Ci.nsIConsoleService);
+				consoleSvc.logStringMessage(datStr+str);
+			}
+			catch (ex) {}
 			dump(datStr+str);
+		}
 	},
 	
 	DEBUG_LOG: function (str)

@@ -36,7 +36,7 @@
 			id="button-mypgp"
 			type="menu-button"
 			label="&mypgp.mypgp.label;"
-			oncommand="Enigmail.msg.doButton();">
+			oncommand="MyPGP.msg.doButton();">
 		
 			<menupopup onpopupshowing="MyPGP.msg.setMenuSettings(2)">
 
