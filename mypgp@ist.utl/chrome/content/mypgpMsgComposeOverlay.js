@@ -7,8 +7,8 @@ MyPGP.msg = {
 	secureMode: false,
 
 	toggleSecure: function() {		
-		MypgpCommon.DEBUG_LOG("toggleSecure");
 		this.secureMode = !this.secureMode;
+		MypgpCommon.DEBUG_LOG("(toggleSecure) Message Secure: "+this.secureMode+"\n");
 	},
 	
 	doButton: function (button) {
@@ -17,8 +17,11 @@ MyPGP.msg = {
 				this.toggleSecure();
 				break;
 		}
+	},
+
+	setMenuSettings: function (postfix) {
+		MypgpCommon.DEBUG_LOG("mypgpMsgComposeOverlay.js: Mypgp.msg.setMenuSettings: postfix="+postfix+"\n");
+		document.getElementById("mypgp_secure_send"+postfix).setAttribute("checked", this.secureMode ? "true": "false");
 	}
 
 }
-
-	

@@ -7,6 +7,8 @@
 
 	<script type="application/x-javascript" src="chrome://mypgp/content/mypgpMsgComposeOverlay.js"/>
     
+
+<!-- menu -->
 	<menubar id="mail-menubar">
 
       <menu id="menu_MyPGP"
@@ -14,7 +16,8 @@
             accesskey="&mypgp.composemsg.accesskey;"
             insertbefore="tasksMenu">
 
-				<menupopup id="menu_MyPGPPopup">
+				<menupopup onpopupshowing="MyPGP.msg.setMenuSettings('')"
+					id="menu_MyPGPPopup">
 
 					<menuitem id="mypgp_secure_send"
             		type="checkbox"
@@ -25,15 +28,30 @@
 				</menupopup>
 		</menu>
 
-  </menubar>
+	</menubar>
 
-<!--
+<!-- toolbar button -->	
 	<toolbarpalette id="MsgComposeToolbarPalette">
-			<toolbarbutton class="toolbarbutton-1"
-				id="button-mypgp"
-            type="menu-button"
-            label="&mypgp.mypgp.label;">
-	</toolbarpalette>				
--->
+		<toolbarbutton class="toolbarbutton-1"
+			id="button-mypgp"
+			type="menu-button"
+			label="&mypgp.mypgp.label;"
+			oncommand="Enigmail.msg.doButton();">
+		
+			<menupopup onpopupshowing="MyPGP.msg.setMenuSettings(2)">
+
+				<menuitem id="mypgp_secure_send2"
+            	type="checkbox"
+              	label="&mypgp.secure.label;"
+					oncommand="MyPGP.msg.doButton('toggleSecure');" />
+
+			</menupopup>
+		</toolbarbutton>
+	</toolbarpalette>		
+
+<!-- Thunderbird button by default -->
+  <toolbar id="composeToolbar2"
+           defaultset="button-send,separator,button-address,spellingButton,button-attach,button-mypgp,button-security,button-save">
+  </toolbar>		
 
 </overlay>
