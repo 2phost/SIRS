@@ -10,8 +10,11 @@
     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
 	<script type="application/x-javascript" src="chrome://mypgp/content/mypgpAbout.js"/>
+	<script src="chrome://global/content/globalOverlay.js"/>
 	
 	<label>TODO Colocar algo sobre o projecto.</label>
 
-	<button id="ok-button" label="OK"/>
+
+	<command id="cmd_close" oncommand="window.close()"/>
+	<button label="Close" command="cmd_close"/>
 </window>
