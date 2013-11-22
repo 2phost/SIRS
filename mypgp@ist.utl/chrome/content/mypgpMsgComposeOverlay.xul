@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE window SYSTEM "chrome://mypgp/locale/mypgp.dtd">
+
+<overlay id="mypgpMsgComposeOverlay"
+    xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+
+    
+	<menubar id="mail-menubar">
+
+      <menu id="menu_MyPGP"
+            label="&mypgp.mypgp.label;"
+            accesskey="&mypgp.composemsg.accesskey;"
+            insertbefore="tasksMenu">
+
+				<menupopup id="menu_MyPGPPopup">
+
+					<menuitem id="mypgp_secure_send"
+            		type="checkbox"
+              		label="&mypgp.secure.label;"
+              		accesskey="&mypgp.secure.accesskey;" />
+
+				</menupopup>
+		</menu>
+
+  </menubar>
+
+<!--
+	<toolbarpalette id="MsgComposeToolbarPalette">
+			<toolbarbutton class="toolbarbutton-1"
+				id="button-mypgp"
+            type="menu-button"
+            label="&mypgp.mypgp.label;">
+	</toolbarpalette>				
+-->
+
+</overlay>

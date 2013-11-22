@@ -1,1 +1,7 @@
-<!ENTITY pgpsirs.about.title              "Sobre PGP SIRS">
+<!ENTITY mypgp.about.title             "Sobre PGP SIRS">
+<!ENTITY mypgp.mypgp.label             "MyPGP">
+
+<!ENTITY mypgp.secure.label             "Mensagem Segura">
+
+<!ENTITY mypgp.composemsg.accesskey        "m">
+<!ENTITY mypgp.secure.accesskey      "s">

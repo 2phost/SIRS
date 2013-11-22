@@ -4,8 +4,8 @@
 <!DOCTYPE window SYSTEM "chrome://mypgp/locale/mypgp.dtd">
 
 <window
-    id="MyPGPAboout"
-    title="&pgpsirs.about.title;"
+    id="MyPGPAbout"
+    title="&mypgp.about.title;"
     orient="horizontal"
     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
