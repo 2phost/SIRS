@@ -1,3 +1,7 @@
+#sublime
+*.sublime-workspace
+*.sublime-project
+
 # built application files
 *.apk
 *.ap_
