@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+
+<!DOCTYPE window SYSTEM "chrome://mypgp/locale/mypgp.dtd">
+
+<window
+    id="myPGPmanagement"
+    title="&mypgp.about.title;"
+    orient="horizontal"
+    screenX="250px"
+    screenY="250px"
+    xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+	
+	<label>TODO Preferencias</label>
+
+</window>

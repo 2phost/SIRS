@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<!DOCTYPE window SYSTEM "chrome://mypgp/locale/mypgp.dtd">
+<overlay id="myPGPmessenger_overlay.xul" 
+	xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+
+	<script type="application/javascript" src="chrome://mypgp/content/MainWindow/myPGPmessenger_overlay.js"/>
+
+	<menubar id="mail-menubar">
+		<menu id="nav-mypgp" label="MyPGP" insertbefore="tasksMenu">
+			<menupopup id="main_menu_MyPGPPopup">
+					
+					<command id="opt_about_cmd" oncommand="openAbout()"/>
+					<command id="opt_preferences_cmd" oncommand="openPreferences()"/>
+
+					<menuitem id="opt_preferences" label="Preferences" command="opt_preferences_cmd"/>
+					<menuseparator id="menuseparator1"/>
+    	          	<menuitem id="opt_about" label="About MyPGP" command="opt_about_cmd"/>
+			</menupopup>
+		</menu>
+	</menubar>
+
+
+	<toolbar id="mail-bar3">
+		<command id="btn_decypher_cmd" oncommand="descipher()"/>
+		<toolbarbutton id="mypgp_decypher_btn" command="btn_decypher_cmd" insertbefore="button-tag">
+			<label id="mypgp_decypher_btn_lbl">Descifrar</label>
+		</toolbarbutton>
+	</toolbar>
+	
+
+	<statusbar id="status-bar">
+		<statusbarpanel id="mypgp-panel" label="MyPGP"/>
+	</statusbar>
+
+</overlay>
