@@ -5,3 +5,21 @@
 
 <!ENTITY mypgp.composemsg.accesskey        "m">
 <!ENTITY mypgp.secure.accesskey      "s">
+
+<!-- MyPGP - Labels -->
+<!ENTITY mypgp.label.key_mng 			"Gestão de Chaves">
+<!ENTITY mypgp.label.preferences		"Preferências">
+<!ENTITY mypgp.label.about 				"Sobre MyPGP">
+<!ENTITY mypgp.label.file				"Ficheiro">
+<!ENTITY mypgp.label.edit				"Editar">
+<!ENTITY mypgp.label.view				"Ver">
+<!ENTITY mypgp.label.open				"Abrir">
+<!ENTITY mypgp.label.close				"Fechar">
+
+<!-- MainWindow - messenger.xul overlay -->
+<!ENTITY mypgp.messenger.decypher		"Descifrar">
+
+<!-- Key Management -->
+<!ENTITY mypgp.keymng.createkeys		"Criar novo par de chaves">
+<!ENTITY mypgp.keymng.importkeys		"Importar chaves de ficheiro">
+<!ENTITY mypgp.keymng.exportkeys		"Exportar chaves para ficheiro">

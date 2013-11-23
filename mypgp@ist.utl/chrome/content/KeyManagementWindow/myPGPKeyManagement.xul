@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://mypgp/skin/myPGP.css" type="text/css"?>
+
+<!DOCTYPE window SYSTEM "chrome://mypgp/locale/mypgp.dtd">
+<window id="myPGPKeyManagement.xul"
+		title="&mypgp.label.key_mng;"
+		orient="vertical"
+		width="500px" height="500px"
+		screenX="50%" screenY="50%"
+		xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+
+		<script type="application/javascript" src="chrome://mypgp/content/KeyManagementWindow/myPGPKeyManagement.js"/>
+
+		<!-- Menu -->
+		<menubar id="mypgpKeyMng-menubar">
+			<menu id="keymng_nav-file" label="&mypgp.label.key_mng;">
+				<menupopup id="keymng_file_popup">
+
+					<command id="keymng_close_cmd" oncommand="window.close()"/>
+					<command id="keymng_import_keys_cmd" oncommand="importKeysFromFile();"/>
+					<command id="keymng_export_keys_cmd" oncommand="exportKeysToFile();"/>
+					<command id="keymng_create_keys_cmd" oncommand="createNewKeyPair();"/>
+
+					<menuitem id="keymng_create_keys" label="&mypgp.keymng.createkeys;" command="keymng_create_keys_cmd"/>
+					<menuseparator id="keymng_menuseparator_1"/>
+					<menuitem id="keymng_import_keys" label="&mypgp.keymng.importkeys;" command="keymng_import_key_cmd"/>
+					<menuitem id="keymng_export_keys" label="&mypgp.keymng.exportkeys;" command="keymng_export_key_cmd"/>
+					<menuseparator id="keymng_menuseparator_2"/>
+					<menuitem id="keymng_close" label="&mypgp.label.close;" command="keymng_close_cmd"/>
+				</menupopup>
+			</menu>
+			<menu id="keymng_nav-edit" label="&mypgp.label.edit;">
+				<menupopup id="keymng_edit_popup">
+				</menupopup>
+			</menu>
+			<menu id="keymng_nav-view" label="&mypgp.label.view;">
+				<menupopup id="keymng_view_popup">
+				</menupopup>
+			</menu>
+		</menubar>
+
+		<!-- Window -->
+		<vbox id="keymng_mainbox">
+		</vbox>
+</window> 
