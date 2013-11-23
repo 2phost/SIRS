@@ -15,6 +15,14 @@
 	},
 	"buffers":
 	[
+		{
+			"file": "chrome.manifest",
+			"settings":
+			{
+				"buffer_size": 126,
+				"line_ending": "Windows"
+			}
+		}
 	],
 	"build_system": "Packages/User/Javascript.sublime-build",
 	"command_palette":
@@ -60,6 +68,7 @@
 	},
 	"file_history":
 	[
+		"/C/Users/rodrigo/Development/SIRS - MyPGP/SIRS/.gitignore",
 		"/C/Users/rodrigo/Documents/Development/test.js",
 		"/C/Users/rodrigo/Development/SIRS - MyPGP/SIRS/mypgp@ist.utl/install.rdf",
 		"/C/Users/rodrigo/.ssh/id_rsa.pub",
@@ -104,6 +113,32 @@
 		{
 			"sheets":
 			[
+				{
+					"buffer": 0,
+					"file": "chrome.manifest",
+					"settings":
+					{
+						"buffer_size": 126,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								29,
+								29
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Text/Plain text.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				}
 			]
 		}
 	],
@@ -167,6 +202,6 @@
 	"show_open_files": false,
 	"show_tabs": true,
 	"side_bar_visible": true,
-	"side_bar_width": 150.0,
+	"side_bar_width": 259.0,
 	"status_bar_visible": true
 }
