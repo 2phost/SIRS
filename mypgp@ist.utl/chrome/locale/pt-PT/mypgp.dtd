@@ -13,8 +13,14 @@
 <!ENTITY mypgp.label.file				"Ficheiro">
 <!ENTITY mypgp.label.edit				"Editar">
 <!ENTITY mypgp.label.view				"Ver">
+<!ENTITY mypgp.label.account			"Conta">
 <!ENTITY mypgp.label.open				"Abrir">
 <!ENTITY mypgp.label.close				"Fechar">
+<!ENTITY mypgp.label.create				"Criar">
+<!ENTITY mypgp.label.cancel				"Cancelar">
+<!ENTITY mypgp.label.days				"Dias">
+<!ENTITY mypgp.label.months				"Meses">
+<!ENTITY mypgp.label.years				"Anos">
 
 <!-- MainWindow - messenger.xul overlay -->
 <!ENTITY mypgp.messenger.decypher		"Descifrar">
@@ -23,3 +29,10 @@
 <!ENTITY mypgp.keymng.createkeys		"Criar novo par de chaves">
 <!ENTITY mypgp.keymng.importkeys		"Importar chaves de ficheiro">
 <!ENTITY mypgp.keymng.exportkeys		"Exportar chaves para ficheiro">
+<!ENTITY mypgp.keymng.validity			"Validade da Chave">
+<!ENTITY mypgp.keymng.keyproperties		"Propriedades da Chave">
+<!ENTITY mypgp.keymng.keygen			"Cria Par de Chaves">
+<!ENTITY mypgp.keymng.everlastingkey	"chave não expira.">
+<!ENTITY mypgp.keymng.keyduration		"Duração da chave: ">
+<!ENTITY mypgp.keymng.keysize			"Tamanho da chave: ">
+<!ENTITY mypgp.keymng.invalidcreation	"Impossível criar a chave, esta deve ter uma duração associada ou deve ter duração infinita.">

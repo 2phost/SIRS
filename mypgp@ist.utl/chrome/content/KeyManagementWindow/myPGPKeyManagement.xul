@@ -42,6 +42,79 @@
 		</menubar>
 
 		<!-- Window -->
-		<vbox id="keymng_mainbox">
-		</vbox>
+		<separator/>
+		<box id="keymng_mainbox" height="400px" style="background-color:white" orient="vertical">
+			<vbox id="keymng_account">
+				<caption>
+					<label value="&mypgp.label.account;"/>
+					<hbox>
+						<label value=""/>
+						<menulist id="keymng_accounts">
+							<menupopup>
+								<menuitem label="TODO: importar contas"/>
+							</menupopup>
+						</menulist>
+					</hbox>
+				</caption>
+			</vbox>
+			<separator/>
+
+			<!-- Key Validity Box -->
+			<vbox id="keymng_validity" style="padding-left: 15px">
+				<caption>
+					<label value="&mypgp.keymng.validity;"/>
+				</caption>
+				<hbox>
+					<label value="&mypgp.keymng.keyduration;"/>
+					<textbox id="keymng_expiration" size="3" maxlength="3" value="0"/>
+					<menulist id="keymng_exp_opts" value="365">
+						<menupopup>
+							<menuitem id="keymng_years" value="365" label="&mypgp.label.years;" selected="true"/>
+							<menuitem id="keymng_months" value="30" label="&mypgp.label.months;"/>
+							<menuitem id="keymng_days" value="1" label="&mypgp.label.days;"/>
+						</menupopup>
+					</menulist>
+				</hbox>
+				<hbox>
+					<checkbox id="keymng_infinitekey" label="&mypgp.keymng.everlastingkey;" oncommand="everlastingKey()"/>
+				</hbox>
+			</vbox>
+			<separator/>
+
+
+			<!-- Key Algorithmic Properties Box -->
+			<vbox id="keymng_keyproperties">
+				<caption>
+					<label value="&mypgp.keymng.keyproperties;"/>
+				</caption>
+				<hbox style="padding-left: 10px">
+					<label value="&mypgp.keymng.keysize;"/>
+					<menulist id="keymng_keysize_list">
+						<menupopup>
+							<!-- TODO: lista deve ir buscar os valores ao commons -->
+							<menuitem id="keymng_mediumkey" value="1024" label="1024" selected="true"/>
+							<menuitem id="keymng_largekey" value="2048" label="2048"/>
+						</menupopup>
+					</menulist>	
+				</hbox>
+			</vbox>
+			<separator/>
+
+
+			<!-- Key Generation Box -->
+			<vbox id="keymng_keygen">
+				<caption>
+					<label value="&mypgp.keymng.keygen;"/>
+				</caption>
+				<hbox align="right">
+					<command id="keymng_create_cmd" oncommand="createNewKeyPair()"/>
+					<command id="keymng_cancel_cmd" oncommand=""/>
+					<button id="keymng_create_btn" label="&mypgp.label.create;" command="keymng_create_cmd"/>
+					<button id="keymng_cancel_btn" label="&mypgp.label.cancel;" command="keymng_cancel_cmd" disabled="true"/>
+				</hbox>
+				<label id="warn_lbl" label="" style="color: red"/>
+			</vbox>
+
+		</box>
+		<separator/>
 </window> 
