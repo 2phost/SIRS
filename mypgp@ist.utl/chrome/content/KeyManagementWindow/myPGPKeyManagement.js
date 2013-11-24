@@ -5,6 +5,7 @@ Components.utils.import("resource://mypgp/mypgpCommon.jsm");
 var infiniteKey = false;
 var key_size = 1024;
 var key_duration = 0;
+var key_owner = "";
 
 <!-- Account Manager -->
 var acctMgr = Components.classes["@mozilla.org/messenger/account-manager;1"]  
@@ -28,6 +29,7 @@ window.addEventListener("load", function(e){
 	input_expiration.addEventListener("blur", updateKeyDuration);
 	input_expirationoption.addEventListener("select", updateKeyDuration);
 	input_keysize.addEventListener("select", updateKeySize);
+	input_accounts.addEventListener("select", updateKeyOwner);
 
 	warning = document.getElementById("warn_lbl");
 
@@ -36,11 +38,22 @@ window.addEventListener("load", function(e){
 	MypgpCommon.DEBUG_LOG("(KeyManagement) there are "+accounts.length+" registered accounts");
 	for (var i = 0; i < accounts.length; i++) {  
   		var account = accounts.queryElementAt(i, Components.interfaces.nsIMsgAccount);  
-  		MypgpCommon.DEBUG_LOG("(KeyManagement) Account "+i+" "+account.defaultIdentity.toString());
+  		if(account.defaultIdentity != null){
+  			input_accounts.appendItem(account.defaultIdentity.fullName,
+  										account.defaultIdentity.email, "");
+  			MypgpCommon.DEBUG_LOG("(KeyManagement) Account "+i+" "+account.defaultIdentity.email);
+  		}
 	}
 
 }, false);
 
+
+function updateKeyOwner(){
+	warning.value="";
+	key_owner = input_accounts.selectedItem.value;
+
+	MypgpCommon.DEBUG_LOG("(KeyManagement) Key owner set to "+key_owner+"\n");
+}
 
 function updateKeyDuration(){
 	warning.value="";
@@ -69,13 +82,21 @@ function updateKeySize(){
 
 
 function createNewKeyPair(){
-	MypgpCommon.DEBUG_LOG("(KeyManagement) Initiating a new key pair creation...\n");
 
 	if(key_duration <=0 && !infiniteKey){
 		warning.value= "Impossível criar a chave, esta deve ter uma duração associada ou deve ter duração infinita." <!-- TODO: devia estar a ir buscar o valor ao locale-->
 		MypgpCommon.DEBUG_LOG("(KeyManagement) ... error creating key, exiting\n");
 		return;
 	}
+
+	if(key_owner === ""){
+		warning.value = "Impossível criar a chave, esta deve estar associada a uma conta."
+		MypgpCommon.DEBUG_LOG("(KeyManagement) ... error creating key, exiting\n");
+		return;
+	}
+
+	MypgpCommon.DEBUG_LOG("(KeyManagement) Creating key["+key_size+"] for "+key_owner+"\n");
+
 }
 
 function importKeysFromFile(){

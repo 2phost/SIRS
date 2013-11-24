@@ -21,6 +21,7 @@
 <!ENTITY mypgp.label.days				"Dias">
 <!ENTITY mypgp.label.months				"Meses">
 <!ENTITY mypgp.label.years				"Anos">
+<!ENTITY mypgp.label.none				"Nenhum">
 
 <!-- MainWindow - messenger.xul overlay -->
 <!ENTITY mypgp.messenger.decypher		"Descifrar">

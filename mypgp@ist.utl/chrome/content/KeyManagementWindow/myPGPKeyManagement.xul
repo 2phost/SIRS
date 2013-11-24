@@ -51,7 +51,7 @@
 						<label value=""/>
 						<menulist id="keymng_accounts">
 							<menupopup>
-								<menuitem label="TODO: importar contas"/>
+								<menuitem label="&mypgp.label.none;" value="" selected="true"/>
 							</menupopup>
 						</menulist>
 					</hbox>
