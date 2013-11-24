@@ -1,3 +1,4 @@
+
 <!ENTITY mypgp.about.title             "Sobre PGP SIRS">
 <!ENTITY mypgp.mypgp.label             "MyPGP">
 
@@ -22,11 +23,21 @@
 <!ENTITY mypgp.label.months				"Meses">
 <!ENTITY mypgp.label.years				"Anos">
 <!ENTITY mypgp.label.none				"Nenhum">
+<!ENTITY mypgp.label.username			"Nome de Utilizador">
+<!ENTITY mypgp.label.profile			"Perfil">
+<!ENTITY mypgp.label.email				"Email">
+<!ENTITY mypgp.label.key 				"Chave">
+<!ENTITY mypgp.label.validity			"Validade">
+<!ENTITY mypgp.label.size				"Tamanho">	
+<!ENTITY mypgp.label.revoked			"Revogada">
+<!ENTITY mypgp.label.trusted			"Confiada">
 
 <!-- MainWindow - messenger.xul overlay -->
 <!ENTITY mypgp.messenger.decypher		"Descifrar">
 
 <!-- Key Management -->
+<!ENTITY mypgp.keymng.mykeys			"Minhas Chaves">
+<!ENTITY mypgp.keymng.otherskeys		"Gestão de Chaves">
 <!ENTITY mypgp.keymng.createkeys		"Criar novo par de chaves">
 <!ENTITY mypgp.keymng.importkeys		"Importar chaves de ficheiro">
 <!ENTITY mypgp.keymng.exportkeys		"Exportar chaves para ficheiro">
@@ -36,4 +47,5 @@
 <!ENTITY mypgp.keymng.everlastingkey	"chave não expira.">
 <!ENTITY mypgp.keymng.keyduration		"Duração da chave: ">
 <!ENTITY mypgp.keymng.keysize			"Tamanho da chave: ">
+<!ENTITY mypgp.keymng.selectkeyfile		"Seleccione uma chave">
 <!ENTITY mypgp.keymng.invalidcreation	"Impossível criar a chave, esta deve ter uma duração associada ou deve ter duração infinita.">
