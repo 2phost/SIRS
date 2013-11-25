@@ -2,6 +2,9 @@ Components.utils.import("resource://mypgp/mypgpCommon.jsm");
 
 
 <!-- Local Vars -->
+var current_tab = 1;
+var selected_key = null;
+
 
 <!-- Manager Components -->
 var nsIFilePicker = null;

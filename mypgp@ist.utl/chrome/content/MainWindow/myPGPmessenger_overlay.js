@@ -28,3 +28,9 @@ function openKeyManagementWindow(){
 					"&mypgp.label.key_mng;",
 					null);
 }
+
+function openContactManagementWindow(){
+	window.openDialog("chrome://mypgp/content/ContactManagementWindow/myPGPContactManager.xul",
+						"&mypgp.label.contact_mng;",
+						null);
+}
