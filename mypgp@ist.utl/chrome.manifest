@@ -1,6 +1,10 @@
 content mypgp chrome/content/
 locale mypgp pt-PT chrome/locale/pt-PT/
 
+#skins
+skin 	mypgp 	chrome/skins/
+
+
 # Resource module registration
 resource mypgp modules/
 

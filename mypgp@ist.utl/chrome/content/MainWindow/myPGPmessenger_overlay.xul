@@ -11,25 +11,30 @@
 					
 					<command id="opt_about_cmd" oncommand="openAbout()"/>
 					<command id="opt_preferences_cmd" oncommand="openPreferences()"/>
+					<command id="opt_key_mng_cmd" oncommand="openKeyManagementWindow()"/>
+					<command id="opt_contactsmng_cmd" oncommand="openContactManagementWindow()"/>
 
-					<menuitem id="opt_preferences" label="Preferences" command="opt_preferences_cmd"/>
+					<menuitem id="opt_key_mng" label="&mypgp.label.key_mng;" command="opt_key_mng_cmd"/>
+					<menuitem id="opt_contact_mng" label="&mypgp.label.contact_mng;" command="opt_contactsmng_cmd"/>
 					<menuseparator id="menuseparator1"/>
-    	          	<menuitem id="opt_about" label="About MyPGP" command="opt_about_cmd"/>
+					<menuitem id="opt_preferences" label="&mypgp.label.preferences;" command="opt_preferences_cmd"/>
+					<menuseparator id="menuseparator2"/>
+    	          	<menuitem id="opt_about" label="&mypgp.label.about;" command="opt_about_cmd"/>
 			</menupopup>
 		</menu>
 	</menubar>
 
 
-	<toolbar id="mail-bar3">
-		<command id="btn_decypher_cmd" oncommand="descipher()"/>
-		<toolbarbutton id="mypgp_decypher_btn" command="btn_decypher_cmd" insertbefore="button-tag">
-			<label id="mypgp_decypher_btn_lbl">Descifrar</label>
-		</toolbarbutton>
-	</toolbar>
+	
+	<command id="btn_decypher_cmd" oncommand="descipher()"/>
+	<toolbarbutton id="mypgp_decypher_btn" command="btn_decypher_cmd" insertbefore="button-tag">
+		<label id="mypgp_decypher_btn_lbl">"&mypgp.messenger.decypher;"</label>
+	</toolbarbutton>
+	<toolbarseparator id="mypgp_toolbarseparator1"/>
 	
 
 	<statusbar id="status-bar">
-		<statusbarpanel id="mypgp-panel" label="MyPGP"/>
+		<statusbarpanel id="mypgp-panel" label="&mypgp.mypgp.label;"/>
 	</statusbar>
 
 </overlay>

@@ -1,7 +1,63 @@
+
 <!ENTITY mypgp.about.title             "Sobre PGP SIRS">
 <!ENTITY mypgp.mypgp.label             "MyPGP">
 
-<!ENTITY mypgp.secure.label             "Mensagem Segura">
+<!ENTITY mypgp.secure.label 				"Mensagem Segura">
 
-<!ENTITY mypgp.composemsg.accesskey        "m">
-<!ENTITY mypgp.secure.accesskey      "s">
+<!ENTITY mypgp.composemsg.accesskey    "m">
+<!ENTITY mypgp.secure.accesskey			"s">
+
+<!-- MyPGP - Labels -->
+<!ENTITY mypgp.label.key_mng 				"Gestão de Chaves">
+<!ENTITY mypgp.label.contact_mng 		"Gestão de Contactos">
+<!ENTITY mypgp.label.address_book		"Livro de Endereços">
+<!ENTITY mypgp.label.preferences			"Preferências">
+<!ENTITY mypgp.label.about 				"Sobre MyPGP">
+<!ENTITY mypgp.label.file					"Ficheiro">
+<!ENTITY mypgp.label.edit					"Editar">
+<!ENTITY mypgp.label.view					"Ver">
+<!ENTITY mypgp.label.account				"Conta">
+<!ENTITY mypgp.label.open					"Abrir">
+<!ENTITY mypgp.label.close					"Fechar">
+<!ENTITY mypgp.label.create				"Criar">
+<!ENTITY mypgp.label.save					"Gravar">
+<!ENTITY mypgp.label.cancel				"Cancelar">
+<!ENTITY mypgp.label.days					"Dias">
+<!ENTITY mypgp.label.months				"Meses">
+<!ENTITY mypgp.label.years					"Anos">
+<!ENTITY mypgp.label.none					"Nenhum">
+<!ENTITY mypgp.label.username				"Nome de Utilizador">
+<!ENTITY mypgp.label.profile				"Perfil">
+<!ENTITY mypgp.label.email					"Email">
+<!ENTITY mypgp.label.key 					"Chave">
+<!ENTITY mypgp.label.validity				"Validade">
+<!ENTITY mypgp.label.size					"Tamanho">	
+<!ENTITY mypgp.label.revoked				"Revogada">
+<!ENTITY mypgp.label.trusted				"Confiada">
+<!ENTITY mypgp.label.details				"Detalhes">
+<!ENTITY mypgp.label.key 					"Chave">
+<!ENTITY mypgp.label.keys 					"Chaves">
+<!ENTITY mypgp.label.knownkeys			"Chaves Conhecidas">
+<!ENTITY mypgp.label.revokedkeys			"Chaves Revogadas">
+
+<!-- MainWindow - messenger.xul overlay -->
+<!ENTITY mypgp.messenger.decypher		"Descifrar">
+
+<!-- Key Management -->
+<!ENTITY mypgp.keymng.mykeys				"Minhas Chaves">
+<!ENTITY mypgp.keymng.otherskeys			"Gestão de Chaves">
+<!ENTITY mypgp.keymng.createkeys			"Criar novo par de chaves">
+<!ENTITY mypgp.keymng.importkeys			"Importar chaves de ficheiro">
+<!ENTITY mypgp.keymng.exportkeys			"Exportar chaves para ficheiro">
+<!ENTITY mypgp.keymng.validity			"Validade da Chave">
+<!ENTITY mypgp.keymng.keyproperties		"Propriedades da Chave">
+<!ENTITY mypgp.keymng.keygen				"Cria Par de Chaves">
+<!ENTITY mypgp.keymng.everlastingkey	"chave não expira.">
+<!ENTITY mypgp.keymng.keyduration		"Duração da chave: ">
+<!ENTITY mypgp.keymng.keysize				"Tamanho da chave: ">
+<!ENTITY mypgp.keymng.selectkeyfile		"Seleccione uma chave">
+<!ENTITY mypgp.keymng.invalidcreation	"Impossível criar a chave, esta deve ter uma duração associada ou deve ter duração infinita.">
+
+<!-- Contact Management -->
+<!ENTITY mypgp.cntmng.disclaimer			"Tem a certeza que pretende confiar neste contacto?">
+<!ENTITY mypgp.cntmng.trusted 			"Sim, confio e estou ciente dos riscos.">

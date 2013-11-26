@@ -1,0 +1,95 @@
+<?xml version="1.0"?>
+
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+
+<!DOCTYPE window SYSTEM "chrome://mypgp/locale/mypgp.dtd">
+<window id="myPGPKeyGeneration.xul"
+		title="&mypgp.keymng.keygen;"
+		orient="vertical"
+		width="500px" height="500px"
+		screenX="50%" screenY="50%"
+		xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+
+		<script type="application/javascript" src="chrome://mypgp/content/KeyManagementWindow/myPGPKeyGeneration.js"/>
+
+		<!-- Window -->
+		<separator/>
+		<vbox padding="15px">
+			<box id="keygen_mainbox" height="400px" style="background-color:white" orient="vertical">
+				<vbox id="keygen_account">
+					<caption>
+						<label value="&mypgp.label.account;"/>
+						<hbox>
+							<label value=""/>
+							<menulist id="keygen_accounts">
+								<menupopup>
+									<menuitem label="&mypgp.label.none;" value="" selected="true"/>
+								</menupopup>
+							</menulist>
+						</hbox>
+					</caption>
+				</vbox>
+				<separator/>
+
+				<!-- Key Validity Box -->
+				<vbox id="keygen_validity" style="padding-left: 15px">
+					<caption>
+						<label value="&mypgp.keymng.validity;"/>
+					</caption>
+					<hbox>
+						<label value="&mypgp.keymng.keyduration;"/>
+						<textbox id="keygen_expiration" size="3" maxlength="3" value="0"/>
+						<menulist id="keygen_exp_opts" value="365">
+							<menupopup>
+								<menuitem id="keygen_years" value="365" label="&mypgp.label.years;" selected="true"/>
+								<menuitem id="keygen_months" value="30" label="&mypgp.label.months;"/>
+								<menuitem id="keygen_days" value="1" label="&mypgp.label.days;"/>
+							</menupopup>
+						</menulist>
+					</hbox>
+					<hbox>
+						<checkbox id="keygen_infinitekey" label="&mypgp.keymng.everlastingkey;" oncommand="everlastingKey()"/>
+					</hbox>
+				</vbox>
+				<separator/>
+
+
+				<!-- Key Algorithmic Properties Box -->
+				<vbox id="keygen_keyproperties">
+					<caption>
+						<label value="&mypgp.keymng.keyproperties;"/>
+					</caption>
+					<hbox style="padding-left: 10px">
+						<label value="&mypgp.keymng.keysize;"/>
+						<menulist id="keygen_keysize_list">
+							<menupopup>
+								<!-- TODO: lista deve ir buscar os valores ao commons -->
+								<menuitem id="keygen_mediumkey" value="1024" label="1024" selected="true"/>
+								<menuitem id="keygen_largekey" value="2048" label="2048"/>
+							</menupopup>
+						</menulist>	
+					</hbox>
+				</vbox>
+				<separator/>
+
+
+				<!-- Key Generation Box -->
+				<vbox id="keygen_keygen">
+					<caption>
+						<label value="&mypgp.keymng.keygen;"/>
+					</caption>
+					<hbox align="right">
+						<command id="keygen_create_cmd" oncommand="generateNewKeyPair()"/>
+						<command id="keygen_cancel_cmd" oncommand=""/>
+						<button id="keygen_create_btn" label="&mypgp.label.create;" command="keygen_create_cmd"/>
+						<button id="keygen_cancel_btn" label="&mypgp.label.cancel;" command="keygen_cancel_cmd" disabled="true"/>
+					</hbox>
+					<label id="warn_lbl" label="" style="color: red"/>
+				</vbox>
+			</box>
+			<command id="keygen_close_cmd" oncommand="window.close();"/>
+			<box align="right">
+				<button id="keygen_close_btn" label="&mypgp.label.close;" command="keygen_close_cmd"/>
+			</box>
+		</vbox>
+</window> 
