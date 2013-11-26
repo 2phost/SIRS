@@ -1,10 +1,23 @@
 #include "nsISupports.idl"
 
-[scriptable, uuid(a06109fe-feca-48df-9fcb-e4dfbce71246)]
+[scriptable, uuid(f380ecd6-5e8d-4e11-8d85-d16a8e28e6d0)]
 interface IMypgp : nsISupports
 {
+	/**
+	 * Key pair
+	 */
+	//readonly attribute AString privateKey;
+	//readonly attribute AString publicKey;
+	
+	/**
+	 * Generate Private/Public Key
+	 */
+	//void keygen();
+
+
   	string Encrypt(in string msg);
 	string Decrypt(in string msg);
 	long Add(in long a, in long b);
+	
 };
 	
