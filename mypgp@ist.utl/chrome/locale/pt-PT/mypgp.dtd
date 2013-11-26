@@ -20,6 +20,7 @@
 <!ENTITY mypgp.label.open					"Abrir">
 <!ENTITY mypgp.label.close					"Fechar">
 <!ENTITY mypgp.label.create				"Criar">
+<!ENTITY mypgp.label.save					"Gravar">
 <!ENTITY mypgp.label.cancel				"Cancelar">
 <!ENTITY mypgp.label.days					"Dias">
 <!ENTITY mypgp.label.months				"Meses">
@@ -33,6 +34,11 @@
 <!ENTITY mypgp.label.size					"Tamanho">	
 <!ENTITY mypgp.label.revoked				"Revogada">
 <!ENTITY mypgp.label.trusted				"Confiada">
+<!ENTITY mypgp.label.details				"Detalhes">
+<!ENTITY mypgp.label.key 					"Chave">
+<!ENTITY mypgp.label.keys 					"Chaves">
+<!ENTITY mypgp.label.knownkeys			"Chaves Conhecidas">
+<!ENTITY mypgp.label.revokedkeys			"Chaves Revogadas">
 
 <!-- MainWindow - messenger.xul overlay -->
 <!ENTITY mypgp.messenger.decypher		"Descifrar">
@@ -51,3 +57,7 @@
 <!ENTITY mypgp.keymng.keysize				"Tamanho da chave: ">
 <!ENTITY mypgp.keymng.selectkeyfile		"Seleccione uma chave">
 <!ENTITY mypgp.keymng.invalidcreation	"Impossível criar a chave, esta deve ter uma duração associada ou deve ter duração infinita.">
+
+<!-- Contact Management -->
+<!ENTITY mypgp.cntmng.disclaimer			"Tem a certeza que pretende confiar neste contacto?">
+<!ENTITY mypgp.cntmng.trusted 			"Sim, confio e estou ciente dos riscos.">
