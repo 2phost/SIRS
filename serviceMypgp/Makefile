@@ -1,6 +1,5 @@
 MODULE		= MyPGPSecure
 
-# Change this to point at your Gecko SDK directory.
 XULRUNNER_SDK_PATH ?= /home/dias/xulrunner-sdk
 
 HEADERPY	       ?= $(XULRUNNER_SDK_PATH)/sdk/bin/header.py
@@ -26,10 +25,7 @@ CPPFLAGS +=     -fno-rtti		\
 		          -Wall			\
 		          $(NULL)
 
-# GCC only define which allows us to not have to #include mozilla-config
-# in every .cpp file.  If your not using GCC remove this line and add
-# #include "mozilla-config.h" to each of your .cpp files.
-GECKO_CONFIG_INCLUDE = -include xpcom-config.h #-include mozilla-config.h
+GECKO_CONFIG_INCLUDE = -include xpcom-config.h 
 
 GECKO_DEFINES  = -DMOZILLA_STRICT_API
 
@@ -65,12 +61,9 @@ install:
 	cp MyPGPSecure.so ../mypgp\@ist.utl/components/
 	cp IMypgp.xpt ../mypgp\@ist.utl/components/
 
-outro:
-	clang++ -std=c++11 -fPIC -Os -Wall -o Mypgp.so -include xpcom-config.h -DXPCOM_GLUE -I/home/dias/xulrunner-sdk/include/nspr -I/home/dias/xulrunner-sdk/include -I/home/dias/xulrunner-sdk/include/mozilla -L /home/dias/xulrunner-sdk/lib -lxpcomglue -lnspr4 -lplds4 -fno-rtti -fno-exceptions -shared Mypgp.cpp MypgpModule.cpp
-
-headertype: 
-	$(HEADERPY) -I $(GECKO_INCLUDES) --cachedir=/tmp/ -o IMypgp.h iMypgp.idl
-	$(TYPELIBPY) -I $(GECKO_INCLUDES) --cachedir=/tmp/ -o IMypgp.xpt  iMypgp.idl
-
 clean:
 	rm $(MODULE).so
+	rm IMypgp.xpt
+	rm IMypgp.h
+	rm MypgpModule.o
+	rm Mypgp.o
