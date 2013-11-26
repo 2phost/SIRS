@@ -6,3 +6,7 @@ resource mypgp modules/
 
 overlay chrome://messenger/content/messengercompose/messengercompose.xul chrome://mypgp/content/mypgpMsgComposeOverlay.xul
 overlay chrome://messenger/content/messenger.xul chrome://mypgp/content/MainWindow/myPGPmessenger_overlay.xul
+
+# c++ extension
+interfaces components/IMypgp.xpt
+binary-component components/MyPGPSecure.so

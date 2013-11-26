@@ -1,0 +1,9 @@
+xulrunner-sdk/sdk/bin/header.py -I ~/xulrunner-sdk/idl/ --cachedir=/tmp/ -o teste.h Git/SIRS/serviceMypgp/iMypgp.idl
+
+
+Generating C++ headers
+sdkdir/sdk/bin/header.py --cachedir=<path> -o <outputfilename.h> <filename.idl>
+
+Generating typelibs
+sdkdir/sdk/bin/typelib.py --cachedir=<path> -o <oputputfilename.xpt> <filename.idl>
+

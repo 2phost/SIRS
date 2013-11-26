@@ -1,5 +1,6 @@
 Components.utils.import("resource://mypgp/mypgpCommon.jsm");
 
+
 if (! MyPGP) var MyPGP = {};
 
 MyPGP.msg = {
@@ -58,9 +59,20 @@ MyPGP.msg = {
     		//var editor_type = GetCurrentEditorType();
 			this.originText = this.getTextEditor('text/plain', 4);
 			this.replaceTextEditor("Olá Pompeu");
-
 			
-			MypgpCommon.ENCRYPT("LOL"); //TODO APAGAR
+			try {
+				//var myComponent = Components.classes['@mozilla.org/mypgp;1']
+            //                        .getService().wrappedJSObject;
+        		var myComponent = Components.classes['@mozilla.org/mypgp;1']
+                                   .createInstance(Components.interfaces.IMypgp);
+				myComponent.Encrypt("teste");
+        		//alert(myComponent.hello());
+			} catch (anError) {
+ 	       	dump("ERROR: " + anError);
+			}
+			//openpgp.init();
+
+			//MypgpCommon.ENCRYPT("LOL"); //TODO APAGAR
 			MypgpCommon.DEBUG_LOG("mypgpMsgComposeOverlay.js: Mypgp.encryptMsg: Mypgp.msg.originText="+this.originText+"\n");
 		} catch(ex) {  
     		Components.utils.reportError(ex);  

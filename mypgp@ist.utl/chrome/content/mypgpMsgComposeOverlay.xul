@@ -6,6 +6,9 @@
     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
 	<script type="application/x-javascript" src="chrome://mypgp/content/mypgpMsgComposeOverlay.js"/>
+	<script type="application/x-javascript" src="resource://mypgp/openpgp.js"/>
+	<script type="application/javascript;version=1.8" src="chrome://messenger/content/jquery.js"></script>
+	<script type="application/javascript;version=1.8" src="chrome://messenger/content/jquery-ui.js"></script>
     
 
 <!-- menu -->

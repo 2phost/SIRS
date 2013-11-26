@@ -1,0 +1,9 @@
+#include "nsISupports.idl"
+
+[scriptable, uuid(a06109fe-feca-48df-9fcb-e4dfbce71246)]
+interface IMypgp : nsISupports
+{
+  	string Encrypt(in string msg);
+	string Decrypt(in string msg);
+};
+	

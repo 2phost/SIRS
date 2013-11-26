@@ -9,23 +9,7 @@ const Ci = Components.interfaces;
 var logLevel = 1;
 
 // various global variables
-var pub_key = null;
-
-
-/*function require(script) {
-	$.ajax({
-		url: script,
-      dataType: "script",
-      async: false, // <-- this is the key
-      success: function () {
-          // all good...
-      },
-      error: function () {
-      	throw new Error("Could not load script " + script);
-      }
-	});
-}*/
-
+//var pub_key = null;
 
 var MypgpCommon = {
 
@@ -44,11 +28,11 @@ var MypgpCommon = {
     		openpgp.init();
     		pub_key = openpgp.read_publicKey("Version: GnuPG/MacGPG2 v2.0.18 (Darwin)\nComment: GPGTools - http://gpgtools.org\n\n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\n=Lx12");
 
-			var testeMsg = openpgp.write_encrypted_message(pub_key, "O DUDU");
+			//var testeMsg = openpgp.write_encrypted_message(pub_key, "O DUDU");
 			this.DEBUG_LOG(testeMsg);
     		return true;
 
-	},	*/
+	},*/	
 
 	WRITE_LOG: function (str)
 	{
