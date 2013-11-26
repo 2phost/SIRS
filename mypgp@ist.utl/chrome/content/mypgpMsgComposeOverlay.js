@@ -61,12 +61,9 @@ MyPGP.msg = {
 			this.replaceTextEditor("Olá Pompeu");
 			
 			try {
-				//var myComponent = Components.classes['@mozilla.org/mypgp;1']
-            //                        .getService().wrappedJSObject;
-        		var myComponent = Components.classes['@mozilla.org/mypgp;1']
+        		var myComponent = Components.classes['@mozilla.org/messengercompose/composesecure;1']
                                    .createInstance(Components.interfaces.IMypgp);
-				myComponent.Encrypt("teste");
-        		//alert(myComponent.hello());
+        		alert(myComponent.Add(4,6));
 			} catch (anError) {
  	       	dump("ERROR: " + anError);
 			}
