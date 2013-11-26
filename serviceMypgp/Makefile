@@ -1,6 +1,6 @@
 MODULE		= MyPGPSecure
 
-XULRUNNER_SDK_PATH ?= /home/dias/xulrunner-sdk
+XULRUNNER_SDK_PATH ?= ~/xulrunner-sdk
 
 HEADERPY	       ?= $(XULRUNNER_SDK_PATH)/sdk/bin/header.py
 TYPELIBPY       ?= $(XULRUNNER_SDK_PATH)/sdk/bin/typelib.py
@@ -33,8 +33,8 @@ GECKO_INCLUDES = $(XULRUNNER_SDK_PATH)/idl/
 
 INCLUDES = -I/home/dias/xulrunner-sdk/include/nspr -I/home/dias/xulrunner-sdk/include -I/home/dias/xulrunner-sdk/include/mozilla -L /home/dias/xulrunner-sdk/lib
 
-GECKO_LDFLAGS =  -L$(XULRUNNER_SDK_PATH)/bin \
-		 -L$(XULRUNNER_SDK_PATH)/lib \
+GECKO_LDFLAGS =  -L $(XULRUNNER_SDK_PATH)/bin \
+		 -L $(XULRUNNER_SDK_PATH)/lib \
 		 -lxpcomglue_s	\
                  -lnspr4	\
                  -lplds4	\
