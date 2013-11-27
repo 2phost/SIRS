@@ -108,7 +108,7 @@ var mypgpFileManager = {
 
 		NetUtil.asyncCopy(fileInputStream, fileOutputStream, function(status){
 			if(!Components.isSuccessCode(status)){
-				MypgpCommon.ERROR_LOG("(mypgpFileManager.jsm : writeKeyAsFile) Error writing to file");
+				MypgpCommon.ERROR_LOG("(mypgpFileManager.jsm : createTmpFile) Error writing to file");
 				return null;
 			}
 		});
