@@ -1,3 +1,6 @@
+Components.utils.import("resource://mypgp/mypgpCommon.jsm");
+Components.utils.import("resource://mypgp/mypgpWindowManager.jsm");
+
 window.addEventListener("load", function(e){
 
 	var toolbar = document.getElementById("mail-bar3");	
@@ -7,16 +10,12 @@ window.addEventListener("load", function(e){
 
 
 function openAbout(){
-	window.openDialog("chrome://mypgp/content/mypgpAbout.xul",
-					"&mypgp.label.about;",
-					null);
+	mypgpWindowManager.openAbout(window);
 }
 
 
 function openPreferences(){
-	window.openDialog("chrome://mypgp/content/PreferencesWindow/myPGPmanagement.xul",
-					"&mypgp.label.preferences;",
-					null);
+	mypgpWindowManager.openPreferences(window);
 }
 
 function descipher(){
@@ -24,13 +23,9 @@ function descipher(){
 }
 
 function openKeyManagementWindow(){
-	window.openDialog("chrome://mypgp/content/KeyManagementWindow/myPGPKeyManagement.xul",
-					"&mypgp.label.key_mng;",
-					null);
+	mypgpWindowManager.openKeyManagement(window);
 }
 
 function openContactManagementWindow(){
-	window.openDialog("chrome://mypgp/content/ContactManagementWindow/myPGPContactManager.xul",
-						"&mypgp.label.contact_mng;",
-						null);
+	mypgpWindowManager.openContactManagement(window);
 }

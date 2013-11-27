@@ -2,7 +2,7 @@
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
 <!DOCTYPE window SYSTEM "chrome://mypgp/locale/mypgp.dtd">
 <dialog xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
-		id="myPGPEstablishTrustDialog.xul"
+		id="myPGPConfirmSave.xul"
 		title="&mypgp.cntmng.trust.title;"
 		buttons="accept, cancel"
 		screenX="50%" screenY="50%"

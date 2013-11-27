@@ -1,6 +1,6 @@
 
 <!ENTITY mypgp.about.title             "Sobre PGP SIRS">
-<!ENTITY mypgp.mypgp.label             "MyPGP">
+<!ENTITY mypgp.mypgp.label             "MyPGP@ist">
 
 <!ENTITY mypgp.secure.label 				"Mensagem Segura">
 
@@ -13,6 +13,7 @@
 <!ENTITY mypgp.label.address_book		"Livro de Endereços">
 <!ENTITY mypgp.label.preferences			"Preferências">
 <!ENTITY mypgp.label.about 				"Sobre MyPGP">
+<!ENTITY mypgp.label.help 					"Ajuda">
 <!ENTITY mypgp.label.file					"Ficheiro">
 <!ENTITY mypgp.label.edit					"Editar">
 <!ENTITY mypgp.label.view					"Ver">
@@ -59,5 +60,17 @@
 <!ENTITY mypgp.keymng.invalidcreation	"Impossível criar a chave, esta deve ter uma duração associada ou deve ter duração infinita.">
 
 <!-- Contact Management -->
-<!ENTITY mypgp.cntmng.disclaimer			"Tem a certeza que pretende confiar neste contacto?">
-<!ENTITY mypgp.cntmng.trusted 			"Sim, confio e estou ciente dos riscos.">
+<!ENTITY mypgp.cntmng.importkeys				"Importar chave de ficheiro">
+<!ENTITY mypgp.cntmng.exportkeys				"Exportar chave para ficheiro">
+<!ENTITY mypgp.cntmng.emailkeys				"Enviar chave por email">
+<!ENTITY mypgp.cntmng.disclaimer				"Tem a certeza que pretende confiar neste contacto?">
+<!ENTITY mypgp.cntmng.trusted 				"Sim, confio e estou ciente dos riscos.">
+<!ENTITY mypgp.cntmng.exit.title				"Gravar antes de sair">
+<!ENTITY mypgp.cntmng.exit.save				"Gravar">
+<!ENTITY mypgp.cntmng.exit.withoutsave		"Sair sem gravar">
+<!ENTITY mypgp.cntmng.exit.exit				"Sair">
+<!ENTITY mypgp.cntmng.exit.prompt			"Tem a certeza que pertende sair sem gravar as modificações?">
+<!ENTITY mypgp.cntmng.trust.title			"Confimação de confiança">
+<!ENTITY mypgp.cntmng.trust.trust			"Confio">
+<!ENTITY mypgp.cntmng.trust.prompt			"Confirma que confia completamente neste contacto?">
+<!ENTITY mypgp.cntmng.trust.warning			"ATENÇÃO">

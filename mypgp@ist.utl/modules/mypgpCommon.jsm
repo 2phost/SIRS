@@ -6,6 +6,20 @@ var EXPORTED_SYMBOLS = [ "MypgpCommon" ];
 const Cc = Components.classes;
 const Ci = Components.interfaces;
 
+
+/*THUNDERBIRD ContractIDs*/
+const FILE_PICKER_CONTRACT 		= "@mozilla.org/filepicker;1";
+const XPCOM_APPINFO_CONTRACT 	= "@mozilla.org/xre/app-info;1";
+
+/*THUNDERBIRD Interfaces*/
+const nsIXULRuntime	= Ci.nsIXULRuntime;
+
+/*THUNDERBIRD Components*/
+const tFilePicker = Cc[FILE_PICKER_CONTRACT].createInstance();
+
+/*THUNDERBIRD Services*/
+const tXULRuntime = Cc[XPCOM_APPINFO_CONTRACT].getService(nsIXULRuntime);
+
 var logLevel = 1;
 
 // various global variables
@@ -33,6 +47,12 @@ var MypgpCommon = {
     		return true;
 
 	},*/	
+	getOperativeSystem: function ()
+	{
+		return tXULRuntime.OS;
+	},
+
+	/*** DEBUGGING ***/
 
 	WRITE_LOG: function (str)
 	{
