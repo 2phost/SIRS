@@ -6,26 +6,16 @@ Components.utils.import("resource://mypgp/mypgpWindowManager.jsm");
 var addr_books = [];
 var addr_book = null;
 var addr_contacts = [];
-var focusedContact = null;
-var focusedContact_username = null;
-var focusedContact_email = null;
-var focusedContact_isTrusted = false;
-var focusedContact_isChanged = false;
+
 
 <!-- Interfaces -->
 var nsIAbManager = Components.interfaces.nsIAbManager;
 var nsIAbDirectory = Components.interfaces.nsIAbDirectory;
 var nsIAbCard = Components.interfaces.nsIAbCard;
-var nsIFilePicker = Components.interfaces.nsIFilePicker;
-var nsIMsgComposeService = Components.interfaces.nsIMsgComposeService;
-var nsIIOService = Components.interfaces.nsIIOService;
 
 <!-- Manager Vars -->
-var tAbManager = Components.classes["@mozilla.org/abmanager;1"].getService(nsIAbManager);  
-var tAllAddressBooks = tAbManager.directories;
-var tFilePicker = Components.classes["@mozilla.org/filepicker;1"].createInstance(nsIFilePicker);
-var tMessageComposeService = Components.classes["@mozilla.org/messengercompose;1"].getService(nsIMsgComposeService);
-var tIOService =  Components.classes["@mozilla.org/network/io-service;1"].getService(nsIIOService);
+var tAbManager 				= Components.classes["@mozilla.org/abmanager;1"].getService(nsIAbManager);  
+var tAllAddressBooks 		= tAbManager.directories;
 
 <!-- Component Vars -->
 var input_contacts = null;
@@ -36,12 +26,89 @@ var input_focusedContact_email = null;
 var input_focusedContact_isTrusted = null;
 var input_save_button = null;
 var input_cancel_button = null;
+var input_focusedContact_Keys = null;
+var input_focusedContact_RevokedKeys = null;
 
 <!-- Tree Vars -->
 var treeEmailColId = "email_col";
 var treeUsernameColId = "username_col";
 
+<!-- Broadcasters Handlers -->
+var broadcasterHandler = {
+
+	BcNoKeySelected: null,
+	BcNoFocusedContact: null,
+
+	init: function(){
+		this.BcNoKeySelected = document.getElementById("bcNoKeySelected");
+		this.BcNoFocusedContact = document.getElementById("bcNoFocusedContact");
+	},
+
+	focusContact: function()
+	{
+		this.BcNoFocusedContact.setAttribute("disabled", "false");
+	},
+
+	selectKey: function ()
+	{
+		this.BcNoKeySelected.setAttribute("disabled", "false");
+	},
+
+	deselectKey: function ()
+	{
+		this.BcNoKeySelected.setAttribute("disabled", "true");
+	}
+};
+
+var docElementsManager = {
+
+	focusedContactKeyTree: 							null,
+	focusedContactKeyTree_children: 				null,
+	focusedContactRevokedKeyTree: 				null,
+	focusedContactRevokedKeyTree_children: 	null,
+
+	init: function ()
+	{
+		this.focusedContactKeyTree = document.getElementById("keys_tree");
+		this.focusedContactKeyTree_children = document.getElementById("keys_tree_children");
+		this.focusedContactRevokedKeys = document.getElementById("revokedkeys_tree");
+		this.focusedContactRevokedKeys_children = document.getElementById("revokedkeys_tree_children");
+	}
+
+}
+
+var focusedContact = {
+	username: 	null,
+	email: 		null,
+	key: 			null,
+	isTrusted: 	false,
+	isChanged: 	false,
+
+	focus: function(username, email)
+	{
+		this.username = username;
+		this.email = email;
+		broadcasterHandler.focusContact();
+	},
+
+	unfocus: function()
+	{
+		this.username = null;
+		this.email = null;
+		this.key = null;
+	},
+
+	selectKey: function(key)
+	{
+		this.key = key;
+		broadcasterHandler.selectKey();
+	}
+}
+
 window.addEventListener("load", function(){
+
+	broadcasterHandler.init();
+	docElementsManager.init();
 
 	<!-- Initialize component vars -->
 	input_contacts = document.getElementById("cntmng_tree");
@@ -52,10 +119,18 @@ window.addEventListener("load", function(){
 	input_focusedContact_isTrusted =document.getElementById("focusContact_isTrusted");
 	input_save_button = document.getElementById("cntmng_save_btn");
 	input_cancel_button = document.getElementById("cntmng_cancel_btn");
+	input_focusedContact_Keys = document.getElementById("keys_tree_children");
+	input_focusedContact_RevokedKeys = document.getElementById("revokedkeys_tree_children");
 
 	<!-- Initialize components event listeners -->
 	input_contacts.addEventListener("click", focusDetailedContact);
 	input_addrbook.addEventListener("select", populateContactList);
+
+	docElementsManager.focusedContactKeyTree.addEventListener("select", function(){
+		var t = docElementsManager.focusedContactKeyTree;
+		var key = t.view.getCellValue(t.currentIndex, t.columns.getColumnAt(0));
+		focusedContact.selectKey(key);
+	});
 
 	<!-- Populate Address Books -->
 	while (tAllAddressBooks.hasMoreElements()) {  
@@ -76,7 +151,7 @@ window.addEventListener("load", function(){
 function populateContactList(){
 	MypgpCommon.DEBUG_LOG("(ContactManager) Address book selected : "+input_addrbook.selectedItem.label+"populating...\n");
 
-	<!-- TODO: clear current children in the tree -->	
+	/*TODO: clear current children in the tree*/
 
 	var directoryURI = input_addrbook.selectedItem.value;
 	var treeChildren = input_contactsChildren;
@@ -121,7 +196,7 @@ function populateContactList(){
 
 function toggleIsChanged(){
 
-	focusedContact_isChanged = !focusedContact_isChanged;
+	focusedContact.isChanged = !focusedContact.isChanged;
 
 	if(focusedContact_isChanged){
 		input_save_button.disabled=false;
@@ -165,11 +240,11 @@ function establishTrust(){
 							"chrome, dialog, modal, resizable=yes", params).focus();
 
 	if(params.trust){
-		focusedContact_isTrusted = true;
+		focusedContact.isTrusted = true;
 		input_focusedContact_isTrusted.checked = true;
 		toggleIsChanged();
 	}else{
-		focusedContact_isTrusted = false;
+		focusedContact.isTrusted = false;
 		input_focusedContact_isTrusted.checked = false;
 		toggleIsChanged();
 	}
@@ -187,6 +262,8 @@ function focusDetailedContact(event){
     	return;
   	}
 
+  	
+
   	// do not propagate double clicks
   	event.stopPropagation();
   	var tree = input_contacts;
@@ -202,8 +279,7 @@ function focusDetailedContact(event){
 	input_focusedContact_email.value=email;
 	input_focusedContact_email.disabled=false;
 
-	focusedContact_username = username;
-	focusedContact_email = email;
+	focusedContact.focus(username, email);
 
 	<!-- TODO carregar as chaves validas e revogadas conhecidas deste utilizador -->
 	populateFocusedContactKeys(email);
@@ -227,6 +303,28 @@ function importKey(){
 
 	if(file != null){
 		MypgpCommon.DEBUG_LOG("(myPGPContactManager.js : importKey) "+file.path+"\n");
+
+		var keyItem = document.createElement("treeitem");
+ 		var keyRow = document.createElement("treerow");
+ 		var keyCell_Key = document.createElement("treecell");
+ 		var keyCell_Validity = document.createElement("treecell");
+ 		
+ 		keyCell_Key.setAttribute("label", "TODO: key");
+ 		keyCell_Key.setAttribute("value", file);
+ 		keyCell_Validity.setAttribute("label", "TODO: key validity");
+ 		keyCell_Validity.setAttribute("value", file);
+
+		keyRow.appendChild(keyCell_Validity);
+ 		keyRow.appendChild(keyCell_Key);
+		
+ 		keyItem.setAttribute("value", file);
+ 		keyItem.setAttribute("id", file.path);
+ 		keyItem.setAttribute("flex", 1);
+ 		keyItem.appendChild(keyRow);
+ 		
+ 		input_focusedContact_Keys.appendChild(keyItem);
+
+ 		MypgpCommon.DEBUG_LOG("(myPGPContactManager.js : importKey) Key added\n");
 	}
 }
 
@@ -254,9 +352,9 @@ function exportKey(){
 function emailKey(){
 
 	mypgpWindowManager.composeMail(window,
-									focusedContact_username,
-									focusedContact_email,
-									null);
+									focusedContact.username,
+									focusedContact.email,
+									focusedContact.key);
 
 	MypgpCommon.DEBUG_LOG("(myPGPContactManager.js : emailKey) TODO must be implemented\n");
 }
@@ -268,7 +366,7 @@ function exitContactManager(){
 
 	var params = {cancel:false, save:false};
 
-	if(focusedContact_isChanged){
+	if(focusedContact.isChanged){
 		window.openDialog("chrome://mypgp/content/ContactManagementWindow/myPGPSaveBeforeExit.xul", "",
 								"chrome, dialog, modal, resizable=yes", params).focus();
 

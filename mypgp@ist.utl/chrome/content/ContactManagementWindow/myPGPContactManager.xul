@@ -6,11 +6,19 @@
 <window id="myPGPContactManager.xul"
 		title="&mypgp.label.contact_mng;"
 		orient="vertical"
-		width="800px" height="450px"
+		width="860px" height="640px"
 		screenX="50%" screenY="50%"
 		xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
 	<script type="application/javascript" src="chrome://mypgp/content/ContactManagementWindow/myPGPContactManager.js"/>
+
+
+	<!-- Broadcasters -->
+	<broadcasterset>
+    	<broadcaster id="bcNoKeySelected" 	disabled="true"/>
+    	<broadcaster id="bcNoFocusedContact" 	disabled="true"/>
+	</broadcasterset>	
+
 
 	<!-- Menu -->
 	<menubar id="cntmng-menubar">
@@ -18,15 +26,20 @@
 		<menu id="cntmng_menu_keys" label="&mypgp.label.keys;">
 			<menupopup>
 
-				<command id="import_cmd" oncommand="importKey()"/>
-				<command id="export_cmd" oncommand="exportKey()"/>
-				<command id="send_cmd" oncommand="emailKey()"/>
 				<command id="close_cmd" oncommand="exitContactManager()"/>
 
-				<menuitem id="menu_keys_import" label="&mypgp.cntmng.importkeys;" command="import_cmd"/>
-				<menuitem id="menu_keys_export" label="&mypgp.cntmng.exportkeys;" command="export_cmd"/>
+				<menuitem id="menu_keys_import" label="&mypgp.cntmng.importkeys;"
+							observes="bcNoFocusedContact"
+							oncommand="importKey()"/>
+
+				<menuitem id="menu_keys_export" label="&mypgp.cntmng.exportkeys;"
+							oncommand="exportKey()"
+							observes="bcNoKeySelected"/>
+
 				<menuseparator/>
-				<menuitem id="meny_keys_send" label="&mypgp.cntmng.emailkeys;" command="send_cmd"/>
+				<menuitem id="meny_keys_send" label="&mypgp.cntmng.emailkeys;"
+							oncommand="emailKey()"
+							observes="bcNoKeySelected"/>
 				<menuseparator/>
 				<menuitem id="menu_keys_close" label="&mypgp.label.close;" command="close_cmd"/>
 			</menupopup>
@@ -71,7 +84,7 @@
 			<separator/>
 			<vbox flex="2">
 				<separator flex="0"/>
-				<groupbox flex="1">
+				<groupbox flex="0">
 					<caption label="&mypgp.label.details;" flex="1"/>
 					<grid flex="1">
 							<columns>
@@ -81,25 +94,31 @@
 							<rows>
 								<row>
 									<label value="&mypgp.label.username;" flex="1"/>
-									<textbox id="focusContact_username" flex="2" readonly="true" disabled="true"/>
+									<textbox id="focusContact_username"
+												flex="2"
+												readonly="true"
+												observes="bcNoFocusedContact"/>
 								</row>
 								<row>
 									<label value="&mypgp.label.email;" flex="1"/>
-									<textbox id="focusContact_email" flex="2" readonly="true" disabled="true"/>
+									<textbox id="focusContact_email"
+												flex="2"
+												readonly="true"
+												observes="bcNoFocusedContact"/>
 								</row>
 							</rows>
 					</grid>
 				</groupbox>
 				<separator flex="0"/>
 
-				<groupbox flex="1">
+				<groupbox flex="2">
 					<caption label="&mypgp.label.keys;" flex="0"/>
 					<tabbox id="keymng_tabs" selectedIndex="0" flex="1">
 						<tabs id="keymng_main_tabs">
 							<tab id="cntmng_knownkeys" label="&mypgp.label.knownkeys;"/>
 							<tab id="cntmng_revokedkeys" label="&mypgp.label.revokedkeys;"/>
 						</tabs>
-						<tabpanels>
+						<tabpanels flex="1">
 							<tabpanel flex="1">
 								<tree id="keys_tree"
 										flex="1"
@@ -108,7 +127,7 @@
 										sortDirection="ascending"
 										hidecolumnpicker="true">
 
-									<treecols id="cntmng_cols" flex="1">
+									<treecols id="cntmng_cols" flex="0">
 										<treecol id="keys_key" label="&mypgp.label.key;" persist="width ordinal hidden" flex="1"/>
 										<spliter flex="0"/>
 										<treecol id="keys_validity" label="&mypgp.label.validity;" persist="width ordinal hidden" flex="1"/>
@@ -119,20 +138,20 @@
 							</tabpanel>
 
 							<tabpanel flex="1">
-								<tree id="keys_tree"
+								<tree id="revokedkeys_tree"
 										flex="1"
 										seltype="single"
 										persist="sortDirection sortResource"
 										sortDirection="ascending"
 										hidecolumnpicker="true">
 
-									<treecols id="cntmng_cols" flex="1">
+									<treecols id="cntmng_cols" flex="0">
 										<treecol id="keys_key" label="&mypgp.label.key;" persist="width ordinal hidden" flex="1"/>
 										<spliter flex="0"/>
 										<treecol id="keys_validity" label="&mypgp.label.validity;" persist="width ordinal hidden" flex="1"/>
 									</treecols>
 
-									<treechildren id="keys_tree_children" properties=""/>
+									<treechildren id="revokedkeys_tree_children" properties=""/>
 								</tree>
 							</tabpanel>
 						</tabpanels>
@@ -157,7 +176,7 @@
 												value="false"
 												label="&mypgp.cntmng.trusted;" 
 												align="right"
-												disabled="true"
+												observes="bcNoFocusedContact"
 												command="istrusted_cmd"/>
 								</box>
 							</row>
@@ -166,11 +185,14 @@
 				</groupbox>
 
 				<separator flex="0"/>
-				<hbox flex="0" align="right" height="50px">
-					<command id="cntmng_save_cmd" oncommand="saveChanges();"/>
+				<hbox flex="0" align="right">
 					<command id="cntmng_cancel_cmd" oncommand="cancelChanges();"/>
-					<button id="cntmng_save_btn" label="&mypgp.label.save;" disabled="true" command="cntmng_save_cmd"/>
-					<button id="cntmng_cancel_btn" label="&mypgp.label.cancel;" disabled="true" command="cntmng_cancel_cmd"/> 
+					<button id="cntmng_save_btn" label="&mypgp.label.save;"
+							observes="bcNoFocusedContact"
+							oncommand="saveChanges()"/>
+					<button id="cntmng_cancel_btn" label="&mypgp.label.cancel;"
+							observes="bcNoFocusedContact"
+							oncommand="cancelChanges();"/> 
 				</hbox>
 			</vbox>
 		</hbox>

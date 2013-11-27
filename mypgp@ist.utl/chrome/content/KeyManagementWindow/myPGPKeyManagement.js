@@ -25,8 +25,11 @@ function importKeysFromFile(){
 }
 
 function exportKeysToFile(){
-	var outfile = mypgpWindowManager.openFileBrowsingWindow(window, "Exportar Par de Chaves", true);
+	var file = mypgpWindowManager.openFileBrowsingWindow(window, "Exportar Par de Chaves", true);
+	
 	/*TODO: Passar a chave para o mypgpFileManager */
-	mypgpFileManager.writeKeyAsFile(outfile, null, "TODO: must pass the key");
-	MypgpCommon.DEBUG_LOG("(KeyManagement) Export keys to file\n");
+	if(file != null){
+		mypgpFileManager.writeKeyAsFile(file, null, "TODO: must pass the key");
+		MypgpCommon.DEBUG_LOG("(myPGPContactManager.js : importKey) "+file.path+"\n");
+	}
 }
