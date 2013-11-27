@@ -6,6 +6,16 @@ var EXPORTED_SYMBOLS = [ "MypgpCommon" ];
 const Cc = Components.classes;
 const Ci = Components.interfaces;
 
+
+/*THUNDERBIRD ContractIDs*/
+const FILE_PICKER_CONTRACT = "@mozilla.org/filepicker;1";
+
+/*THUNDERBIRD Interfaces*/
+const nsIFilePicker = Ci.nsIFilePicker;
+
+/*THUNDERBIRD Components*/
+const tFilePicker = Cc[FILE_PICKER_CONTRACT].createInstance();
+
 var logLevel = 1;
 
 // various global variables
@@ -33,6 +43,9 @@ var MypgpCommon = {
     		return true;
 
 	},*/	
+
+
+	/*** DEBUGGING ***/
 
 	WRITE_LOG: function (str)
 	{

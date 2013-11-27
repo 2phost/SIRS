@@ -1,4 +1,6 @@
 Components.utils.import("resource://mypgp/mypgpCommon.jsm");
+Components.utils.import("resource://mypgp/mypgpFileManager.jsm");
+Components.utils.import("resource://mypgp/mypgpWindowManager.jsm");
 
 <!-- Local Vars -->
 var addr_books = [];
@@ -14,10 +16,16 @@ var focusedContact_isChanged = false;
 var nsIAbManager = Components.interfaces.nsIAbManager;
 var nsIAbDirectory = Components.interfaces.nsIAbDirectory;
 var nsIAbCard = Components.interfaces.nsIAbCard;
+var nsIFilePicker = Components.interfaces.nsIFilePicker;
+var nsIMsgComposeService = Components.interfaces.nsIMsgComposeService;
+var nsIIOService = Components.interfaces.nsIIOService;
 
 <!-- Manager Vars -->
 var tAbManager = Components.classes["@mozilla.org/abmanager;1"].getService(nsIAbManager);  
 var tAllAddressBooks = tAbManager.directories;
+var tFilePicker = Components.classes["@mozilla.org/filepicker;1"].createInstance(nsIFilePicker);
+var tMessageComposeService = Components.classes["@mozilla.org/messengercompose;1"].getService(nsIMsgComposeService);
+var tIOService =  Components.classes["@mozilla.org/network/io-service;1"].getService(nsIIOService);
 
 <!-- Component Vars -->
 var input_contacts = null;
@@ -67,7 +75,9 @@ window.addEventListener("load", function(){
 
 function populateContactList(){
 	MypgpCommon.DEBUG_LOG("(ContactManager) Address book selected : "+input_addrbook.selectedItem.label+"populating...\n");
-	
+
+	<!-- TODO: clear current children in the tree -->	
+
 	var directoryURI = input_addrbook.selectedItem.value;
 	var treeChildren = input_contactsChildren;
 	var contacts=[];
@@ -144,7 +154,26 @@ function cancelChanges(){
 }
 
 function establishTrust(){
-	toggleIsChanged();
+
+	var params = {trust:false};
+
+	<!--TODO: modificar mensagem de prompt dependendo se está a confiar ou a deixar de confiar -->
+	if(input_focusedContact_isTrusted.checked)
+		;
+
+	window.openDialog("chrome://mypgp/content/ContactManagementWindow/myPGPEstablishTrustDialog.xul", "",
+							"chrome, dialog, modal, resizable=yes", params).focus();
+
+	if(params.trust){
+		focusedContact_isTrusted = true;
+		input_focusedContact_isTrusted.checked = true;
+		toggleIsChanged();
+	}else{
+		focusedContact_isTrusted = false;
+		input_focusedContact_isTrusted.checked = false;
+		toggleIsChanged();
+	}
+
 	MypgpCommon.DEBUG_LOG("(myPGPContactManager.js : establishTrust) TODO must be implemented\n");
 }
 
@@ -173,6 +202,86 @@ function focusDetailedContact(event){
 	input_focusedContact_email.value=email;
 	input_focusedContact_email.disabled=false;
 
+	focusedContact_username = username;
+	focusedContact_email = email;
+
 	<!-- TODO carregar as chaves validas e revogadas conhecidas deste utilizador -->
 	populateFocusedContactKeys(email);
+}
+
+/*
+ * Menu Functions
+ */
+
+/**
+ * importKey
+ * A file browser is openened and the selected key is imported.
+ * NOTE: only after the change has been save should the key be associated with the contact. */
+function importKey(){
+
+	var file = null;
+	mypgpWindowManager.openFileBrowsingWindow(window, "Importar Chave", false, null);
+	
+	MypgpCommon.DEBUG_LOG("(myPGPContactManager.js : importKey) TODO must be implemented\n");
+}
+
+
+/**
+ * exportKey
+ * NOTE: only if a key is selected should the action be avaliable
+ * Given the selected key, a file browser is selected and the key is writen in the
+ * file system as a file */
+function exportKey(){
+
+	mypgpWindowManager.openFileBrowsingWindow(window, "Exportar Chave", true, null);
+
+	MypgpCommon.DEBUG_LOG("(myPGPContactManager.js : exportKey) TODO must be implemented\n");
+}
+
+/**
+ * emailKey
+ * NOTE: only if a key is selected should this action be avaliable
+ * Given the selected key, a email window is opened with the selected key file added as an attachment */
+function emailKey(){
+
+	mypgpWindowManager.composeMail(window,
+									focusedContact_username,
+									focusedContact_email,
+									null);
+
+	MypgpCommon.DEBUG_LOG("(myPGPContactManager.js : emailKey) TODO must be implemented\n");
+}
+
+/**
+ * exitContactManager
+ */
+function exitContactManager(){
+
+	var params = {cancel:false, save:false};
+
+	if(focusedContact_isChanged){
+		window.openDialog("chrome://mypgp/content/ContactManagementWindow/myPGPSaveBeforeExit.xul", "",
+								"chrome, dialog, modal, resizable=yes", params).focus();
+
+		if(!params.cancel){
+			if(params.save){
+				<!--TODO: gravar modificacoes e sair-->
+				window.close();
+			}else
+				window.close();
+		}
+	}
+
+	window.close();
+
+	MypgpCommon.DEBUG_LOG("(myPGPContactManager.js : exitContactManager) TODO must be implemented\n");
+}
+
+function openAbout(){
+	mypgpWindowManager.openAbout(window);
+	MypgpCommon.DEBUG_LOG("(myPGPContactManager.js : openAbout)\n");
+}
+
+function openHelp(){
+
 }
