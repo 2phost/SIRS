@@ -1,52 +1,51 @@
-var EXPORTED_SYMBOLS = [ "MyPGPFileManager" ];
+Components.utils.import("resource://gre/modules/FileUtils.jsm");
+Components.utils.import("resource://gre/modules/NetUtil.jsm");
+Components.utils.import("resource://mypgp/mypgpCommon.jsm");
 
 
+var EXPORTED_SYMBOLS = [ "mypgpFileManager" ];
 
 
 /*THUNDERBIRD ContractIDs*/
-const FILE_PICKER_CONTRACT = "@mozilla.org/filepicker;1";
+const LOCAL_FILE_CONTRACT 	= "@mozilla.org/file/local;1";
+const CONVERTER_CONTRACT 	= "@mozilla.org/intl/scriptableunicodeconverter";
 
 /*THUNDERBIRD Interfaces*/
-const nsIFilePicker = Components.interfaces.nsIFilePicker;
 const nsIFile = Components.interfaces.nsIFile;
+const nsILocalFile = Components.interfaces.nsILocalFile;
+const nsIScriptableUnicodeConverter = Components.interfaces.nsIScriptableUnicodeConverter;
 
 /*THUNDERBIRD Components*/
-const tFilePicker = Components.classes[FILE_PICKER_CONTRACT].createInstance();
+const tLocalFile = Components.classes[LOCAL_FILE_CONTRACT].createInstance(nsILocalFile);
 
-var MyPGPFileManager = {
+/* General Utils */
+var fileOutputStream 	= null;
+var fileInputStream 	= null;
+var outputConverter 	= Components.classes[CONVERTER_CONTRACT].createInstance(nsIScriptableUnicodeConverter);
 
-	importKey: function (win, title, defaultExtention)
+
+var mypgpFileManager = {
+
+	/**
+	 *
+	 * @param {nsIFile} file
+	 * @param {} flags
+	 * @param {string} data
+	 */
+	writeKeyAsFile: function (file, flags, data)
 	{
+		file.createUnique(nsIFile.NORMAL_FILE_TYPE, 0600);
 
-		var file = null;
-		var file_picker = tFilePicker.QueryInterface(nsIFilePicker);
-		file_picker.init(win, title, nsIFilePicker.modeOpen);
+		fileOutputStream = FileUtils.openSafeFileOutputStream(file);
+		outputConverter.charset = "UTF-8";
 
-		if(defaultExtention)
-			file_picker.defaultExtention = defaultExtention;
+		fileInputStream = outputConverter.convertToInputStream(data);
 
-		if (file_picker.show() == nsIFilePicker.returnCancel)
-      		return null;
-
-    	file = file_picker.file.QueryInterface(nsIFile);
-
-    	return file;
-	},
-
-	exportKey: function (win, title, defaultExtention)
-	{
-		var file = null;
-		var file_picker = tFilePicker.QueryInterface(nsIFilePicker);
-		file_picker.init(win, title, nsIFilePicker.modeSave);
-
-		if(defaultExtention)
-			file_picker.defaultExtention = defaultExtention;
-
-		if (file_picker.show() == nsIFilePicker.returnCancel)
-      		return null;
-
-    	file = file_picker.file.QueryInterface(nsIFile);
-
-    	return file;
+		NetUtil.asyncCopy(fileInputStream, fileOutputStream, function(status){
+			if(!Components.isSuccessCode(status)){
+				MypgpCommon.ERROR_LOG("(mypgpFileManager.jsm : writeKeyAsFile) Error writing to file");
+				return null;
+			}
+		});
 	}
 };

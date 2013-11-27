@@ -1,11 +1,17 @@
+Components.utils.import("resource://mypgp/mypgpCommon.jsm");
+Components.utils.import("resource://mypgp/mypgpFileManager.jsm");
+
 var EXPORTED_SYMBOLS = [ "mypgpWindowManager" ];
+
+// Preferences
+const KEY_EXT 			= "*.key"
 
 // Windows Predefined Titles
 const ABOUT_TITLE 		= "Sobre o MyPGP";
 const PREFERENCES_TITLE = "Preferências";
-const KEYMNG_TITLE		= "";
-const KEYGEN_TITLE		= "";
-const CNTMNG_TITLE		= "";
+const KEYMNG_TITLE		= "Gestão de Chaves";
+const KEYGEN_TITLE		= "Gerar novo par de Chaves";
+const CNTMNG_TITLE		= "Gestão de Contactos";
 
 // MyPGP Chrome
 const ABOUT 			= "chrome://mypgp/content/mypgpAbout.xul";
@@ -32,6 +38,8 @@ const tFilePicker = Components.classes[FILE_PICKER_CONTRACT].createInstance();
 
 
 var mypgpWindowManager = {
+
+	filters_appended: false,
 
 	openAbout: function (win)
 	{
@@ -65,7 +73,7 @@ var mypgpWindowManager = {
 		win.openDialog(CONTACTMANAGEMENT, CNTMNG_TITLE, null);
 	},
 
-	openFileBrowsingWindow: function (win, title, save, defaultExtention)
+	openFileBrowsingWindow: function (win, title, save)
 	{
 		var file = null;
 		var file_picker = tFilePicker.QueryInterface(nsIFilePicker);
@@ -73,13 +81,22 @@ var mypgpWindowManager = {
 
 		file_picker.init(win, title, mode);
 
-		if(defaultExtention)
-			file_picker.defaultExtention = defaultExtention;
+		if(!this.filters_appended){
+			file_picker.appendFilter("Chaves", KEY_EXT);
+			this.filters_appended = true;
+		}
 
-		if (file_picker.show() == nsIFilePicker.returnCancel)
+		if (file_picker.show() == nsIFilePicker.returnCancel){
+      		MypgpCommon.DEBUG_LOG("(mypgpWindowManager.jsm : openFileBrowsingWindow) leaving without file\n");
       		return null;
+      	}
 
     	file = file_picker.file.QueryInterface(nsIFile);
+
+    	if(file != null)
+    		MypgpCommon.DEBUG_LOG("(mypgpWindowManager.jsm : openFileBrowsingWindow) Retrieving file at "+file.path+"\n");
+    	else
+    		MypgpCommon.ERROR_LOG("(mypgpWindowManager.jsm : openFileBrowsingWindow) Retrived file is null");
 
     	return file;
 	},

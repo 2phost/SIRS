@@ -220,9 +220,14 @@ function focusDetailedContact(event){
 function importKey(){
 
 	var file = null;
-	mypgpWindowManager.openFileBrowsingWindow(window, "Importar Chave", false, null);
+
+	file = mypgpWindowManager.openFileBrowsingWindow(window, "Importar Chave", false, null);
 	
-	MypgpCommon.DEBUG_LOG("(myPGPContactManager.js : importKey) TODO must be implemented\n");
+
+
+	if(file != null){
+		MypgpCommon.DEBUG_LOG("(myPGPContactManager.js : importKey) "+file.path+"\n");
+	}
 }
 
 
@@ -233,9 +238,13 @@ function importKey(){
  * file system as a file */
 function exportKey(){
 
-	mypgpWindowManager.openFileBrowsingWindow(window, "Exportar Chave", true, null);
-
-	MypgpCommon.DEBUG_LOG("(myPGPContactManager.js : exportKey) TODO must be implemented\n");
+	var file = mypgpWindowManager.openFileBrowsingWindow(window, "Exportar Chave", true, null);
+	/*TODO: Passar a chave para o mypgpFileManager */
+	
+	if(file != null){
+		mypgpFileManager.writeKeyAsFile(file, null, "TODO: must pass the key");
+		MypgpCommon.DEBUG_LOG("(myPGPContactManager.js : importKey) "+file.path+"\n");
+	}
 }
 
 /**
