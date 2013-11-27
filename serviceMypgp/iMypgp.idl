@@ -1,4 +1,6 @@
 #include "nsISupports.idl"
+interface nsCrypto;
+
 
 [scriptable, uuid(f380ecd6-5e8d-4e11-8d85-d16a8e28e6d0)]
 interface IMypgp : nsISupports
@@ -12,12 +14,12 @@ interface IMypgp : nsISupports
 	/**
 	 * Generate Private/Public Key
 	 */
-	//void keygen();
+	void keygen();
 
 
-  	string Encrypt(in string msg);
-	string Decrypt(in string msg);
-	long Add(in long a, in long b);
+  	string encrypt(in AString msg);
+	string decrypt(in AString msg);
+	long add(in long a, in long b);
 	
 };
 	

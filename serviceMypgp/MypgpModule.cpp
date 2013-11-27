@@ -24,7 +24,7 @@ const mozilla::Module::CIDEntry kMypgpModuleCIDs[] = {
 // cases an extension component may override the contract ID of a builtin gecko component
 // to modify or extend functionality.
 const mozilla::Module::ContractIDEntry kMypgpModuleContracts[] = {
-  { "@mozilla.org/messengercompose/composesecure;1", &kMYPGP_CID },
+  { MYPGP_CONTRACTID, &kMYPGP_CID },
   { nullptr }
 
 };

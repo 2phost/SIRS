@@ -1,11 +1,12 @@
 MODULE		= MyPGPSecure
 
-XULRUNNER_SDK_PATH ?= ~/xulrunner-sdk
+GECKO_SDK_PATH ?= $(HOME)/xulrunner-sdk
 
-HEADERPY	       ?= $(XULRUNNER_SDK_PATH)/sdk/bin/header.py
-TYPELIBPY       ?= $(XULRUNNER_SDK_PATH)/sdk/bin/typelib.py
+XPIDL	       ?= $(GECKO_SDK_PATH)/bin/xpidl
+HEADERPY	   ?= $(GECKO_SDK_PATH)/sdk/bin/header.py
+TYPELIBPY      ?= $(GECKO_SDK_PATH)/sdk/bin/typelib.py
 
-CXX	       ?= c++ #clang++
+CXX	       ?= c++
 
 XPIDLSRCS	= \
 		iMypgp.idl \
@@ -16,40 +17,41 @@ CPPSRCS		= \
 		MypgpModule.cpp \
 		$(NULL)
 
-CPPFLAGS +=     -fno-rtti		\
-                -fno-exceptions		\
+CPPFLAGS +=     -fexceptions		\
                 -fshort-wchar		\
-		          -fPIC			\
-		          -std=c++11			\
-		          -Os			\
-		          -Wall			\
-		          $(NULL)
+		-fPIC			\
+		$(NULL)
 
-GECKO_CONFIG_INCLUDE = -include xpcom-config.h 
+GECKO_CONFIG_INCLUDE = -include xpcom-config.h
 
 GECKO_DEFINES  = -DMOZILLA_STRICT_API
 
-GECKO_INCLUDES = $(XULRUNNER_SDK_PATH)/idl/                            
+GECKO_INCLUDES = -I$(GECKO_SDK_PATH)                    \
+                 -I$(GECKO_SDK_PATH)/idl                \
+                 -I$(GECKO_SDK_PATH)/include            \
+                 -I$(GECKO_SDK_PATH)/include/mozzilla   \
+                 -I$(GECKO_SDK_PATH)/include/nspr		\
+                 -I$/usr/include/cryptopp
 
-INCLUDES = -I/home/dias/xulrunner-sdk/include/nspr -I/home/dias/xulrunner-sdk/include -I/home/dias/xulrunner-sdk/include/mozilla -L /home/dias/xulrunner-sdk/lib
-
-GECKO_LDFLAGS =  -L $(XULRUNNER_SDK_PATH)/bin \
-		 -L $(XULRUNNER_SDK_PATH)/lib \
+GECKO_LDFLAGS =  -L$(GECKO_SDK_PATH)/bin \
+		 -L$(GECKO_SDK_PATH)/lib \
 		 -lxpcomglue_s	\
                  -lnspr4	\
                  -lplds4	\
 		 -lxul		\
 		 -shared	\
+		-lcryptopp \
+		-pthread \
 		 $(NULL)
 
 %.h: %.idl
-	$(HEADERPY) -I $(GECKO_INCLUDES) --cachedir=/tmp/ -o IMypgp.h  $<
+	$(HEADERPY) $(GECKO_INCLUDES) --cachedir=/tmp/ -o IMypgp.h $<
 
 %.xpt: %.idl
-	$(TYPELIBPY) -I $(GECKO_INCLUDES) --cachedir=/tmp/ -o IMypgp.xpt  $<
+	$(TYPELIBPY) $(GECKO_INCLUDES) --cachedir=/tmp/ -o IMypgp.xpt $<
 
 %.o: %.cpp Makefile
-	$(CXX) -c $(CPPFLAGS) $(GECKO_CONFIG_INCLUDE) $(GECKO_DEFINES) $(INCLUDES) $<
+	$(CXX) -c $(CPPFLAGS) $(CXXFLAGS) $(GECKO_CONFIG_INCLUDE) $(GECKO_DEFINES) $(GECKO_INCLUDES) $<
 
 $(MODULE).so: $(XPIDLSRCS:%.idl=%.h) $(XPIDLSRCS:%.idl=%.xpt) $(CPPSRCS:%.cpp=%.o)
 	$(CXX) -o $@ -Wl,-soname=$(MODULE).so $(CPPSRCS:%.cpp=%.o) $(GECKO_LDFLAGS)

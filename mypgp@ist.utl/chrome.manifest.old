@@ -1,0 +1,16 @@
+content mypgp chrome/content/
+locale mypgp pt-PT chrome/locale/pt-PT/
+
+#skins
+skin 	mypgp 	chrome/skins/
+
+
+# Resource module registration
+resource mypgp modules/
+
+overlay chrome://messenger/content/messengercompose/messengercompose.xul chrome://mypgp/content/mypgpMsgComposeOverlay.xul
+overlay chrome://messenger/content/messenger.xul chrome://mypgp/content/MainWindow/myPGPmessenger_overlay.xul
+
+# c++ extension
+interfaces components/IMypgp.xpt
+binary-component components/MyPGPSecure.so

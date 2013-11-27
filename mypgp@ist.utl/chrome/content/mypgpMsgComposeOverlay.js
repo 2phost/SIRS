@@ -61,9 +61,10 @@ MyPGP.msg = {
 			this.replaceTextEditor("Olá Pompeu");
 			
 			try {
-        		var myComponent = Components.classes['@mozilla.org/messengercompose/composesecure;1']
-                                   .createInstance(Components.interfaces.IMypgp);
-        		alert(myComponent.Add(4,6));
+
+				
+        		//var myComponent = Components.classes['@mozilla.org/messengercompose/composesecure;1'].createInstance(Components.interfaces.IMypgp);
+        		//alert(myComponent.Add(4,6));
 			} catch (anError) {
  	       	dump("ERROR: " + anError);
 			}

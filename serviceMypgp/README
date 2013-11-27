@@ -1,3 +1,13 @@
+
+USE make
+THEN make install
+
+
+
+
+
+
+OTHERS
 xulrunner-sdk/sdk/bin/header.py -I ~/xulrunner-sdk/idl/ --cachedir=/tmp/ -o teste.h Git/SIRS/serviceMypgp/iMypgp.idl
 
 
