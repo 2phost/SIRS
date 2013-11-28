@@ -56,21 +56,16 @@ MyPGP.msg = {
 
 		// Get plain text
 		try {  
-    		//var editor_type = GetCurrentEditorType();
 			this.originText = this.getTextEditor('text/plain', 4);
 			this.replaceTextEditor("Olá Pompeu");
 			
 			try {
-
-				
-        		//var myComponent = Components.classes['@mozilla.org/messengercompose/composesecure;1'].createInstance(Components.interfaces.IMypgp);
-        		//alert(myComponent.Add(4,6));
+				var mypgpSvc = MypgpCommon.getService();
+				alert(mypgpSvc.add(4,4));
 			} catch (anError) {
  	       	dump("ERROR: " + anError);
 			}
-			//openpgp.init();
 
-			//MypgpCommon.ENCRYPT("LOL"); //TODO APAGAR
 			MypgpCommon.DEBUG_LOG("mypgpMsgComposeOverlay.js: Mypgp.encryptMsg: Mypgp.msg.originText="+this.originText+"\n");
 		} catch(ex) {  
     		Components.utils.reportError(ex);  
