@@ -29,7 +29,7 @@ GECKO_DEFINES  = -DMOZILLA_STRICT_API
 GECKO_INCLUDES = -I$(GECKO_SDK_PATH)                    \
                  -I$(GECKO_SDK_PATH)/idl                \
                  -I$(GECKO_SDK_PATH)/include            \
-                 -I$(GECKO_SDK_PATH)/include/mozzilla   \
+                 -I$(GECKO_SDK_PATH)/include/mozilla   \
                  -I$(GECKO_SDK_PATH)/include/nspr		\
                  -I$/usr/include/cryptopp
 
