@@ -1,9 +1,18 @@
+WINDOWS:
+to compile -> https://sites.google.com/site/ievgensychov/cryptopp
+	or use Visual
+	another link: http://briankrausz.com/building-a-c-xpcom-component-in-windows/
+	don't forget include cryptopp lib
+use Mypgp.mak (need changes)
+	or use Visual
 
+
+LINUX:
 USE make
 THEN make install
 
 
-
+------------------------------------------
 
 
 
