@@ -1,0 +1,40 @@
+﻿Build started 30/11/2013 17:33:22.
+     1>Project "C:\Users\rodrigo\Development\MyPGP\SIRS\serviceMypgpWin32\MypgpWin32\test.vcxproj" on node 2 (rebuild target(s)).
+     1>_PrepareForClean:
+         Deleting file "Debug\MypgpWin32.lastbuildstate".
+       InitializeBuildStatus:
+         Creating "Debug\MypgpWin32.unsuccessfulbuild" because "AlwaysCreate" was specified.
+       CustomBuild:
+         Performing Custom Build Tools
+       ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /ID:\Projects\Cryptopp5.6.2 /I"D:\Projects\xulrunner-sdk\include\nspr" /I"D:\Projects\xulrunner-sdk\include" /ZI /nologo /W0 /WX- /Od /Oy- /D WIN32 /D _WINDOWS /D _USRDLL /D XP_WIN /D XP_WIN32 /D _WINDLL /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MD /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt ..\..\serviceMypgp\Mypgp.cpp ..\..\serviceMypgp\MypgpModule.cpp -D_ITERATOR_DEBUG_LEVEL=0 
+         MypgpModule.cpp
+         Mypgp.cpp
+         Generating Code...
+       ManifestResourceCompile:
+         C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\rc.exe /nologo /fo"Debug\MypgpWin32.dll.embed.manifest.res" Debug\MypgpWin32_manifest.rc 
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\rodrigo\Development\MyPGP\SIRS\serviceMypgpWin32\MypgpWin32\Debug\MypgpWin32.dll" /INCREMENTAL /NOLOGO /LIBPATH:"D:\Projects\xulrunner-sdk\lib" /LIBPATH:D:\Projects\Cryptopp5.6.2\cryptopp\Win32\Output\Debug D:\Projects\Cryptopp5.6.2\cryptopp\Win32\Output\Debug\cryptlib.lib xul.lib mozalloc.lib xpcomglue_s.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /ManifestFile:"Debug\MypgpWin32.dll.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"C:\Users\rodrigo\Development\MyPGP\SIRS\serviceMypgpWin32\MypgpWin32\Debug\MypgpWin32.pdb" /SUBSYSTEM:WINDOWS /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\rodrigo\Development\MyPGP\SIRS\serviceMypgpWin32\MypgpWin32\Debug\MypgpWin32.lib" /MACHINE:X86 /DLL Debug\MypgpWin32.dll.embed.manifest.res
+         Debug\Mypgp.obj
+         Debug\MypgpModule.obj
+            Creating library C:\Users\rodrigo\Development\MyPGP\SIRS\serviceMypgpWin32\MypgpWin32\Debug\MypgpWin32.lib and object C:\Users\rodrigo\Development\MyPGP\SIRS\serviceMypgpWin32\MypgpWin32\Debug\MypgpWin32.exp
+     1>xpcomglue_s.lib(nsISupportsImpl.obj) : warning LNK4099: PDB 'generated.pdb' was not found with 'xpcomglue_s.lib(nsISupportsImpl.obj)' or at 'C:\Users\rodrigo\Development\MyPGP\SIRS\serviceMypgpWin32\MypgpWin32\Debug\generated.pdb'; linking object as if no debug info
+       Manifest:
+         Deleting file "Debug\MypgpWin32.dll.embed.manifest".
+         C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\mt.exe /nologo /verbose /out:"Debug\MypgpWin32.dll.embed.manifest" /manifest Debug\MypgpWin32.dll.intermediate.manifest
+         C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\rc.exe /nologo /fo"Debug\MypgpWin32.dll.embed.manifest.res" Debug\MypgpWin32_manifest.rc 
+       LinkEmbedManifest:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\rodrigo\Development\MyPGP\SIRS\serviceMypgpWin32\MypgpWin32\Debug\MypgpWin32.dll" /INCREMENTAL /NOLOGO /LIBPATH:"D:\Projects\xulrunner-sdk\lib" /LIBPATH:D:\Projects\Cryptopp5.6.2\cryptopp\Win32\Output\Debug D:\Projects\Cryptopp5.6.2\cryptopp\Win32\Output\Debug\cryptlib.lib xul.lib mozalloc.lib xpcomglue_s.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /ManifestFile:"Debug\MypgpWin32.dll.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"C:\Users\rodrigo\Development\MyPGP\SIRS\serviceMypgpWin32\MypgpWin32\Debug\MypgpWin32.pdb" /SUBSYSTEM:WINDOWS /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\rodrigo\Development\MyPGP\SIRS\serviceMypgpWin32\MypgpWin32\Debug\MypgpWin32.lib" /MACHINE:X86 /DLL Debug\MypgpWin32.dll.embed.manifest.res
+         Debug\Mypgp.obj
+         Debug\MypgpModule.obj
+            Creating library C:\Users\rodrigo\Development\MyPGP\SIRS\serviceMypgpWin32\MypgpWin32\Debug\MypgpWin32.lib and object C:\Users\rodrigo\Development\MyPGP\SIRS\serviceMypgpWin32\MypgpWin32\Debug\MypgpWin32.exp
+     1>xpcomglue_s.lib(nsISupportsImpl.obj) : warning LNK4099: PDB 'generated.pdb' was not found with 'xpcomglue_s.lib(nsISupportsImpl.obj)' or at 'C:\Users\rodrigo\Development\MyPGP\SIRS\serviceMypgpWin32\MypgpWin32\Debug\generated.pdb'; linking object as if no debug info
+         test.vcxproj -> C:\Users\rodrigo\Development\MyPGP\SIRS\serviceMypgpWin32\MypgpWin32\Debug\MypgpWin32.dll
+       FinalizeBuildStatus:
+         Deleting file "Debug\MypgpWin32.unsuccessfulbuild".
+         Touching "Debug\MypgpWin32.lastbuildstate".
+     1>Done Building Project "C:\Users\rodrigo\Development\MyPGP\SIRS\serviceMypgpWin32\MypgpWin32\test.vcxproj" (rebuild target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:06.79

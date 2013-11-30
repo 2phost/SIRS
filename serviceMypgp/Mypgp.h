@@ -15,11 +15,19 @@ using std::cout;
 #include "cryptopp/rsa.h"
 using CryptoPP::RSA;
 using CryptoPP::InvertibleRSAFunction;
+<<<<<<< HEAD
 using CryptoPP::RSAES_OAEP_SHA_Encryptor;
+=======
+
+>>>>>>> 2f4216665d8ad1fd80743d88d7a5aa352f74c068
 
 #include <cryptopp/cryptlib.h>
 using CryptoPP::PrivateKey;
 using CryptoPP::PublicKey;
+<<<<<<< HEAD
+=======
+
+>>>>>>> 2f4216665d8ad1fd80743d88d7a5aa352f74c068
 
 #include <cryptopp/files.h>
 using CryptoPP::FileSink;
