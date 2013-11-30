@@ -9,11 +9,13 @@
 
 #include "cryptopp/rsa.h"
 using CryptoPP::RSA;
+using CryptoPP::InvertibleRSAFunction;
+
 
 #include <cryptopp/cryptlib.h>
 using CryptoPP::PrivateKey;
 using CryptoPP::PublicKey;
-using CryptoPP::BufferedTransformation;
+
 
 #include <cryptopp/files.h>
 using CryptoPP::FileSource;
@@ -21,9 +23,6 @@ using CryptoPP::FileSink;
 
 #include "cryptopp/osrng.h"
 using CryptoPP::AutoSeededRandomPool;
-
-#include "cryptopp/queue.h"
-using CryptoPP::ByteQueue;
 
 /******************/
 

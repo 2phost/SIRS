@@ -21,19 +21,21 @@ NS_IMETHODIMP Mypgp::Keygen()
 {
 	AutoSeededRandomPool rng;
 	
-	RSA::PrivateKey rsaPrivate;
-	rsaPrivate.GenerateRandomWithKeySize(rng, 3072);
+	
 
-	RSA::PublicKey rsaPublic(rsaPrivate);
+	InvertibleRSAFunction parameters;
+	parameters.GenerateRandomWithKeySize(rng, 1024);
+	
+	RSA::PrivateKey rsaPrivate(parameters);
+	RSA::PublicKey rsaPublic(parameters);
 
-	//Save private key
-	ByteQueue queue;
-	rsaPrivate.Save(queue);
+	rsaPublic.Save(
+		FileSink("pubKey.key", true).Ref()
+	);
 
-	FileSink file("private.key");
-
-	queue.CopyTo(file);
-	file.MessageEnd();
+	rsaPrivate.Save(
+		FileSink("privKey.key", true).Ref()
+	);
 
     return NS_OK;
 }
