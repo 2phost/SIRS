@@ -13,6 +13,5 @@ overlay chrome://messenger/content/messenger.xul chrome://mypgp/content/MainWind
 
 # c++ extension
 interfaces components/IMypgp.xpt
-binary-component components/MyPGPSecure.so
-interfaces components/IMypgpWin32.xpt
-binary-component components/MypgpWin32.dll
+binary-component components/MyPGPSecure.so ABI=Linux_x86_64-gcc3
+binary-component components/MypgpWin32.dll ABI=WINNT_x86-msvc
