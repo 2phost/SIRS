@@ -15,8 +15,8 @@ interface IMypgp : nsISupports
 	void keygen();
 
 
-  	string encrypt(in AString msg);
-	string decrypt(in AString msg);
+  	string encrypt(in string msg);
+	string decrypt(in string msg);
 	long add(in long a, in long b);
 	
 };

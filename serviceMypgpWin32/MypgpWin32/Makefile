@@ -9,7 +9,7 @@ TYPELIBPY      ?= $(GECKO_SDK_PATH)/sdk/bin/typelib.py
 CXX	       = clang++
 
 XPIDLSRCS	= \
-		iMypgp.idl \
+		Mypgp.idl \
 		$(NULL)
 
 CPPSRCS		= \
@@ -61,8 +61,8 @@ $(MODULE).so: $(XPIDLSRCS:%.idl=%.h) $(XPIDLSRCS:%.idl=%.xpt) $(CPPSRCS:%.cpp=%.
 build: $(MODULE).so
 
 install:
-	cp MyPGPSecure.so ../mypgp\@ist.utl/components/
-	cp IMypgp.xpt ../mypgp\@ist.utl/components/
+	cp MyPGPSecure.so ../../mypgp\@ist.utl/components/
+	cp IMypgp.xpt ../../mypgp\@ist.utl/components/
 
 clean:
 	rm $(MODULE).so

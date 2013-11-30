@@ -28,7 +28,6 @@ NS_IMETHODIMP Mypgp::Keygen()
 
 	AutoSeededRandomPool rng;
 	
-<<<<<<< HEAD
 	InvertibleRSAFunction parameters;
 	parameters.GenerateRandomWithKeySize( rng, 1024 );
 
@@ -43,23 +42,7 @@ NS_IMETHODIMP Mypgp::Keygen()
 	rsaPrivate.Save(
         FileSink( pPrivateKey, true /*binary*/ ).Ref()
     );
-=======
-	
 
-	InvertibleRSAFunction parameters;
-	parameters.GenerateRandomWithKeySize(rng, 1024);
-	
-	RSA::PrivateKey rsaPrivate(parameters);
-	RSA::PublicKey rsaPublic(parameters);
-
-	rsaPublic.Save(
-		FileSink("pubKey.key", true).Ref()
-	);
-
-	rsaPrivate.Save(
-		FileSink("privKey.key", true).Ref()
-	);
->>>>>>> 2f4216665d8ad1fd80743d88d7a5aa352f74c068
 
     return NS_OK;
 }
