@@ -3,27 +3,30 @@
 
 #include "IMypgp.h"
 
+/*****   OUTROS   ****/
+//#include "nsStringAPI.h"
+
 /******************
     CRYPT INCL     
 ******************/
+#include <iostream>
+using std::cout;
 
 #include "cryptopp/rsa.h"
 using CryptoPP::RSA;
+using CryptoPP::InvertibleRSAFunction;
+using CryptoPP::RSAES_OAEP_SHA_Encryptor;
 
 #include <cryptopp/cryptlib.h>
 using CryptoPP::PrivateKey;
 using CryptoPP::PublicKey;
-using CryptoPP::BufferedTransformation;
 
 #include <cryptopp/files.h>
-using CryptoPP::FileSource;
 using CryptoPP::FileSink;
+using CryptoPP::FileSource;
 
 #include "cryptopp/osrng.h"
 using CryptoPP::AutoSeededRandomPool;
-
-#include "cryptopp/queue.h"
-using CryptoPP::ByteQueue;
 
 /******************/
 

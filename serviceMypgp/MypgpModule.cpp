@@ -35,7 +35,7 @@ const mozilla::Module::ContractIDEntry kMypgpModuleContracts[] = {
 // entries: this is just a sample of how you'd do it.
 // @see nsICategoryManager for information on retrieving category data.
 static const mozilla::Module::CategoryEntry kMypgpModuleCategories[] = {
-  { NULL }
+  { nullptr }
 };
 
 static const mozilla::Module kMypgpModule = {

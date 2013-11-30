@@ -6,7 +6,7 @@ XPIDL	       ?= $(GECKO_SDK_PATH)/bin/xpidl
 HEADERPY	   ?= $(GECKO_SDK_PATH)/sdk/bin/header.py
 TYPELIBPY      ?= $(GECKO_SDK_PATH)/sdk/bin/typelib.py
 
-CXX	       ?= c++
+CXX	       = clang++
 
 XPIDLSRCS	= \
 		iMypgp.idl \
@@ -20,6 +20,7 @@ CPPSRCS		= \
 CPPFLAGS +=     -fexceptions		\
                 -fshort-wchar		\
 		-fPIC			\
+-std=c++11\
 		$(NULL)
 
 GECKO_CONFIG_INCLUDE = -include xpcom-config.h
@@ -54,7 +55,7 @@ GECKO_LDFLAGS =  -L$(GECKO_SDK_PATH)/bin \
 	$(CXX) -c $(CPPFLAGS) $(CXXFLAGS) $(GECKO_CONFIG_INCLUDE) $(GECKO_DEFINES) $(GECKO_INCLUDES) $<
 
 $(MODULE).so: $(XPIDLSRCS:%.idl=%.h) $(XPIDLSRCS:%.idl=%.xpt) $(CPPSRCS:%.cpp=%.o)
-	$(CXX) -o $@ -Wl,-soname=$(MODULE).so $(CPPSRCS:%.cpp=%.o) $(GECKO_LDFLAGS)
+	$(CXX) -o $@ -Wl,-rpath-link,$(GECKO_SDK_PATH)/bin,-soname=$(MODULE).so $(CPPSRCS:%.cpp=%.o) $(GECKO_LDFLAGS)
 	chmod +x $@
 
 build: $(MODULE).so

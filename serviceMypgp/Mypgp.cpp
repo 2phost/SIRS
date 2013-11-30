@@ -1,6 +1,5 @@
 #include "Mypgp.h"
 
-
 static NS_DEFINE_CID(kMsgComposeSecureCID, MYPGP_CID);
 
 
@@ -19,35 +18,77 @@ Mypgp::~Mypgp()
 /* void keygen (); */
 NS_IMETHODIMP Mypgp::Keygen()
 {
+	/* TODO CASO DO WINDOWS */
+	char pPrivateKey[sizeof(getenv ("HOME"))+17];
+	char pPublicKey[sizeof(getenv ("HOME"))+18];
+	strcpy(pPrivateKey, getenv ("HOME"));
+	strcpy(pPublicKey, getenv ("HOME"));
+	strncat (pPrivateKey, "/mypgpPrivate.key", 17);
+	strncat (pPublicKey, "/mypgpPublic.key", 16);
+
 	AutoSeededRandomPool rng;
 	
-	RSA::PrivateKey rsaPrivate;
-	rsaPrivate.GenerateRandomWithKeySize(rng, 3072);
+	InvertibleRSAFunction parameters;
+	parameters.GenerateRandomWithKeySize( rng, 1024 );
 
-	RSA::PublicKey rsaPublic(rsaPrivate);
+	RSA::PrivateKey rsaPrivate(parameters);
+	RSA::PublicKey rsaPublic(parameters);
 
-	//Save private key
-	ByteQueue queue;
-	rsaPrivate.Save(queue);
+	/* Save Keys */
+	rsaPublic.Save(
+        FileSink( pPublicKey, true /*binary*/ ).Ref()
+    );
 
-	FileSink file("private.key");
-
-	queue.CopyTo(file);
-	file.MessageEnd();
+	rsaPrivate.Save(
+        FileSink( pPrivateKey, true /*binary*/ ).Ref()
+    );
 
     return NS_OK;
 }
 
-/* string encrypt (in AString msg); */
-NS_IMETHODIMP Mypgp::Encrypt(const nsAString & msg, char * *_retval)
+/* string encrypt (in string msg); */
+NS_IMETHODIMP Mypgp::Encrypt(const char * msg, char * *_retval)
 {
-	//*_retval = msg;
-	//return NS_OK;
-	return NS_ERROR_NOT_IMPLEMENTED;
+	/* TODO E se as keys não existirem?  */
+	/* TODO CASO DO WINDOWS */
+	char pPrivateKey[sizeof(getenv ("HOME"))+17];
+	char pPublicKey[sizeof(getenv ("HOME"))+18];
+	strcpy(pPrivateKey, getenv ("HOME"));
+	strcpy(pPublicKey, getenv ("HOME"));
+	strncat (pPrivateKey, "/mypgpPrivate.key", 17);
+	strncat (pPublicKey, "/mypgpPublic.key", 16);
+
+	AutoSeededRandomPool rng;
+
+	RSA::PrivateKey rsaPrivate;
+	RSA::PublicKey rsaPublic;
+
+	rsaPublic.Load(
+        FileSource( pPublicKey, true, NULL, true /*binary*/ ).Ref()
+    );
+
+	rsaPrivate.Load(
+        FileSource( pPrivateKey, true, NULL, true /*binary*/ ).Ref()
+    );
+
+	RSAES_OAEP_SHA_Encryptor encryptor( rsaPublic );
+
+	// Create cipher text space
+	unsigned char plaintext[] = "A mãe do pommpeu";
+	//strcpy(plaintext,msg);
+	unsigned char *ciphertext = (unsigned char *)NS_Alloc(sizeof(unsigned char)*sizeof(plaintext));
+	//unsigned char ciphertext[sizeof(plaintext)];
+
+	encryptor.Encrypt( rng, plaintext, sizeof(msg), ciphertext);
+
+	*_retval = (char*)NS_Alloc(sizeof(char)*sizeof((char *)ciphertext));
+	strcpy(*_retval, (char *)ciphertext);
+	
+	return NS_OK;
 }
 
-/* string decrypt (in AString msg); */
-NS_IMETHODIMP Mypgp::Decrypt(const nsAString & msg, char * *_retval)
+/* string decrypt (in string msg); */
+NS_IMETHODIMP Mypgp::Decrypt(const char * msg, char * *_retval)
 {
     return NS_ERROR_NOT_IMPLEMENTED;
 }
