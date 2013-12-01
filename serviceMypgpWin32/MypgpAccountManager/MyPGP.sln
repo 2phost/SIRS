@@ -1,0 +1,29 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual C++ Express 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "nsIAccountManager", "test.vcxproj", "{92B3BEF2-3BEE-4B1B-9CF4-327497ED73DF}"
+	ProjectSection(ProjectDependencies) = postProject
+		{3FF6806D-5997-4CF7-B7B8-CA18883AB563} = {3FF6806D-5997-4CF7-B7B8-CA18883AB563}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "nsIAccount", "..\nsIAccount\nsIAccount.vcxproj", "{3FF6806D-5997-4CF7-B7B8-CA18883AB563}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{92B3BEF2-3BEE-4B1B-9CF4-327497ED73DF}.Debug|Win32.ActiveCfg = Debug|Win32
+		{92B3BEF2-3BEE-4B1B-9CF4-327497ED73DF}.Debug|Win32.Build.0 = Debug|Win32
+		{92B3BEF2-3BEE-4B1B-9CF4-327497ED73DF}.Release|Win32.ActiveCfg = Release|Win32
+		{92B3BEF2-3BEE-4B1B-9CF4-327497ED73DF}.Release|Win32.Build.0 = Release|Win32
+		{3FF6806D-5997-4CF7-B7B8-CA18883AB563}.Debug|Win32.ActiveCfg = Debug|Win32
+		{3FF6806D-5997-4CF7-B7B8-CA18883AB563}.Debug|Win32.Build.0 = Debug|Win32
+		{3FF6806D-5997-4CF7-B7B8-CA18883AB563}.Release|Win32.ActiveCfg = Release|Win32
+		{3FF6806D-5997-4CF7-B7B8-CA18883AB563}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

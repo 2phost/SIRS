@@ -1,0 +1,13 @@
+#include "nsISupports.idl"
+
+[scriptable, uuid(920b6f5c-223a-49b5-99f0-f3fb22530704)]
+interface IMypgpAccountManager : nsISupports
+{
+  attribute AString name;
+};
+
+[scriptable, uuid(77f6d54b-edea-4305-8524-fa6b2c93a221)]
+interface IMypgpAccount : nsISupports
+{
+  attribute AString name;
+};
