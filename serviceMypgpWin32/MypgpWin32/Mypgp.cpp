@@ -15,6 +15,12 @@ Mypgp::~Mypgp()
   /* destructor code */
 }
 
+/* void secureMsg (in string plaintext, in long lenght, in string keyPath); */
+NS_IMETHODIMP Mypgp::SecureMsg(const char * plaintext, int32_t lenght, const char * keyPath)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
 /* void keygen (in unsigned long type, in string path); */
 NS_IMETHODIMP Mypgp::Keygen(uint32_t type, const char * path)
 {
@@ -37,11 +43,11 @@ NS_IMETHODIMP Mypgp::Keygen(uint32_t type, const char * path)
 	RSA::PublicKey rsaPublic(parameters);
 
 	/* Save Keys */
-	char *publicPath = (char*)NS_Alloc(strlen(path)+16);
+	char *publicPath = (char*)NS_Alloc(sizeof(char) * (strlen(path)+16));
 	strncpy(publicPath, path, strlen(path));
 	strncat(publicPath, "mypgpPublic.key", 16);
 
-	char *privatePath = (char*)NS_Alloc(strlen(path)+17);
+	char *privatePath = (char*)NS_Alloc(sizeof(char) * (strlen(path)+17));
 	strncpy(privatePath, path, strlen(path));
 	strncat(privatePath, "mypgpPrivate.key", 17);
 
@@ -59,33 +65,31 @@ NS_IMETHODIMP Mypgp::Keygen(uint32_t type, const char * path)
     return NS_OK;
 }
 
-/* string sessionKeygen (); */
-NS_IMETHODIMP Mypgp::SessionKeygen(char * *_retval)
+/* string sessionKeygen (in long keySize, in long ivSiz); */
+NS_IMETHODIMP Mypgp::SessionKeygen(int32_t keySize, int32_t ivSize, char * *_retval)
 {
 	int i, j;
 
-	char *key = (char *)NS_Alloc(sizeof(unsigned char)*CryptoPP::CIPHER::DEFAULT_KEYLENGTH);
-	char *iv = (char *)NS_Alloc(sizeof(unsigned char)*CryptoPP::CIPHER::BLOCKSIZE);
+	/* Standard - CryptoPP::CIPHER::DEFAULT_KEYLENGTH */
+	char *key = (char *)NS_Alloc(sizeof(unsigned char)*keySize);
+	/* Standard - CryptoPP::CIPHER::BLOCKSIZE */
+	char *iv = (char *)NS_Alloc(sizeof(unsigned char)*ivSize);
 
 	AutoSeededRandomPool rnd;
 
 	// Generate a random key
-	rnd.GenerateBlock((unsigned char *)key, CryptoPP::CIPHER::DEFAULT_KEYLENGTH);
+	rnd.GenerateBlock((unsigned char *)key, keySize);
 
 	// Generate a random IV
-	rnd.GenerateBlock((unsigned char *)iv, CryptoPP::CIPHER::BLOCKSIZE);	
+	rnd.GenerateBlock((unsigned char *)iv, ivSize);	
 
-	*_retval = (char *)NS_Alloc(CryptoPP::CIPHER::DEFAULT_KEYLENGTH + CryptoPP::CIPHER::BLOCKSIZE +1);
-	for(i=0; i < CryptoPP::CIPHER::DEFAULT_KEYLENGTH; i++){
-		(*_retval)[i] = key[i] == '\0' ? '0' : key[i]; //TODO remover? está assim para se tornar string mas necessário?
+	*_retval = (char *)NS_Alloc(sizeof(unsigned char)*(keySize + ivSize));
+	for(i=0; i < ivSize; i++){
+		(*_retval)[i] = iv[i];
 	}
-	for(j=0; i < (CryptoPP::CIPHER::DEFAULT_KEYLENGTH + CryptoPP::CIPHER::BLOCKSIZE); i++, j++){
-		(*_retval)[i] = iv[j] == '\0' ? '1' : iv[j]; //TODO remover? está assim para se tornar string mas necessário?
+	for(i=0; i < keySize; i++){
+		(*_retval)[i] = key[i];
 	}
-	
-//TODO PARA DEBUG -- remover
-//	(*_retval)[CryptoPP::CIPHER::DEFAULT_KEYLENGTH + CryptoPP::CIPHER::BLOCKSIZE] = '\0';
-//	cout << strlen(*_retval);
 
 	NS_Free(key);
 	NS_Free(iv);

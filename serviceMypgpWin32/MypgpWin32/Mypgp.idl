@@ -12,12 +12,16 @@ interface IMypgp : nsISupports
 	const unsigned long LONG_KEY = 0;
 	const unsigned long SHORT_KEY = 1;
 
+    /**
+     * Creates an object with session key encrypted plus ciphertext
+     */
+    void secureMsg(in string plaintext, in long lenght, in string keyPath);
+
 	/**
 	 * Encrypt/Decrypt msgs from keysession
 	 */
 	string encrypt(in string plaintext, in string keysession);
 	string decrypt(in string cyphertext, in string keysession);
-
 
 	/**
 	 * Generate Private/Public Key
@@ -25,9 +29,9 @@ interface IMypgp : nsISupports
 	void keygen(in unsigned long type, in string path);
 
 	/**
-	 * Generate Session Key and encrypt it
+	 * Generate Session Key and return it
 	 */
-	string sessionKeygen();
+	string sessionKeygen(in long keySize, in long ivSize);
 	
 
 	long add(in long a, in long b);
