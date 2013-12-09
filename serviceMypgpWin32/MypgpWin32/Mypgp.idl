@@ -4,20 +4,32 @@
 interface IMypgp : nsISupports
 {
 	/**
-	 * Key pair
+	*  Create Types 
+	*
+	*  LONG_KEY    - 2046 bits key.
+	*  SHORT_KEY   - 1024 bits key.
+	*/
+	const unsigned long LONG_KEY = 0;
+	const unsigned long SHORT_KEY = 1;
+
+	/**
+	 * Encrypt/Decrypt msgs from keysession
 	 */
-	//readonly attribute AString privateKey;
-	//readonly attribute AString publicKey;
-	
+	string encrypt(in string plaintext, in string keysession);
+	string decrypt(in string cyphertext, in string keysession);
+
+
 	/**
 	 * Generate Private/Public Key
 	 */
-	void keygen();
+	void keygen(in unsigned long type, in string path);
 
-
-  	string encrypt(in string msg);
-	string decrypt(in string msg);
-	long add(in long a, in long b);
+	/**
+	 * Generate Session Key and encrypt it
+	 */
+	string sessionKeygen();
 	
+
+	long add(in long a, in long b);
 };
 	
