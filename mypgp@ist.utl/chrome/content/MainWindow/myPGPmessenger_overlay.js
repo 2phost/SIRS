@@ -1,5 +1,6 @@
 Components.utils.import("resource://mypgp/mypgpCommon.jsm");
 Components.utils.import("resource://mypgp/mypgpWindowManager.jsm");
+Components.utils.import("resource://mypgp/mypgpAccountManager.jsm");
 
 window.addEventListener("load", function(e){
 
@@ -8,9 +9,13 @@ window.addEventListener("load", function(e){
 	
 }, false);
 
+//TODO: Adicionar eventListener para fecho da página para fechar o AccountManager
 
 function openAbout(){
 	mypgpWindowManager.openAbout(window);
+
+	//TODO: remover
+	MypgpAccountManager.init();
 }
 
 
