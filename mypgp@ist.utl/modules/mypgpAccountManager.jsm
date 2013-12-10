@@ -31,7 +31,8 @@ const MYPGP_QUERY_ACCOUNTS_TABLE = "SELECT * FROM "+MYPGP_ACCOUNTS_TABLE_NAME+";
 var MypgpAccountManager = {
 	
 	mDBConn : null,
-	contacts: null,
+	mContacts: null,
+	mInitiated: false,
 
 	init : function()
 	{
@@ -39,34 +40,65 @@ var MypgpAccountManager = {
 		MypgpCommon.DEBUG_LOG("[mypgpAccountManager.jsm - init] Initiating the account manager from local db.");
 
 		let file = FileUtils.getFile("ProfD", [MypgpPreferences.default_folder, MYPGP_BD_NAME]);
+		this.mInitiated = !this.mInitiated; 
+		this.mContacts = new Array();
 		this.mDBConn = Services.storage.openDatabase(file);
-		
 		this.mDBConn.executeSimpleSQL(MYPGP_CREATE_ACCOUNTS_TABLE);
 		
-		/*
-		var statement = this.mDBConn.createStatement(MYPGP_QUERY_ACCOUNTS_TABLE);
-		statement.executeAsync({
-			handleResult: function(aResult){
-				for (let row = aResultSet.getNextRow(); row; row = aResultSet.getNextRow()) {
-					let value = row.getResultByName(KEY_ROWID);			
-					MypgpCommon.DEBUG_LOG("[mypgpAccountManager.jsm - init] Value is "+value);
-				}
-			},
+		let population_stmt = this.mDBConn.createStatement("SELECT * FROM "+MYPGP_ACCOUNTS_TABLE_NAME);
 			
-			handleError: function(aError){
-				MypgpCommon.ERROR_LOG("[mypgpAccountManager.jsm - init] Failed to load MyPGP contact cause, "+aError);
+		population_stmt.executeAsync({
+			handleResult: function(aResultSet) {
+	    		for (let row = aResultSet.getNextRow(); row; row = aResultSet.getNextRow()) {
+	      			let value = row.getResultByName(KEY_EMAIL);
+	      			MypgpAccountManager.mContacts.push(value);
+				}	
+  			},
+
+			handleError: function(aError) {
+				MypgpgCommon.ERROR_LOG("Error: " + aError.message);
 			},
 
-			handleCompletion: function(aReason){
+			handleCompletion: function(aReason) {
 				if (aReason != Components.interfaces.mozIStorageStatementCallback.REASON_FINISHED)
-      				MypgpCommon.ERROR_LOG("[mypgpAccountManager.jsm - init] Failed to load MyPGP contact cause, query was aborted or canceled");
-			},
+			  		MypgpCommon.ERROR_LOG("Query canceled or aborted!");
+			}
 		});
-		*/
+
 
 		MypgpCommon.DEBUG_LOG("[mypgpAccountManager.jsm - init] Initiation terminated.");
 	},
 
+	populate_mypgp_contacts: function()
+	{
+
+		if(this.mInitiated){
+			let population_stmt = this.mDBConn.createStatement("SELECT * FROM "+MYPGP_ACCOUNTS_TABLE_NAME);
+			
+			population_stmt.executeAsync({
+				handleResult: function(aResultSet) {
+		    		for (let row = aResultSet.getNextRow(); row; row = aResultSet.getNextRow()) {
+		      			let value = row.getResultByName(KEY_EMAIL);
+		      			MypgpAccountManager.mContacts.push(value);
+					}	
+	  			},
+
+				handleError: function(aError) {
+					MypgpgCommon.ERROR_LOG("Error: " + aError.message);
+				},
+
+				handleCompletion: function(aReason) {
+					if (aReason != Components.interfaces.mozIStorageStatementCallback.REASON_FINISHED)
+				  		MypgpCommon.ERROR_LOG("Query canceled or aborted!");
+				}
+			});
+
+		}else
+			MypgpCommon.ERROR_LOG("[mypgpAccountManager.jsm - populate_mypgp_contacts]\n"+
+				"The Account Manager was never initiated.");
+
+
+	},
 
 	test_populate : function()
 	{
@@ -106,7 +138,6 @@ var MypgpAccountManager = {
 
 		let query_stmt = this.mDBConn.createStatement("SELECT * FROM "+MYPGP_ACCOUNTS_TABLE_NAME);
 		
-		
 		query_stmt.executeAsync({
 			handleResult: function(aResultSet) {
 	    		for (let row = aResultSet.getNextRow(); row; row = aResultSet.getNextRow()) {
@@ -133,7 +164,18 @@ var MypgpAccountManager = {
 
 	/* DEBUGGING */
 	DEBUG_STATE : function(){
-		var debug_str = "";
-		MypgpCommon.DEBUG_LOG("[mypgpAccountManager - DEBUG]\n"+debug_str);
+		var debug_str;
+
+		if(this.mInitiated){
+
+			debug_str = "MyPGP Contacts <"+this.mContacts.length+">\n";
+
+			for(var i=0; i < this.mContacts.length; i++){
+				debug_str = debug_str + i+": "+this.mContacts[i]+";\n";
+			}	
+
+			MypgpCommon.DEBUG_LOG("[mypgpAccountManager - DEBUG]\n"+debug_str);
+		}else
+			MypgpCommon.ERROR_LOG("[mypgpAccountManager - DEBUG] The manager was never initiated.");
 	}
 };
