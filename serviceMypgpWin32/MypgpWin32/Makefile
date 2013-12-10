@@ -60,6 +60,9 @@ $(MODULE).so: $(XPIDLSRCS:%.idl=%.h) $(XPIDLSRCS:%.idl=%.xpt) $(CPPSRCS:%.cpp=%.
 
 build: $(MODULE).so
 
+teste:
+	$(HEADERPY) $(GECKO_INCLUDES) --cachedir=/tmp/ -o IMypgp.h Mypgp.idl
+
 install:
 	cp MyPGPSecure.so ../../mypgp\@ist.utl/components/
 	cp IMypgp.xpt ../../mypgp\@ist.utl/components/

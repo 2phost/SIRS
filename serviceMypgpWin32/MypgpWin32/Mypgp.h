@@ -3,14 +3,47 @@
 
 #include "IMypgp.h"
 
-/*****   OUTROS   ****/
-//#include "nsStringAPI.h"
+#include <iostream>
+using std::cout;
+
+/******************
+      Ciphers  
+******************/
+#define CIPHER AES
+// #define CIPHER Blowfish
+// #define CIPHER BTEA
+// #define CIPHER Camellia
+// #define CIPHER CAST128
+// #define CIPHER CAST256
+// #define CIPHER DES
+// #define CIPHER DES_EDE2
+// #define CIPHER DES_EDE3
+// #define CIPHER DES_XEX3
+// #define CIPHER GOST
+// #define CIPHER IDEA
+// #define CIPHER MARS
+// #define CIPHER RC2
+// #define CIPHER RC5
+// #define CIPHER RC6
+// #define CIPHER Rijndael
+// #define CIPHER SAFER_K
+// #define CIPHER SAFER_SK
+// #define CIPHER Serpent
+// #define CIPHER SHACAL2
+// #define CIPHER SHARK
+// #define CIPHER SKIPJACK
+// #define CIPHER ThreeWay
+// #define CIPHER Twofish
+// #define CIPHER XTEA
 
 /******************
     CRYPT INCL     
 ******************/
-#include <iostream>
-using std::cout;
+#include "cryptopp/modes.h"
+using CryptoPP::CFB_Mode;
+
+#include "cryptopp/aes.h"
+using CryptoPP::AES;
 
 #include "cryptopp/rsa.h"
 using CryptoPP::RSA;

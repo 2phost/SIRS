@@ -15,81 +15,141 @@ Mypgp::~Mypgp()
   /* destructor code */
 }
 
-/* void keygen (); */
-NS_IMETHODIMP Mypgp::Keygen()
+/* void secureMsg (in string plaintext, in long lenght, in string keyPath); */
+NS_IMETHODIMP Mypgp::SecureMsg(const char * plaintext, int32_t lenght, const char * keyPath)
 {
-	/* TODO CASO DO WINDOWS */
-	char pPrivateKey[sizeof(getenv ("HOME"))+17];
-	char pPublicKey[sizeof(getenv ("HOME"))+18];
-	strcpy(pPrivateKey, getenv ("HOME"));
-	strcpy(pPublicKey, getenv ("HOME"));
-	strncat (pPrivateKey, "/mypgpPrivate.key", 17);
-	strncat (pPublicKey, "/mypgpPublic.key", 16);
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* void keygen (in unsigned long type, in string path); */
+NS_IMETHODIMP Mypgp::Keygen(uint32_t type, const char * path)
+{
+	int keysize;
+
+	if(type == LONG_KEY){
+		keysize = 2046;
+	} else if (type == SHORT_KEY) {
+		keysize = 1024;
+	} else {
+		return NS_ERROR_FAILURE;
+	}
 
 	AutoSeededRandomPool rng;
 	
 	InvertibleRSAFunction parameters;
-	parameters.GenerateRandomWithKeySize( rng, 1024 );
+	parameters.GenerateRandomWithKeySize( rng, keysize );
 
 	RSA::PrivateKey rsaPrivate(parameters);
 	RSA::PublicKey rsaPublic(parameters);
 
 	/* Save Keys */
+	char *publicPath = (char*)NS_Alloc(sizeof(char) * (strlen(path)+16));
+	strncpy(publicPath, path, strlen(path));
+	strncat(publicPath, "mypgpPublic.key", 16);
+
+	char *privatePath = (char*)NS_Alloc(sizeof(char) * (strlen(path)+17));
+	strncpy(privatePath, path, strlen(path));
+	strncat(privatePath, "mypgpPrivate.key", 17);
+
 	rsaPublic.Save(
-        FileSink( pPublicKey, true /*binary*/ ).Ref()
+        FileSink( publicPath, true /*binary*/ ).Ref()
     );
 
 	rsaPrivate.Save(
-        FileSink( pPrivateKey, true /*binary*/ ).Ref()
+        FileSink( privatePath, true /*binary*/ ).Ref()
     );
 
+	NS_Free(publicPath);
+	NS_Free(privatePath);	
 
     return NS_OK;
 }
 
-/* string encrypt (in string msg); */
-NS_IMETHODIMP Mypgp::Encrypt(const char * msg, char * *_retval)
+/* string sessionKeygen (in long keySize, in long ivSiz); */
+NS_IMETHODIMP Mypgp::SessionKeygen(int32_t keySize, int32_t ivSize, char * *_retval)
 {
-	/* TODO E se as keys não existirem?  */
-	/* TODO CASO DO WINDOWS */
-	char pPrivateKey[sizeof(getenv ("HOME"))+17];
-	char pPublicKey[sizeof(getenv ("HOME"))+18];
-	strcpy(pPrivateKey, getenv ("HOME"));
-	strcpy(pPublicKey, getenv ("HOME"));
-	strncat (pPrivateKey, "/mypgpPrivate.key", 17);
-	strncat (pPublicKey, "/mypgpPublic.key", 16);
+	int i, j;
 
-	AutoSeededRandomPool rng;
+	/* Standard - CryptoPP::CIPHER::DEFAULT_KEYLENGTH */
+	char *key = (char *)NS_Alloc(sizeof(unsigned char)*keySize);
+	/* Standard - CryptoPP::CIPHER::BLOCKSIZE */
+	char *iv = (char *)NS_Alloc(sizeof(unsigned char)*ivSize);
 
-	RSA::PrivateKey rsaPrivate;
-	RSA::PublicKey rsaPublic;
+	AutoSeededRandomPool rnd;
 
-	rsaPublic.Load(
-        FileSource( pPublicKey, true, NULL, true /*binary*/ ).Ref()
-    );
+	// Generate a random key
+	rnd.GenerateBlock((unsigned char *)key, keySize);
 
-	rsaPrivate.Load(
-        FileSource( pPrivateKey, true, NULL, true /*binary*/ ).Ref()
-    );
+	// Generate a random IV
+	rnd.GenerateBlock((unsigned char *)iv, ivSize);	
 
-	RSAES_OAEP_SHA_Encryptor encryptor( rsaPublic );
+	*_retval = (char *)NS_Alloc(sizeof(unsigned char)*(keySize + ivSize));
+	for(i=0; i < ivSize; i++){
+		(*_retval)[i] = iv[i];
+	}
+	for(i=0; i < keySize; i++){
+		(*_retval)[i] = key[i];
+	}
 
-	// Create cipher text space
-	unsigned char plaintext[] = "A mãe do pommpeu";
-	//strcpy(plaintext,msg);
-	unsigned char *ciphertext = (unsigned char *)NS_Alloc(sizeof(unsigned char)*sizeof(plaintext));
-	//unsigned char ciphertext[sizeof(plaintext)];
+	NS_Free(key);
+	NS_Free(iv);
+    return NS_OK;
+}
 
-	encryptor.Encrypt( rng, plaintext, sizeof(msg), ciphertext);
-
-	*_retval = (char*)NS_Alloc(sizeof(char)*sizeof((char *)ciphertext));
-	strcpy(*_retval, (char *)ciphertext);
+/* string encrypt (in string plaintext, in string keysession); */
+NS_IMETHODIMP Mypgp::Encrypt(const char * plaintext, const char * keysession, char * *_retval)
+{
+	int i,j;
 	
+	/* Get key and iv from keysession*/
+	unsigned char key[CryptoPP::CIPHER::DEFAULT_KEYLENGTH];
+	unsigned char iv[CryptoPP::CIPHER::BLOCKSIZE];
+
+	for(i=0; i<=CryptoPP::CIPHER::DEFAULT_KEYLENGTH; i++){
+		key[i] = (unsigned char)keysession[i];
+	}
+	for(j=0; i<CryptoPP::CIPHER::DEFAULT_KEYLENGTH + CryptoPP::CIPHER::BLOCKSIZE; i++, j++){
+		iv[j] = (unsigned char)keysession[i];
+	}	
+
+	char *cypherText = (char *)NS_Alloc(strlen(plaintext));
+	// Encryptor
+	CFB_Mode<AES>::Encryption cfbEncryption(key, sizeof(key), iv);
+	cfbEncryption.ProcessData((unsigned char *)cypherText, (unsigned char *)plaintext, strlen(plaintext));
+
+	//TODO DEBUG
+	*_retval = (char *)NS_Alloc(strlen(plaintext));
+	for(int i = 0; i< strlen(plaintext); i++){
+		(*_retval)[i] = cypherText[i];
+	}
+	
+	//converter para string
+	char *cypher = (char *)NS_Alloc(strlen(plaintext)+1);
+	for(int i=0; i<strlen(plaintext); i++){
+		cypher[i] = cypherText[i];
+	}
+	cypher[strlen(plaintext)] = '\0';
+
+	cout << plaintext << '\n' << cypher << '\n' << strlen(cypher) << '\n' << strlen(plaintext) << '\n';     
+
+	// Decrypt teste
+	char *teste = (char *)NS_Alloc(strlen(plaintext));
+	CFB_Mode<AES>::Decryption cfbDecryption(key, sizeof(key), iv);
+	cfbDecryption.ProcessData((unsigned char *)teste, (unsigned char *)cypherText, strlen(plaintext));
+
+	//converter para string
+	char *teste2 = (char *)NS_Alloc(strlen(plaintext)+1);
+	for(int i=0; i<strlen(plaintext); i++){
+		teste2[i] = teste[i];
+	}
+	teste2[strlen(plaintext)] = '\0';
+
+	cout << "RESULTADO " << teste2;
 	return NS_OK;
 }
 
-/* string decrypt (in string msg); */
-NS_IMETHODIMP Mypgp::Decrypt(const char * msg, char * *_retval)
+/* string decrypt (in string cyphertext, in string keysession); */
+NS_IMETHODIMP Mypgp::Decrypt(const char * cyphertext, const char * keysession, char * *_retval)
 {
     return NS_ERROR_NOT_IMPLEMENTED;
 }
