@@ -4,8 +4,10 @@ Components.utils.import("resource://mypgp/mypgpAccountManager.jsm");
 
 window.addEventListener("load", function(e){
 
-	var toolbar = document.getElementById("mail-bar3");	
-	toolbar.insertBefore(document.getElementById("mypgp_decypher_btn"), document.getElementById("button-tag"));
+
+	//TODO: inserir botao para descifrar mensagens
+	//var toolbar = document.getElementById("mail-bar3");	
+	//toolbar.insertBefore(document.getElementById("mypgp_decypher_btn"), document.getElementById("button-tag"));
 	
 	MypgpAccountManager.init();
 

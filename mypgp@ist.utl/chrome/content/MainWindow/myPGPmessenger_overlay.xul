@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <!DOCTYPE window SYSTEM "chrome://mypgp/locale/mypgp.dtd">
-<overlay id="myPGPmessenger_overlay.xul" 
+<overlay id="myPGPmessenger_overlay" 
 	xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
-	<script type="application/javascript" src="chrome://mypgp/content/MainWindow/myPGPmessenger_overlay.js"/>
+	<script type="application/x-javascript" src="chrome://mypgp/content/MainWindow/myPGPmessenger_overlay.js"/>
 
 	<menubar id="mail-menubar">
 		<menu id="nav-mypgp" label="MyPGP" insertbefore="tasksMenu">
