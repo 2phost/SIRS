@@ -7,15 +7,18 @@ window.addEventListener("load", function(e){
 	var toolbar = document.getElementById("mail-bar3");	
 	toolbar.insertBefore(document.getElementById("mypgp_decypher_btn"), document.getElementById("button-tag"));
 	
+	MypgpAccountManager.init();
+
 }, false);
 
-//TODO: Adicionar eventListener para fecho da página para fechar o AccountManager
+window.addEventListener("unload", function(e){
+
+	MypgpAccountManager.terminate();
+
+}, false);
 
 function openAbout(){
 	mypgpWindowManager.openAbout(window);
-
-	//TODO: remover
-	MypgpAccountManager.init();
 }
 
 
