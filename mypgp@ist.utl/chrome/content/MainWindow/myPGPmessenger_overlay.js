@@ -1,11 +1,13 @@
 Components.utils.import("resource://mypgp/mypgpCommon.jsm");
 Components.utils.import("resource://mypgp/mypgpWindowManager.jsm");
 Components.utils.import("resource://mypgp/mypgpAccountManager.jsm");
+Components.utils.import("resource://mypgp/mypgpFileManager.jsm");
 
 window.addEventListener("load", function(e){
 	
 	MypgpAccountManager.init();
-
+	mypgpFileManager.init();
+	
 }, false);
 
 window.addEventListener("unload", function(e){

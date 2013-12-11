@@ -18,8 +18,10 @@ var input_contactsChildren = null;
 var input_focusedContact_username = null;
 var input_focusedContact_email = null;
 var input_focusedContact_isTrusted = null;
+var input_key_value = null;
 var input_save_button = null;
 var input_cancel_button = null;
+
 
 <!-- Tree Vars -->
 var treeEmailColId = "email_col";
@@ -55,14 +57,18 @@ var broadcasterHandler = {
 var focusedContact = {
 	username: 	null,
 	email: 		null,
-	key: 		null,
+	pubKeyId: 	null,
+	pubKeyFile: null,
 	isTrusted: 	false,
-	isChanged: 	false,
+	isChanged: 	{ modified: false, trust : false, pubKey: false },
 
-	focus: function(username, email)
+	focus: function(username, email, isTrusted, pubKeyId)
 	{
 		this.username = username;
 		this.email = email;
+		this.isTrusted = isTrusted;
+		this.pubKeyId = pubKeyId;
+		//TODO: load key file
 		broadcasterHandler.focusContact();
 	},
 
@@ -70,13 +76,15 @@ var focusedContact = {
 	{
 		this.username = null;
 		this.email = null;
-		this.key = null;
+		this.pubKeyId = null;
+		this.pubKeyFile = null;
+		this.isTrusted = false;
+		this.isChanged = { modified: false, trust : false, pubKey: false };
 	},
 
 	selectKey: function(key)
 	{
-		this.key = key;
-		broadcasterHandler.selectKey();
+	
 	}
 }
 
@@ -85,15 +93,15 @@ window.addEventListener("load", function(){
 	broadcasterHandler.init();
 	
 	<!-- Initialize component vars -->
-	input_contacts = document.getElementById("cntmng_tree");
-	input_contactsChildren = document.getElementById("cntmng_tree_children");
+	input_contacts 					= document.getElementById("cntmng_tree");
+	input_contactsChildren 			= document.getElementById("cntmng_tree_children");
 	input_focusedContact_username = document.getElementById("focusContact_username");
-	input_focusedContact_email = document.getElementById("focusContact_email");
-	input_focusedContact_isTrusted =document.getElementById("focusContact_isTrusted");
-	input_save_button = document.getElementById("cntmng_save_btn");
-	input_cancel_button = document.getElementById("cntmng_cancel_btn");
+	input_focusedContact_email 	= document.getElementById("focusContact_email");
+	input_focusedContact_isTrusted= document.getElementById("focusContact_isTrusted");
+	input_key_value 					= document.getElementById("key_value");
+	input_save_button 				= document.getElementById("cntmng_save_btn");
+	input_cancel_button 				= document.getElementById("cntmng_cancel_btn");
 
-	
 	<!-- Initialize components event listeners -->
 	input_contacts.addEventListener("click", focusDetailedContact);
 
@@ -117,7 +125,6 @@ window.addEventListener("load", function(){
 
 	 		input_contactsChildren.appendChild(treeItem);
  	}
-
 }, false);
 
 function focusDetailedContact(event){
@@ -129,23 +136,30 @@ function focusDetailedContact(event){
 	  	event.stopPropagation();
 	}
 
+	//Clear the contact info
+	focusedContact.unfocus();
+
   	var tree = input_contacts;
 	var email=tree.view.getCellText(tree.currentIndex, tree.columns.getNamedColumn(treeEmailColId));
 
 	var mypgp_contact = MypgpAccountManager.getContactByEmail(email);
 
-	input_focusedContact_username.value=mypgp_contact.name;
+	focusedContact.focus(
+		mypgp_contact.name,
+		mypgp_contact.email,
+		mypgp_contact.isTrusted,
+		mypgp_contact.pubKeyId);
+
+	input_focusedContact_username.value=focusedContact.username;
 	input_focusedContact_username.disabled=false;
 
-	input_focusedContact_email.value=email;
+	input_focusedContact_email.value=focusedContact.email;
 	input_focusedContact_email.disabled=false;
 
-	input_focusedContact_isTrusted.checked = mypgp_contact.isTrusted;
+	input_focusedContact_isTrusted.checked = focusedContact.isTrusted;
 	input_focusedContact_isTrusted.disabled=false;
 
-	focusedContact.focus(mypgp_contact.name, mypgp_contact.email);
-
-	/* TODO carregar as chaves validas e revogadas conhecidas deste utilizador */
+	//TODO: load the key content to the key_value textbox
 
 }
 
@@ -153,7 +167,7 @@ function toggleIsChanged(){
 
 	focusedContact.isChanged = !focusedContact.isChanged;
 
-	if(focusedContact.isChanged){
+	if(focusedContact.isChanged.modified){
 		input_save_button.disabled=false;
 		input_cancel_button.disabled=false;
 	}else{
@@ -171,7 +185,8 @@ function saveChanges(){
 
 	MypgpCommon.DEBUG_LOG("(myPGPContactManager.js : saveChanges) TODO must be implemented\n");
 
-	MypgpAccountManager.updateExistingContact(focusedContact.email, focusedContact.isTrusted, focusedContact.pubKeyId);
+	mypgpFileManager.storeKeyAsFile(focusedContact.email, focusedContact.pubKeyFile);
+	//MypgpAccountManager.updateExistingContact(focusedContact.email, focusedContact.isTrusted, focusedContact.pubKeyId);
 
 	focusDetailedContact();
 }
@@ -213,8 +228,6 @@ function populateFocusedContactKeys(email){
 	MypgpCommon.DEBUG_LOG("(myPGPContactManager.js : populateFocusedContactKeys) TODO must be implemented\n");
 }
 
-
-
 /*
  * Menu Functions
  */
@@ -230,29 +243,18 @@ function importKey(){
 	file = mypgpWindowManager.openFileBrowsingWindow(window, "Importar Chave", false, null);
 	
 	if(file != null){
-		MypgpCommon.DEBUG_LOG("(myPGPContactManager.js : importKey) "+file.path+"\n");
-
-		var keyItem = document.createElement("treeitem");
- 		var keyRow = document.createElement("treerow");
- 		var keyCell_Key = document.createElement("treecell");
- 		var keyCell_Validity = document.createElement("treecell");
- 		
- 		keyCell_Key.setAttribute("label", "TODO: key");
- 		keyCell_Key.setAttribute("value", file);
- 		keyCell_Validity.setAttribute("label", "TODO: key validity");
- 		keyCell_Validity.setAttribute("value", file);
-
-		keyRow.appendChild(keyCell_Validity);
- 		keyRow.appendChild(keyCell_Key);
 		
- 		keyItem.setAttribute("value", file);
- 		keyItem.setAttribute("id", file.path);
- 		keyItem.setAttribute("flex", 1);
- 		keyItem.appendChild(keyRow);
- 		
- 		input_focusedContact_Keys.appendChild(keyItem);
+		var file_content = mypgpFileManager.readDataFromFile(file);
+		input_key_value.value = "<"+file.leafName+">\n"+file_content;
 
- 		MypgpCommon.DEBUG_LOG("(myPGPContactManager.js : importKey) Key added\n");
+		focusedContact.pubKeyId = file.leafName;
+		focusedContact.pubKeyFile = file;
+
+		focusedContact.isChanged.modified = true;
+		focusedContact.isChanged.pubKey = true;
+
+ 		MypgpCommon.DEBUG_LOG("[myPGPContactManager.js : importKey]\n"+
+ 			"Key added");
 	}
 }
 

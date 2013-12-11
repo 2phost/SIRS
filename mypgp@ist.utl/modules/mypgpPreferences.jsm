@@ -7,10 +7,9 @@ var EXPORTED_SYMBOLS = [ "MypgpPreferences" ];
 /* Default Values */
 const KEY_EXT = ".key";
 
-
 var MypgpPreferences = {
 
 	default_folder: "myPGP",
-	default_keys : "keys"
+	keys_folder : "keys"
 
 };

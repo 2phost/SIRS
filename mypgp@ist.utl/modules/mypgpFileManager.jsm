@@ -5,12 +5,14 @@
 */
 Components.utils.import("resource://gre/modules/FileUtils.jsm");
 Components.utils.import("resource://gre/modules/NetUtil.jsm");
-Components.utils.import("resource://mypgp/mypgpCommon.jsm");
 
+Components.utils.import("resource://mypgp/mypgpCommon.jsm");
+Components.utils.import("resource://mypgp/mypgpPreferences.jsm");
 
 var EXPORTED_SYMBOLS = [ "mypgpFileManager" ];
 
 const TMP_DIR 		= "TmpD";
+const PROFILE_DIR	= "ProfD";
 const MYPGP_DIR 	= "myPGP";
 const PREF_EXT 	= ".key";
 
@@ -27,9 +29,9 @@ const nsIProperties						= Components.interfaces.nsIProperties;
 const nsIScriptableUnicodeConverter = Components.interfaces.nsIScriptableUnicodeConverter;
 
 /*THUNDERBIRD Components*/
-const tLocalFile = Components.classes[LOCAL_FILE_CONTRACT].createInstance(nsILocalFile);
-const tDirectoryService = Components.classes[DIRECTORY_SERVICE_CONTRACT].getService();
-const tDirectoryServiceProperties = tDirectoryService.QueryInterface(nsIProperties);
+const tLocalFile 							= Components.classes[LOCAL_FILE_CONTRACT].createInstance(nsILocalFile);
+const tDirectoryService 				= Components.classes[DIRECTORY_SERVICE_CONTRACT].getService();
+const tDirectoryServiceProperties 	= tDirectoryService.QueryInterface(nsIProperties);
 
 /* General Utils */
 var fileOutputStream = null;
@@ -73,6 +75,56 @@ var mypgpFileManager = {
 	},
 
 	/**
+	*
+	*/
+	storeKeyAsFile: function(email, file)
+	{
+		
+
+		var keyFile = null;
+		//var parsedEmail = email.replace(/\./g, '_');
+
+		let keyDir = FileUtils.getFile(PROFILE_DIR,
+			[MypgpPreferences.default_folder,
+			MypgpPreferences.keys_folder]);
+
+		file.copyTo(keyDir, email+PREF_EXT);
+
+	},
+
+	getKeyAsFile: function()
+	{
+
+	},
+
+	/**
+	 * readDataFromFile:
+	 * @param {nsIFile} file
+	 */
+	readDataFromFile: function(file){
+
+		var data = "";
+		var fstream = Components.classes["@mozilla.org/network/file-input-stream;1"].
+		     createInstance(Components.interfaces.nsIFileInputStream);
+		var cstream = Components.classes["@mozilla.org/intl/converter-input-stream;1"].
+		     createInstance(Components.interfaces.nsIConverterInputStream);
+		fstream.init(file, -1, 0, 0);
+		cstream.init(fstream, "UTF-8", 0, 0); // you can use another encoding here if you wish
+
+		let (str = {}) {
+			let read = 0;
+			do { 
+				read = cstream.readString(0xffffffff, str); // read as much as we can and put it in str.value
+				data += str.value;
+			} while (read != 0);
+		}
+		
+		cstream.close(); // this closes fstream
+
+		return data;
+	},
+
+	/**
 	 *
 	*/
 	getTmpDirectory: function ()
@@ -93,9 +145,6 @@ var mypgpFileManager = {
 
 	createTmpFile: function (title, data)
 	{
-		
-		this.init();
-
 		var tmpFile = null;
 
 		tmpFile = FileUtils.getFile(TMP_DIR, [MYPGP_DIR , title+PREF_EXT]);
