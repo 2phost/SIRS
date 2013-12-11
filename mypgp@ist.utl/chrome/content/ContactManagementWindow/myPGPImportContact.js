@@ -1,9 +1,10 @@
 Components.utils.import("resource://mypgp/mypgpCommon.jsm");
 Components.utils.import("resource://mypgp/mypgpFileManager.jsm");
 Components.utils.import("resource://mypgp/mypgpWindowManager.jsm");
-Components.utils.import("resource://mypgp/mypgpAccountManager.jsm");
 
 <!-- Local Vars -->
+var addr_books = [];
+var addr_book = null;
 var addr_contacts = [];
 
 
@@ -18,15 +19,19 @@ var tAllAddressBooks 		= tAbManager.directories;
 
 <!-- Component Vars -->
 var input_contacts = null;
+var input_addrbook = null;
 var input_contactsChildren = null;
 var input_focusedContact_username = null;
 var input_focusedContact_email = null;
 var input_focusedContact_isTrusted = null;
 var input_save_button = null;
 var input_cancel_button = null;
+var input_focusedContact_Keys = null;
+var input_focusedContact_RevokedKeys = null;
 
 <!-- Tree Vars -->
 var treeEmailColId = "email_col";
+var treeUsernameColId = "username_col";
 
 <!-- Broadcasters Handlers -->
 var broadcasterHandler = {
@@ -54,6 +59,23 @@ var broadcasterHandler = {
 		this.BcNoKeySelected.setAttribute("disabled", "true");
 	}
 };
+
+var docElementsManager = {
+
+	focusedContactKeyTree: 							null,
+	focusedContactKeyTree_children: 				null,
+	focusedContactRevokedKeyTree: 				null,
+	focusedContactRevokedKeyTree_children: 	null,
+
+	init: function ()
+	{
+		this.focusedContactKeyTree = document.getElementById("keys_tree");
+		this.focusedContactKeyTree_children = document.getElementById("keys_tree_children");
+		this.focusedContactRevokedKeys = document.getElementById("revokedkeys_tree");
+		this.focusedContactRevokedKeys_children = document.getElementById("revokedkeys_tree_children");
+	}
+
+}
 
 var focusedContact = {
 	username: 	null,
@@ -86,41 +108,45 @@ var focusedContact = {
 window.addEventListener("load", function(){
 
 	broadcasterHandler.init();
-	
+	docElementsManager.init();
+
 	<!-- Initialize component vars -->
 	input_contacts = document.getElementById("cntmng_tree");
 	input_contactsChildren = document.getElementById("cntmng_tree_children");
+	input_addrbook = document.getElementById("cntmng_addrbook");
 	input_focusedContact_username = document.getElementById("focusContact_username");
 	input_focusedContact_email = document.getElementById("focusContact_email");
 	input_focusedContact_isTrusted =document.getElementById("focusContact_isTrusted");
 	input_save_button = document.getElementById("cntmng_save_btn");
 	input_cancel_button = document.getElementById("cntmng_cancel_btn");
+	input_focusedContact_Keys = document.getElementById("keys_tree_children");
+	input_focusedContact_RevokedKeys = document.getElementById("revokedkeys_tree_children");
 
-	
 	<!-- Initialize components event listeners -->
 	input_contacts.addEventListener("click", focusDetailedContact);
+	input_addrbook.addEventListener("select", populateContactList);
 
-	<!-- PopulateContactList -->
-	for(var i=0; i<MypgpAccountManager.mContacts.length; i++){
-	 		
-	 		var treeItem = document.createElement("treeitem");
-	 		var treeRow = document.createElement("treerow");
-	 		var treeCell_username = document.createElement("treecell");
-	 		var treeCell_email = document.createElement("treecell");
-	 		
-	 		treeCell_email.setAttribute("label", MypgpAccountManager.mContacts[i].email);
+	docElementsManager.focusedContactKeyTree.addEventListener("select", function(){
+		var t = docElementsManager.focusedContactKeyTree;
+		var key = t.view.getCellValue(t.currentIndex, t.columns.getColumnAt(0));
+		focusedContact.selectKey(key);
+	});
 
-	 		treeRow.appendChild(treeCell_email);
-			treeRow.appendChild(treeCell_username);
+	<!-- Populate Address Books -->
+	while (tAllAddressBooks.hasMoreElements()) {  
+  		let addressBook = tAllAddressBooks.getNext().QueryInterface(nsIAbDirectory);
+  		if(addressBook != null){ <!--TODO: testar se é mail list tambem -->
+  			addr_books.push(addressBook);
+  		}
+  	}
 
-	 		treeItem.setAttribute("value", MypgpAccountManager.mContacts[i]);
-	 		treeItem.appendChild(treeRow);
-	 		treeItem.setAttribute("id", MypgpAccountManager.mContacts[i].email);
+  	for(var i=0; i < addr_books.length; i++){
+  		input_addrbook.appendItem(addr_books[i].dirName, addr_books[i].URI, addr_books[i].description);
+  	}
 
-	 		input_contactsChildren.appendChild(treeItem);
- 	}
+  	input_addrbook.selectedItem=addr_books[0];
 
-}, false);
+}, null);
 
 function populateContactList(){
 	MypgpCommon.DEBUG_LOG("(ContactManager) Address book selected : "+input_addrbook.selectedItem.label+"populating...\n");
@@ -236,17 +262,19 @@ function focusDetailedContact(event){
     	return;
   	}
 
- 	// do not propagate double clicks
+  	
+
+  	// do not propagate double clicks
   	event.stopPropagation();
   	var tree = input_contacts;
 
-	//var username=tree.view.getCellText(tree.currentIndex, tree.columns.getNamedColumn(treeUsernameColId));
+	var username=tree.view.getCellText(tree.currentIndex, tree.columns.getNamedColumn(treeUsernameColId));
 	var email=tree.view.getCellText(tree.currentIndex, tree.columns.getNamedColumn(treeEmailColId));
 
-	//input_focusedContact_isTrusted.disabled=false;
+	input_focusedContact_isTrusted.disabled=false;
 
-	//input_focusedContact_username.value=username;
-	//input_focusedContact_username.disabled=false;
+	input_focusedContact_username.value=username;
+	input_focusedContact_username.disabled=false;
 
 	input_focusedContact_email.value=email;
 	input_focusedContact_email.disabled=false;
@@ -271,6 +299,8 @@ function importKey(){
 
 	file = mypgpWindowManager.openFileBrowsingWindow(window, "Importar Chave", false, null);
 	
+
+
 	if(file != null){
 		MypgpCommon.DEBUG_LOG("(myPGPContactManager.js : importKey) "+file.path+"\n");
 

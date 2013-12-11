@@ -18,6 +18,7 @@
 <!ENTITY mypgp.label.edit					"Editar">
 <!ENTITY mypgp.label.view					"Ver">
 <!ENTITY mypgp.label.account				"Conta">
+<!ENTITY mypgp.label.contacts				"Contactos">
 <!ENTITY mypgp.label.open					"Abrir">
 <!ENTITY mypgp.label.close					"Fechar">
 <!ENTITY mypgp.label.create				"Criar">
@@ -31,6 +32,7 @@
 <!ENTITY mypgp.label.profile				"Perfil">
 <!ENTITY mypgp.label.email					"Email">
 <!ENTITY mypgp.label.key 					"Chave">
+<!ENTITY mypgp.label.public_key			"Chave Pública">
 <!ENTITY mypgp.label.validity				"Validade">
 <!ENTITY mypgp.label.size					"Tamanho">	
 <!ENTITY mypgp.label.revoked				"Revogada">
@@ -60,6 +62,7 @@
 <!ENTITY mypgp.keymng.invalidcreation	"Impossível criar a chave, esta deve ter uma duração associada ou deve ter duração infinita.">
 
 <!-- Contact Management -->
+<!ENTITY mypgp.cntmng.importcontacts	"Importar Contactos">
 <!ENTITY mypgp.cntmng.importkeys				"Importar chave de ficheiro">
 <!ENTITY mypgp.cntmng.exportkeys				"Exportar chave para ficheiro">
 <!ENTITY mypgp.cntmng.emailkeys				"Enviar chave por email">

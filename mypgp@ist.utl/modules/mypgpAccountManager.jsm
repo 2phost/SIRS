@@ -15,18 +15,18 @@ const MYPGP_BD_NAME = "mypgp_accounts.sqlite";
 
 const MYPGP_ACCOUNTS_TABLE_NAME = "MYPGP_ACCOUNTS";
 const KEY_ROWID 	= "identifier";
+const KEY_NAME		= "name";
 const KEY_EMAIL 	= "email";
 const KEY_ISTRUSTED = "isTrusted";
 const KEY_PUBKEY_ID = "pubKeyId";
-const KEY_PUBKEY 	= "pubkey";
 
 const MYPGP_CREATE_ACCOUNTS_TABLE = 
 	"CREATE TABLE IF NOT EXISTS "+MYPGP_ACCOUNTS_TABLE_NAME+" "+
 	"( "+ KEY_ROWID +" INTEGER PRIMARY KEY AUTOINCREMENT"+
+	", "+ KEY_NAME + " TEXT"+	
 	", "+ KEY_EMAIL + " TEXT NOT NULL UNIQUE"+
 	", "+ KEY_ISTRUSTED + " INTEGER NOT NULL DEFAULT 0" +
 	", "+ KEY_PUBKEY_ID + " TEXT UNIQUE"+
-	//KEY_PUBKEY + " TEXT UNIQUE
 	")";
 
 const MYPGP_QUERY_ACCOUNTS_TABLE = "SELECT * FROM "+MYPGP_ACCOUNTS_TABLE_NAME+";"
@@ -46,17 +46,21 @@ var MypgpAccountManager = {
 		this.mInitiated = !this.mInitiated; 
 		this.mContacts = new Array();
 		this.mDBConn = Services.storage.openDatabase(file);
+		
 		this.mDBConn.executeSimpleSQL(MYPGP_CREATE_ACCOUNTS_TABLE);
+		
 		
 		let population_stmt = this.mDBConn.createStatement("SELECT * FROM "+MYPGP_ACCOUNTS_TABLE_NAME);
 			
 		population_stmt.executeAsync({
 			handleResult: function(aResultSet) {
 	    		for (let row = aResultSet.getNextRow(); row; row = aResultSet.getNextRow()) {
-	      			let value = 
-	      				{ email: 		row.getResultByName(KEY_EMAIL),
-	      				  isTrusted: 	row.getResultByName(KEY_ISTRUSTED) == 0 ? false : true,
-	      				  pubKeyId: 	row.getResultByName(KEY_PUBKEY_ID)};
+	      			let value = { 
+      					name: 		row.getResultByName(KEY_NAME),
+      					email: 		row.getResultByName(KEY_EMAIL),
+      				  	isTrusted: 	row.getResultByName(KEY_ISTRUSTED) == 0 ? false : true,
+      				  	pubKeyId: 	row.getResultByName(KEY_PUBKEY_ID)
+					};
 
 	      			MypgpAccountManager.mContacts.push(value);
 				}	
@@ -75,14 +79,15 @@ var MypgpAccountManager = {
 			}
 		});
 
-
 		MypgpCommon.DEBUG_LOG("[mypgpAccountManager.jsm - init] Initiation terminated.");
 	},
 
-	addNewContact : function(email, isTrusted, pubKeyId){
+	
+	addNewContact : function(name, email, isTrusted, pubKeyId)
+	{
 	
 		MypgpCommon.DEBUG_LOG("[mypgpAccountManager.jsm - addNewContact]\n"+
-			"Attemp db insertion with ("+email+", "+isTrusted+", "+pubKeyId+")");
+			"Attemp db insertion with ("+name+", "+email+", "+isTrusted+", "+pubKeyId+")");
 
 
 		for(var i=0; i < this.mContacts.length; i++){
@@ -97,10 +102,13 @@ var MypgpAccountManager = {
 			}
 		}
 
-		let add_header_sql = "INSERT INTO "+MYPGP_ACCOUNTS_TABLE_NAME+ "("+KEY_EMAIL+","+KEY_ISTRUSTED+", "+KEY_PUBKEY_ID+")";
-		let add_body_sql = " VALUES (:new_email, :new_isTrusted, :new_pubkey_id)";	
+		
+		let add_header_sql = "INSERT INTO "+MYPGP_ACCOUNTS_TABLE_NAME+" ("+KEY_NAME+", "+KEY_EMAIL+", "+KEY_ISTRUSTED+", "+KEY_PUBKEY_ID+")";
+		let add_body_sql = " VALUES (:new_name, :new_email, :new_isTrusted, :new_pubkey_id)";	
+		
 		let add_stmt = this.mDBConn.createStatement(add_header_sql+add_body_sql);
 
+		add_stmt.params.new_name = name;
 		add_stmt.params.new_email = email;
 		add_stmt.params.new_isTrusted = isTrusted ? 1 : 0;
 		add_stmt.params.new_pubkey_id = pubKeyId;
@@ -118,6 +126,7 @@ var MypgpAccountManager = {
 			  	else{
 			  		
 			  		let new_contact = {
+			  			name: 		name,	
 			  			email: 		email,
 			  			isTrusted: 	isTrusted,
 			  			pubKeyId: 	pubKeyId
@@ -133,10 +142,9 @@ var MypgpAccountManager = {
 			  	}
 			}	
 		});
-
 	},
 
-
+	
 	deleteExistingContact : function(email)
 	{
 		MypgpCommon.DEBUG_LOG("[mypgpAccountManager.jsm - deleteExistingContact]\n"+
@@ -217,7 +225,6 @@ var MypgpAccountManager = {
 			if(pubKeyId != null)
 				update_stmt.params.new_pubkey_id = pubKeyId;
 
-
 			update_stmt.executeAsync({
 				handleResult: function(aResultSet) { },
 
@@ -258,6 +265,8 @@ var MypgpAccountManager = {
 		this.mDBConn.asynClose();
 	},
 
+	/* GETTERS */
+
 	/* DEBUGGING */
 	DEBUG_STATE : function(){
 		var debug_str;
@@ -268,7 +277,8 @@ var MypgpAccountManager = {
 
 			for(var i=0; i < this.mContacts.length; i++){
 				debug_str = debug_str + i+": ("+
-					this.mContacts[i].email+
+					this.mContacts[i].name+
+					", "+this.mContacts[i].email+
 					", "+this.mContacts[i].isTrusted+
 					", "+this.mContacts[i].pubKeyId+");\n";
 			}	
