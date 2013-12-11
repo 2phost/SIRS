@@ -4,7 +4,7 @@ Components.utils.import("resource://mypgp/mypgpFileManager.jsm");
 var EXPORTED_SYMBOLS = [ "mypgpWindowManager" ];
 
 // Preferences
-const KEY_EXT 				= "*.key"
+const KEY_EXT 						= "*.key"
 const ATTACHMENT_NAME_PREF 	= "pubKey.key";
 // Windows Predefined Titles
 const ABOUT_TITLE 			= "Sobre o MyPGP";
@@ -12,28 +12,30 @@ const PREFERENCES_TITLE 	= "Preferências";
 const KEYMNG_TITLE			= "Gestão de Chaves";
 const KEYGEN_TITLE			= "Gerar novo par de Chaves";
 const CNTMNG_TITLE			= "Gestão de Contactos";
+const ADDRBOOK_TITLE			= "Importar contactos";
 
 // MyPGP Chrome
-const ABOUT 				= "chrome://mypgp/content/mypgpAbout.xul";
+const ABOUT 					= "chrome://mypgp/content/mypgpAbout.xul";
 const PREFERENCES 			= "chrome://mypgp/content/PreferencesWindow/myPGPManagement.xul";
-const KEYMANAGEMENT 		= "chrome://mypgp/content/KeyManagementWindow/myPGPKeyManagement.xul";
-const KEYGEN 				= "chrome://mypgp/content/KeyManagementWindow/myPGPKeyGeneration.xul";
+const KEYMANAGEMENT 			= "chrome://mypgp/content/KeyManagementWindow/myPGPKeyManagement.xul";
+const KEYGEN 					= "chrome://mypgp/content/KeyManagementWindow/myPGPKeyGeneration.xul";
 const CONTACTMANAGEMENT 	= "chrome://mypgp/content/ContactManagementWindow/myPGPContactManager.xul";
+const CONTACT_ADDRBOOK		= "chrome://mypgp/content/ContactManagementWindow/myPGPContactAddressBook.xul";
 
 //THUNDERBIRD ContractIDs
 const MESSENGER_COMPOSE_CONTRACT	= "@mozilla.org/messengercompose;1";
 const IO_SERVICE_CONTRACT			= "@mozilla.org/network/io-service;1";
-const FILE_PICKER_CONTRACT 			= "@mozilla.org/filepicker;1";
+const FILE_PICKER_CONTRACT 		= "@mozilla.org/filepicker;1";
 const ATTACHMENT_CONTRACT			= "@mozilla.org/messengercompose/attachment;1";
 const COMPOSE_FIELDS_CONTRACT		= "@mozilla.org/messengercompose/composefields;1";
-const ACCOUNT_MANAGER_CONTRACT		= "@mozilla.org/messenger/account-manager;1";
-const MSG_COMP_PARAMS_CONTRACT		= "@mozilla.org/messengercompose/composeparams;1";
+const ACCOUNT_MANAGER_CONTRACT	= "@mozilla.org/messenger/account-manager;1";
+const MSG_COMP_PARAMS_CONTRACT	= "@mozilla.org/messengercompose/composeparams;1";
 
 //THUNDERBIRD Interfaces
-const nsIMsgComposeService 	= Components.interfaces.nsIMsgComposeService;
+const nsIMsgComposeService	= Components.interfaces.nsIMsgComposeService;
 const nsIIOService			= Components.interfaces.nsIIOService;
 const nsIFilePicker			= Components.interfaces.nsIFilePicker;
-const nsIFile 				= Components.interfaces.nsIFile;
+const nsIFile 					= Components.interfaces.nsIFile;
 const nsIMsgAttachment		= Components.interfaces.nsIMsgAttachment;
 const nsIMsgCompFields		= Components.interfaces.nsIMsgCompFields;
 const nsIMsgAccountManager	= Components.interfaces.nsIMsgAccountManager;
@@ -42,7 +44,7 @@ const nsIMsgCompFormat		= Components.interfaces.nsIMsgCompFormat;
 
 //THUNDERBIRD Components & Services
 const tMsgComposeService 	= Components.classes[MESSENGER_COMPOSE_CONTRACT].getService(nsIMsgComposeService);
-const tIOService 			= Components.classes[IO_SERVICE_CONTRACT].getService(nsIIOService);
+const tIOService 				= Components.classes[IO_SERVICE_CONTRACT].getService(nsIIOService);
 const tFilePicker 			= Components.classes[FILE_PICKER_CONTRACT].createInstance();
 
 
@@ -80,6 +82,11 @@ var mypgpWindowManager = {
 	openContactManagement: function (win)
 	{
 		win.openDialog(CONTACTMANAGEMENT, CNTMNG_TITLE, null);
+	},
+
+	openContactAddressBook: function (win)
+	{
+		win.openDialog(CONTACT_ADDRBOOK, ADDRBOOK_TITLE, null);
 	},
 
 	openFileBrowsingWindow: function (win, title, save)

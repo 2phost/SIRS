@@ -10,6 +10,7 @@ const KEY_EXT = ".key";
 
 var MypgpPreferences = {
 
-	default_folder: "myPGP"
+	default_folder: "myPGP",
+	default_keys : "keys"
 
 };

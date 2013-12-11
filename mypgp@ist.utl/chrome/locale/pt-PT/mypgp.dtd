@@ -23,7 +23,9 @@
 <!ENTITY mypgp.label.close					"Fechar">
 <!ENTITY mypgp.label.create				"Criar">
 <!ENTITY mypgp.label.save					"Gravar">
+<!ENTITY mypgp.label.add					"Adicionar">
 <!ENTITY mypgp.label.cancel				"Cancelar">
+<!ENTITY mypgp.label.exit					"Sair">
 <!ENTITY mypgp.label.days					"Dias">
 <!ENTITY mypgp.label.months				"Meses">
 <!ENTITY mypgp.label.years					"Anos">

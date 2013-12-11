@@ -12,10 +12,6 @@ var nsIAbManager = Components.interfaces.nsIAbManager;
 var nsIAbDirectory = Components.interfaces.nsIAbDirectory;
 var nsIAbCard = Components.interfaces.nsIAbCard;
 
-<!-- Manager Vars -->
-var tAbManager 				= Components.classes["@mozilla.org/abmanager;1"].getService(nsIAbManager);  
-var tAllAddressBooks 		= tAbManager.directories;
-
 <!-- Component Vars -->
 var input_contacts = null;
 var input_contactsChildren = null;
@@ -27,6 +23,7 @@ var input_cancel_button = null;
 
 <!-- Tree Vars -->
 var treeEmailColId = "email_col";
+var treeUsernameColId = "username_col";
 
 <!-- Broadcasters Handlers -->
 var broadcasterHandler = {
@@ -58,7 +55,7 @@ var broadcasterHandler = {
 var focusedContact = {
 	username: 	null,
 	email: 		null,
-	key: 			null,
+	key: 		null,
 	isTrusted: 	false,
 	isChanged: 	false,
 
@@ -109,10 +106,11 @@ window.addEventListener("load", function(){
 	 		var treeCell_email = document.createElement("treecell");
 	 		
 	 		treeCell_email.setAttribute("label", MypgpAccountManager.mContacts[i].email);
+	 		treeCell_username.setAttribute("label", MypgpAccountManager.mContacts[i].name);
 
-	 		treeRow.appendChild(treeCell_email);
 			treeRow.appendChild(treeCell_username);
-
+			treeRow.appendChild(treeCell_email);
+	 		
 	 		treeItem.setAttribute("value", MypgpAccountManager.mContacts[i]);
 	 		treeItem.appendChild(treeRow);
 	 		treeItem.setAttribute("id", MypgpAccountManager.mContacts[i].email);
@@ -122,57 +120,40 @@ window.addEventListener("load", function(){
 
 }, false);
 
-function populateContactList(){
-	MypgpCommon.DEBUG_LOG("(ContactManager) Address book selected : "+input_addrbook.selectedItem.label+"populating...\n");
+function focusDetailedContact(event){
 
-	/*TODO: clear current children in the tree*/
-
-	var directoryURI = input_addrbook.selectedItem.value;
-	var treeChildren = input_contactsChildren;
-	var contacts=[];
-
-	try{
-
-	   let searchResult = tAbManager.getDirectory(directoryURI).childCards;
-
-	   if(!searchResult.hasMoreElements()) MypgpCommon.DEBUG_LOG("(ContactManager) ... no contacts in this address book ...");	
-
-	 	while(searchResult.hasMoreElements()){
-	 		let contact = searchResult.getNext().QueryInterface(nsIAbCard);
-	 		MypgpCommon.DEBUG_LOG("(ContactManager) Contact first name:"+contact.firstName+"\n");
-	 		contacts.push(contact);
-	 	}
-
-	 	for(var i=0; i<contacts.length; i++){
-	 		
-	 		var treeItem = document.createElement("treeitem");
-	 		var treeRow = document.createElement("treerow");
-	 		var treeCell_username = document.createElement("treecell");
-	 		var treeCell_email = document.createElement("treecell");
-	 		
-	 		treeCell_username.setAttribute("label", contacts[i].displayName);
-	 		treeCell_email.setAttribute("label", contacts[i].primaryEmail);
-
-	 		treeRow.appendChild(treeCell_email);
-			treeRow.appendChild(treeCell_username);
-
-	 		treeItem.setAttribute("value", contacts[i]);
-	 		treeItem.appendChild(treeRow);
-	 		treeItem.setAttribute("id", contacts[i].primaryEmail);
-
-	 		input_contactsChildren.appendChild(treeItem);
-	 	}
-	}catch(e){
-		alert(e);
-		MypgpCommon.ERROR_LOG("(ContactManager) ERROR: "+e+"\n");
+	if (event != null && event.detail != 2) {
+    	return;
+  	}else if(event != null){
+	 	// do not propagate double clicks
+	  	event.stopPropagation();
 	}
+
+  	var tree = input_contacts;
+	var email=tree.view.getCellText(tree.currentIndex, tree.columns.getNamedColumn(treeEmailColId));
+
+	var mypgp_contact = MypgpAccountManager.getContactByEmail(email);
+
+	input_focusedContact_username.value=mypgp_contact.name;
+	input_focusedContact_username.disabled=false;
+
+	input_focusedContact_email.value=email;
+	input_focusedContact_email.disabled=false;
+
+	input_focusedContact_isTrusted.checked = mypgp_contact.isTrusted;
+	input_focusedContact_isTrusted.disabled=false;
+
+	focusedContact.focus(mypgp_contact.name, mypgp_contact.email);
+
+	/* TODO carregar as chaves validas e revogadas conhecidas deste utilizador */
+
 }
 
 function toggleIsChanged(){
 
 	focusedContact.isChanged = !focusedContact.isChanged;
 
-	if(focusedContact_isChanged){
+	if(focusedContact.isChanged){
 		input_save_button.disabled=false;
 		input_cancel_button.disabled=false;
 	}else{
@@ -189,6 +170,8 @@ function saveChanges(){
 	toggleIsChanged();
 
 	MypgpCommon.DEBUG_LOG("(myPGPContactManager.js : saveChanges) TODO must be implemented\n");
+
+	MypgpAccountManager.updateExistingContact(focusedContact.email, focusedContact.isTrusted, focusedContact.pubKeyId);
 
 	focusDetailedContact();
 }
@@ -230,32 +213,7 @@ function populateFocusedContactKeys(email){
 	MypgpCommon.DEBUG_LOG("(myPGPContactManager.js : populateFocusedContactKeys) TODO must be implemented\n");
 }
 
-function focusDetailedContact(event){
 
-	if (event.detail != 2) {
-    	return;
-  	}
-
- 	// do not propagate double clicks
-  	event.stopPropagation();
-  	var tree = input_contacts;
-
-	//var username=tree.view.getCellText(tree.currentIndex, tree.columns.getNamedColumn(treeUsernameColId));
-	var email=tree.view.getCellText(tree.currentIndex, tree.columns.getNamedColumn(treeEmailColId));
-
-	//input_focusedContact_isTrusted.disabled=false;
-
-	//input_focusedContact_username.value=username;
-	//input_focusedContact_username.disabled=false;
-
-	input_focusedContact_email.value=email;
-	input_focusedContact_email.disabled=false;
-
-	focusedContact.focus(username, email);
-
-	<!-- TODO carregar as chaves validas e revogadas conhecidas deste utilizador -->
-	populateFocusedContactKeys(email);
-}
 
 /*
  * Menu Functions
@@ -352,6 +310,13 @@ function exitContactManager(){
 	window.close();
 
 	MypgpCommon.DEBUG_LOG("(myPGPContactManager.js : exitContactManager) TODO must be implemented\n");
+}
+
+function openContactImport(){
+	
+	window.close();
+	mypgpWindowManager.openContactAddressBook(window);
+	MypgpCommon.DEBUG_LOG("[myPGPContactManager.js - openContactImport]\n");
 }
 
 function openAbout(){

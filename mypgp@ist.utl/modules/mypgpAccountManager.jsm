@@ -95,7 +95,7 @@ var MypgpAccountManager = {
 				MypgpCommon.ERROR_LOG("[mypgpAccountManager.jsm - addNewContact] Contact with email "+email+" already registered\n");
 				return 0;
 			}
-			if(this.mContacts[i].pubKeyId == pubKeyId){
+			if(pubKeyId != null && this.mContacts[i].pubKeyId == pubKeyId){
 				MypgpCommon.ERROR_LOG("[mypgpAccountManager.jsm - addNewContact] Contact with email "
 					+this.mContacts[i].email+" is already associated with a key "+pubKeyId+"\n");
 				return 0;
@@ -266,6 +266,16 @@ var MypgpAccountManager = {
 	},
 
 	/* GETTERS */
+	getContactByEmail : function(email)
+	{
+
+		for(var i=0; i < this.mContacts.length; i++){
+			if(this.mContacts[i].email == email)
+				return this.mContacts[i];
+		}
+
+		return null;
+	},
 
 	/* DEBUGGING */
 	DEBUG_STATE : function(){

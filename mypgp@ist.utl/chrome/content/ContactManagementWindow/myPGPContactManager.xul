@@ -47,7 +47,7 @@
 
 		<menu id="cntmng_menu_contacts" label="&mypgp.label.contacts;">
 			<menupopup>
-				<menuitem id="menu_contacts_import" label="&mypgp.cntmng.importcontacts;" /> <!-- TODO oncommand -->
+				<menuitem id="menu_contacts_import" label="&mypgp.cntmng.importcontacts;" oncommand="openContactImport()" /> 
 			</menupopup>
 		</menu>
 
@@ -75,6 +75,8 @@
 					hidecolumnpicker="true">
 
 					<treecols id="cntmng_cols">
+						<treecol id="username_col" label="&mypgp.label.username;" persist="width ordinal hidden" flex="1"/>
+						<spliter flex="0"/>
 						<treecol id="email_col" label="&mypgp.label.email;" persist="width ordinal hidden" flex="1"/>
 					</treecols>
 
