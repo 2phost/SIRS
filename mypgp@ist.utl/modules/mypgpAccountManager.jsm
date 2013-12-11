@@ -69,6 +69,9 @@ var MypgpAccountManager = {
 			handleCompletion: function(aReason) {
 				if (aReason != Components.interfaces.mozIStorageStatementCallback.REASON_FINISHED)
 			  		MypgpCommon.ERROR_LOG("Query canceled or aborted!");
+
+			  	if(VERBOSE)
+			  		MypgpAccountManager.DEBUG_STATE();
 			}
 		});
 
@@ -196,20 +199,58 @@ var MypgpAccountManager = {
 
 		if(contact2update != null){
 
+			//TODO: verificar se se verificam modificacoes
+
 			let update_sql = "UPDATE "+MYPGP_ACCOUNTS_TABLE_NAME+" SET "+
 				(isTrusted != null ? KEY_ISTRUSTED+"=:new_isTrusted" : "")+
 				(isTrusted != null && pubKeyId != null ? ", " : "")+
 				(pubKeyId ? KEY_PUBKEY_ID+"=:new_pubkey_id" : "")+
-				" WHERE "+KEY_EMAIL+"="+email;
+				" WHERE "+KEY_EMAIL+"=:update_email";
 
 			let update_stmt = this.mDBConn.createStatement(update_sql);
+			
+			update_stmt.params.update_email = email;
+
+			if(isTrusted != null)
+				update_stmt.params.new_isTrusted = isTrusted;
+			
+			if(pubKeyId != null)
+				update_stmt.params.new_pubkey_id = pubKeyId;
+
+
+			update_stmt.executeAsync({
+				handleResult: function(aResultSet) { },
+
+				handleError: function(aError) {
+					MypgpCommon.ERROR_LOG("[mypgpAccountManager - deleteExistingContact]\n"+
+						"Error: " + aError.message);
+				},
+
+				handleCompletion: function(aReason) {
+					if (aReason != Components.interfaces.mozIStorageStatementCallback.REASON_FINISHED)
+				  		MypgpCommon.ERROR_LOG("[mypgpAccountManager - deleteExistingContact]\n"+
+				  			"Removal canceled or aborted!");
+				  	else{
+				  		MypgpCommon.DEBUG_LOG("[mypgpAccountManager - deleteExistingContact]\n"+
+				  			"Removal of contact with email <"+email+"> successfull!");
+				  		
+				  		for(var i=0; i < MypgpAccountManager.mContacts.length; i++)
+				  			if(MypgpAccountManager.mContacts[i].email == email){
+								if(isTrusted != null)
+									MypgpAccountManager.mContacts[i].isTrusted = isTrusted;
+								if(pubKeyId != null)
+									MypgpAccountManager.mContacts[i].pubKeyId = pubKeyId;				  				
+				  			}
+
+				  		if(VERBOSE)
+				  			MypgpAccountManager.DEBUG_STATE();
+				  	}
+				}	
+			});
 
 		}else
 			MypgpCommon.ERROR_LOG("[mypgpAccountManager - updateExistingContact] Error: contact with email "+
 				email+" doesn't exists");
-
-
-		MypgpCommon.DEBUG_LOG("SQL: \n"+ update_sql);
 	},
 
 	terminate : function()
