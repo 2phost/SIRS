@@ -7,6 +7,9 @@ Components.utils.import("resource://mypgp/mypgpPreferences.jsm");
 var EXPORTED_SYMBOLS = [ "MypgpAccountManager" ];
 
 
+/* EXTRA DEBUG */
+const VERBOSE = true;
+
 /* Storage API values */
 const MYPGP_BD_NAME = "mypgp_accounts.sqlite";
 
@@ -73,7 +76,6 @@ var MypgpAccountManager = {
 		MypgpCommon.DEBUG_LOG("[mypgpAccountManager.jsm - init] Initiation terminated.");
 	},
 
-	//TODO: test new function
 	addNewContact : function(email, isTrusted, pubKeyId){
 	
 		MypgpCommon.DEBUG_LOG("[mypgpAccountManager.jsm - addNewContact]\n"+
@@ -111,7 +113,7 @@ var MypgpAccountManager = {
 				if (aReason != Components.interfaces.mozIStorageStatementCallback.REASON_FINISHED)
 			  		MypgpCommon.ERROR_LOG("[mypgpAccountManager - addNewContact] Insertion canceled or aborted!");
 			  	else{
-			  		MypgpCommon.DEBUG_LOG("[mypgpAccountManager - addNewContact] Insertion of "+email+" successfull!");
+			  		
 			  		let new_contact = {
 			  			email: 		email,
 			  			isTrusted: 	isTrusted,
@@ -119,10 +121,95 @@ var MypgpAccountManager = {
 			  		};
 
 			  		MypgpAccountManager.mContacts.push(new_contact);
+
+			  		MypgpCommon.DEBUG_LOG("[mypgpAccountManager - addNewContact] Insertion of "+email+" successfull!");
+			  		
+			  		if(VERBOSE)
+			  			MypgpAccountManager.DEBUG_STATE();
+
 			  	}
 			}	
 		});
 
+	},
+
+
+	deleteExistingContact : function(email)
+	{
+		MypgpCommon.DEBUG_LOG("[mypgpAccountManager.jsm - deleteExistingContact]\n"+
+			"Attemp db delete for contact with email "+email+".");
+
+		var contact = null;
+
+		for(var i=0; i < this.mContacts.length; i++)
+			if(this.mContacts[i].email == email)
+				contact = this.mContacts[i];
+
+		if(contact != null){
+
+			let delete_sql = "DELETE FROM "+MYPGP_ACCOUNTS_TABLE_NAME+" WHERE "+KEY_EMAIL+"=:delete_email";
+
+			let delete_stmt = this.mDBConn.createStatement(delete_sql);
+			delete_stmt.params.delete_email = email;
+
+			delete_stmt.executeAsync({
+				handleResult: function(aResultSet) { },
+
+				handleError: function(aError) {
+					MypgpCommon.ERROR_LOG("[mypgpAccountManager - deleteExistingContact]\n"+
+						"Error: " + aError.message);
+				},
+
+				handleCompletion: function(aReason) {
+					if (aReason != Components.interfaces.mozIStorageStatementCallback.REASON_FINISHED)
+				  		MypgpCommon.ERROR_LOG("[mypgpAccountManager - deleteExistingContact]\n"+
+				  			"Removal canceled or aborted!");
+				  	else{
+				  		MypgpCommon.DEBUG_LOG("[mypgpAccountManager - deleteExistingContact]\n"+
+				  			"Removal of contact with email <"+email+"> successfull!");
+				  		
+				  		for(var i=0; i < MypgpAccountManager.mContacts.length; i++)
+				  			if(MypgpAccountManager.mContacts[i].email == email)
+				  				MypgpAccountManager.mContacts.splice(i, 1);
+
+				  		if(VERBOSE)
+				  			MypgpAccountManager.DEBUG_STATE();
+				  	}
+				}	
+			});
+		}else
+			MypgpCommon.ERROR_LOG("[mypgpAccountManager - deleteExistingContact]\n"+
+				"Error contact with email "+email+" does not exists");
+
+	},
+
+	updateExistingContact : function(email, isTrusted, pubKeyId)
+	{
+		MypgpCommon.DEBUG_LOG("[mypgpAccountManager.jsm - updateContact]\n"+
+			"Attemp db update for contact with email "+email+" with values ("+isTrusted+", "+pubKeyId+")");
+
+		var contact2update = null;
+
+		for(var i=0; i < this.mContacts.length; i++)
+			if(this.mContacts[i].email == email)
+				contact2update = this.mContacts[i];
+
+		if(contact2update != null){
+
+			let update_sql = "UPDATE "+MYPGP_ACCOUNTS_TABLE_NAME+" SET "+
+				(isTrusted != null ? KEY_ISTRUSTED+"=:new_isTrusted" : "")+
+				(isTrusted != null && pubKeyId != null ? ", " : "")+
+				(pubKeyId ? KEY_PUBKEY_ID+"=:new_pubkey_id" : "")+
+				" WHERE "+KEY_EMAIL+"="+email;
+
+			let update_stmt = this.mDBConn.createStatement(update_sql);
+
+		}else
+			MypgpCommon.ERROR_LOG("[mypgpAccountManager - updateExistingContact] Error: contact with email "+
+				email+" doesn't exists");
+
+
+		MypgpCommon.DEBUG_LOG("SQL: \n"+ update_sql);
 	},
 
 	terminate : function()
