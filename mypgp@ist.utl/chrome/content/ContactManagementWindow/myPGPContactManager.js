@@ -68,7 +68,7 @@ var focusedContact = {
 		this.email = email;
 		this.isTrusted = isTrusted;
 		this.pubKeyId = pubKeyId;
-		//TODO: load key file
+		if(pubKeyId!=null) this.pubKeyFile = mypgpFileManager.getKeyAsFile(email);
 		broadcasterHandler.focusContact();
 	},
 
@@ -85,6 +85,14 @@ var focusedContact = {
 	selectKey: function(key)
 	{
 	
+	},
+
+	printState: function(){
+		MypgpCommon.DEBUG_LOG("[myPGPContactManager - focusedContact]\n"+
+			"Username:\t"+this.userName+"\n"+
+			"Email:\t"+this.email+"\n"+
+			"IsTrusted:\t"+this.isTrusted+"\n"+
+			"PubKeyId:\t"+this.pubKeyId);
 	}
 }
 
@@ -138,6 +146,10 @@ function focusDetailedContact(event){
 
 	//Clear the contact info
 	focusedContact.unfocus();
+	input_focusedContact_username.value="";
+	input_focusedContact_email.value="";
+	input_focusedContact_isTrusted.checked=false;
+	input_key_value.value="";
 
   	var tree = input_contacts;
 	var email=tree.view.getCellText(tree.currentIndex, tree.columns.getNamedColumn(treeEmailColId));
@@ -150,6 +162,8 @@ function focusDetailedContact(event){
 		mypgp_contact.isTrusted,
 		mypgp_contact.pubKeyId);
 
+	focusedContact.printState();
+
 	input_focusedContact_username.value=focusedContact.username;
 	input_focusedContact_username.disabled=false;
 
@@ -160,12 +174,14 @@ function focusDetailedContact(event){
 	input_focusedContact_isTrusted.disabled=false;
 
 	//TODO: load the key content to the key_value textbox
-
+	if(focusedContact.pubKeyId != null){
+		let keyFile = focusedContact.pubKeyFile;
+		MypgpCommon.DEBUG_LOG("---> Key path: "+keyFile.path);
+		input_key_value.value = "<"+focusedContact.pubKeyFile.leafName+">\n\n"+mypgpFileManager.readDataFromFile(focusedContact.pubKeyFile);
+	}
 }
 
 function toggleIsChanged(){
-
-	focusedContact.isChanged = !focusedContact.isChanged;
 
 	if(focusedContact.isChanged.modified){
 		input_save_button.disabled=false;
@@ -180,15 +196,27 @@ function toggleIsChanged(){
 }
 
 function saveChanges(){
-	<!-- TODO save changes -->
-	toggleIsChanged();
 
-	MypgpCommon.DEBUG_LOG("(myPGPContactManager.js : saveChanges) TODO must be implemented\n");
+	if(focusedContact.isChanged.modified){
 
-	mypgpFileManager.storeKeyAsFile(focusedContact.email, focusedContact.pubKeyFile);
-	//MypgpAccountManager.updateExistingContact(focusedContact.email, focusedContact.isTrusted, focusedContact.pubKeyId);
+		var new_trust = focusedContact.isChanged.trust ? focusedContact.isTrusted : null;
+		var new_pubkeyid = null;
 
-	focusDetailedContact();
+		if(focusedContact.isChanged.pubKey){
+			keyFile = mypgpFileManager.storeKeyAsFile(focusedContact.email, focusedContact.pubKeyFile);
+			new_pubkeyid = focusedContact.isChanged.pubKey ? keyFile.leafName : null;
+		}
+
+		MypgpAccountManager.updateExistingContact(focusedContact.email, new_trust, new_pubkeyid);
+
+		focusedContact.isChanged.modified = false;
+		focusedContact.isChanged.trust = false;
+		focusedContact.isChanged.pubKey = false;
+
+		focusDetailedContact();
+	}
+
+	
 }
 
 function cancelChanges(){
@@ -208,25 +236,26 @@ function establishTrust(){
 	if(input_focusedContact_isTrusted.checked)
 		;
 
-	window.openDialog("chrome://mypgp/content/ContactManagementWindow/myPGPEstablishTrustDialog.xul", "",
-							"chrome, dialog, modal, resizable=yes", params).focus();
+	var result = mypgpWindowManager.openSpecialConfirmPromptDialog(
+		"Establecer confiança com "+focusedContact.username,
+		"Tem a certeza que pretende confiar no utilizador "+focusedContact.username+" com o email "+focusedContact.email+"?",
+		"Confio",
+		"Desconfio");
 
-	if(params.trust){
-		focusedContact.isTrusted = true;
-		input_focusedContact_isTrusted.checked = true;
-		toggleIsChanged();
-	}else{
-		focusedContact.isTrusted = false;
-		input_focusedContact_isTrusted.checked = false;
-		toggleIsChanged();
-	}
+	if(!result.cancel){
 
-	MypgpCommon.DEBUG_LOG("(myPGPContactManager.js : establishTrust) TODO must be implemented\n");
+		if(focusedContact.isTrusted != result.opt1){
+			focusedContact.isChanged.modified = true;
+			focusedContact.isChanged.trust = true;
+		}
+
+		focusedContact.isTrusted = result.opt1;
+		input_focusedContact_isTrusted.checked = result.opt1;
+		toggleIsChanged();
+	}else
+		input_focusedContact_isTrusted.checked = focusedContact.isTrusted;
 }
 
-function populateFocusedContactKeys(email){
-	MypgpCommon.DEBUG_LOG("(myPGPContactManager.js : populateFocusedContactKeys) TODO must be implemented\n");
-}
 
 /*
  * Menu Functions
@@ -239,22 +268,31 @@ function populateFocusedContactKeys(email){
 function importKey(){
 
 	var file = null;
+	var overwrite;
 
-	file = mypgpWindowManager.openFileBrowsingWindow(window, "Importar Chave", false, null);
-	
-	if(file != null){
+	if(focusedContact.pubKeyId != null){
+		overwrite = mypgpWindowManager.openConfirmPromptDialog("Substituição de Chave",
+			"Tem a certeza que pretende substituir esta chave?");
+	}else
+		overwrite = true;
+
+	if(overwrite){
+		file = mypgpWindowManager.openFileBrowsingWindow(window, "Importar Chave", false, null);
 		
-		var file_content = mypgpFileManager.readDataFromFile(file);
-		input_key_value.value = "<"+file.leafName+">\n"+file_content;
+		if(file != null){
+			
+			var file_content = mypgpFileManager.readDataFromFile(file);
+			input_key_value.value = "<"+file.leafName+">\n"+file_content;
 
-		focusedContact.pubKeyId = file.leafName;
-		focusedContact.pubKeyFile = file;
+			focusedContact.pubKeyId = file.leafName;
+			focusedContact.pubKeyFile = file;
 
-		focusedContact.isChanged.modified = true;
-		focusedContact.isChanged.pubKey = true;
+			focusedContact.isChanged.modified = true;
+			focusedContact.isChanged.pubKey = true;
 
- 		MypgpCommon.DEBUG_LOG("[myPGPContactManager.js : importKey]\n"+
- 			"Key added");
+	 		MypgpCommon.DEBUG_LOG("[myPGPContactManager.js : importKey]\n"+
+	 			"Key added");
+	 	}
 	}
 }
 
@@ -297,15 +335,20 @@ function exitContactManager(){
 	var params = {cancel:false, save:false};
 
 	if(focusedContact.isChanged){
-		window.openDialog("chrome://mypgp/content/ContactManagementWindow/myPGPSaveBeforeExit.xul", "",
-								"chrome, dialog, modal, resizable=yes", params).focus();
+		//window.openDialog("chrome://mypgp/content/ContactManagementWindow/myPGPSaveBeforeExit.xul", "",
+		//						"chrome, dialog, modal, resizable=yes", params).focus();
 
-		if(!params.cancel){
-			if(params.save){
-				<!--TODO: gravar modificacoes e sair-->
-				window.close();
-			}else
-				window.close();
+		var result = mypgpWindowManager.openSpecialConfirmPromptDialog(
+			"Sair do Gestor de Contactos "+focusedContact.username,
+			"Tem a certeza que pretende sair sem gravar as modificações feitas ao contacto "+focusedContact.username+"?",
+			"Gravar e Sair",
+			"Sair sem Gravar");
+
+		if(!result.cancel){
+			if(result.opt1)
+				saveChanges();
+				
+			window.close();
 		}
 	}
 
@@ -319,6 +362,7 @@ function openContactImport(){
 	window.close();
 	mypgpWindowManager.openContactAddressBook(window);
 	MypgpCommon.DEBUG_LOG("[myPGPContactManager.js - openContactImport]\n");
+	
 }
 
 function openAbout(){
@@ -329,3 +373,5 @@ function openAbout(){
 function openHelp(){
 
 }
+
+window.addEventListener("unload", exitContactManager, false);

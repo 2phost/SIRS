@@ -90,11 +90,20 @@ var mypgpFileManager = {
 
 		file.copyTo(keyDir, email+PREF_EXT);
 
+		keyDir.append(email+PREF_EXT);
+
+		return keyDir;
 	},
 
-	getKeyAsFile: function()
+	getKeyAsFile: function(email)
 	{
+		let keyDir = FileUtils.getFile(PROFILE_DIR,
+			[MypgpPreferences.default_folder,
+			MypgpPreferences.keys_folder]);
 
+		keyDir.append(email+PREF_EXT);
+
+		return keyDir;
 	},
 
 	/**

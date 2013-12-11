@@ -235,10 +235,10 @@ var MypgpAccountManager = {
 
 				handleCompletion: function(aReason) {
 					if (aReason != Components.interfaces.mozIStorageStatementCallback.REASON_FINISHED)
-				  		MypgpCommon.ERROR_LOG("[mypgpAccountManager - deleteExistingContact]\n"+
+				  		MypgpCommon.ERROR_LOG("[mypgpAccountManager - updateExistingContact]\n"+
 				  			"Removal canceled or aborted!");
 				  	else{
-				  		MypgpCommon.DEBUG_LOG("[mypgpAccountManager - deleteExistingContact]\n"+
+				  		MypgpCommon.DEBUG_LOG("[mypgpAccountManager - updateExistingContact]\n"+
 				  			"Removal of contact with email <"+email+"> successfull!");
 				  		
 				  		for(var i=0; i < MypgpAccountManager.mContacts.length; i++)
@@ -262,7 +262,7 @@ var MypgpAccountManager = {
 
 	terminate : function()
 	{
-		this.mDBConn.asynClose();
+		this.mDBConn.asyncClose();
 	},
 
 	/* GETTERS */

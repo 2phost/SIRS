@@ -160,6 +160,47 @@ var mypgpWindowManager = {
 		msgComposeParams.format = nsIMsgCompFormat.Default;
 		msgComposeParams.originalMsgURI = "";
 		msgComposeService.OpenComposeWindowWithParams("", msgComposeParams);
+	},
+
+	openConfirmPromptDialog: function(title, dialog)
+	{
+		var prompts = Components.classes["@mozilla.org/embedcomp/prompt-service;1"]
+                        .getService(Components.interfaces.nsIPromptService);
+
+		var result = prompts.confirm(null, title, dialog);
+
+		return result;
+	},
+
+	openSpecialConfirmPromptDialog: function(title, dialog, btn1_title, btn2_title)
+	{
+		var prompts = Components.classes["@mozilla.org/embedcomp/prompt-service;1"]
+			.getService(Components.interfaces.nsIPromptService);
+
+		var check = {value: false};                  // default the checkbox to false
+
+		var flags = 
+			prompts.BUTTON_POS_0 * prompts.BUTTON_TITLE_IS_STRING +
+			prompts.BUTTON_POS_2 * prompts.BUTTON_TITLE_IS_STRING  +
+			prompts.BUTTON_POS_1 * prompts.BUTTON_TITLE_CANCEL;
+
+		var button = prompts.confirmEx(null, title, dialog,
+		   flags, btn1_title, "", btn2_title, null, check);
+
+		var result = {opt1 : false, opt2: false, cancel: true};
+
+		switch(button){
+			case 0:
+				result.opt1=true;
+				result.cancel=false;
+				return result;
+			case 1:
+				return result;
+			case 2:
+				result.opt2=true;
+				result.cancel=false;
+				return result;
+		}
 	}
 
 };
