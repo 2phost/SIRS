@@ -21,9 +21,6 @@ window.addEventListener("unload", function(e){
 
 function openAbout(){
 	mypgpWindowManager.openAbout(window);
-
-	//TODO: remove
-	MypgpAccountManager.DEBUG_STATE();
 }
 
 

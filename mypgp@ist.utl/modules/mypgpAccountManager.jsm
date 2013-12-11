@@ -21,8 +21,8 @@ const MYPGP_CREATE_ACCOUNTS_TABLE =
 	"CREATE TABLE IF NOT EXISTS "+MYPGP_ACCOUNTS_TABLE_NAME+" "+
 	"( "+ KEY_ROWID +" INTEGER PRIMARY KEY AUTOINCREMENT"+
 	", "+ KEY_EMAIL + " TEXT NOT NULL UNIQUE"+
-	//KEY_ISTRUSTED + " INTEGER NOT NULL DEFAULT 0," +
-	//KEY_PUBKEY_ID + " TEXT UNIQUE, "+
+	", "+ KEY_ISTRUSTED + " INTEGER NOT NULL DEFAULT 0" +
+	", "+ KEY_PUBKEY_ID + " TEXT UNIQUE"+
 	//KEY_PUBKEY + " TEXT UNIQUE
 	")";
 
@@ -50,13 +50,17 @@ var MypgpAccountManager = {
 		population_stmt.executeAsync({
 			handleResult: function(aResultSet) {
 	    		for (let row = aResultSet.getNextRow(); row; row = aResultSet.getNextRow()) {
-	      			let value = row.getResultByName(KEY_EMAIL);
+	      			let value = 
+	      				{ email: 		row.getResultByName(KEY_EMAIL),
+	      				  isTrusted: 	row.getResultByName(KEY_ISTRUSTED) == 0 ? false : true,
+	      				  pubKeyId: 	row.getResultByName(KEY_PUBKEY_ID)};
+
 	      			MypgpAccountManager.mContacts.push(value);
 				}	
   			},
 
 			handleError: function(aError) {
-				MypgpgCommon.ERROR_LOG("Error: " + aError.message);
+				MypgpCommon.ERROR_LOG("Error: " + aError.message);
 			},
 
 			handleCompletion: function(aReason) {
@@ -69,92 +73,56 @@ var MypgpAccountManager = {
 		MypgpCommon.DEBUG_LOG("[mypgpAccountManager.jsm - init] Initiation terminated.");
 	},
 
-	populate_mypgp_contacts: function()
-	{
-
-		if(this.mInitiated){
-			let population_stmt = this.mDBConn.createStatement("SELECT * FROM "+MYPGP_ACCOUNTS_TABLE_NAME);
-			
-			population_stmt.executeAsync({
-				handleResult: function(aResultSet) {
-		    		for (let row = aResultSet.getNextRow(); row; row = aResultSet.getNextRow()) {
-		      			let value = row.getResultByName(KEY_EMAIL);
-		      			MypgpAccountManager.mContacts.push(value);
-					}	
-	  			},
-
-				handleError: function(aError) {
-					MypgpgCommon.ERROR_LOG("Error: " + aError.message);
-				},
-
-				handleCompletion: function(aReason) {
-					if (aReason != Components.interfaces.mozIStorageStatementCallback.REASON_FINISHED)
-				  		MypgpCommon.ERROR_LOG("Query canceled or aborted!");
-				}
-			});
-
-		}else
-			MypgpCommon.ERROR_LOG("[mypgpAccountManager.jsm - populate_mypgp_contacts]\n"+
-				"The Account Manager was never initiated.");
+	//TODO: test new function
+	addNewContact : function(email, isTrusted, pubKeyId){
+	
+		MypgpCommon.DEBUG_LOG("[mypgpAccountManager.jsm - addNewContact]\n"+
+			"Attemp db insertion with ("+email+", "+isTrusted+", "+pubKeyId+")");
 
 
-	},
+		for(var i=0; i < this.mContacts.length; i++){
+			if(this.mContacts[i].email == email){
+				MypgpCommon.ERROR_LOG("[mypgpAccountManager.jsm - addNewContact] Contact with email "+email+" already registered\n");
+				return 0;
+			}
+			if(this.mContacts[i].pubKeyId == pubKeyId){
+				MypgpCommon.ERROR_LOG("[mypgpAccountManager.jsm - addNewContact] Contact with email "
+					+this.mContacts[i].email+" is already associated with a key "+pubKeyId+"\n");
+				return 0;
+			}
+		}
 
-	test_populate : function()
-	{
-		
-		var test_mail = "rodrigo@test.org";
-		var test_isTrusted = "1";
+		let add_header_sql = "INSERT INTO "+MYPGP_ACCOUNTS_TABLE_NAME+ "("+KEY_EMAIL+","+KEY_ISTRUSTED+", "+KEY_PUBKEY_ID+")";
+		let add_body_sql = " VALUES (:new_email, :new_isTrusted, :new_pubkey_id)";	
+		let add_stmt = this.mDBConn.createStatement(add_header_sql+add_body_sql);
 
-		MypgpCommon.DEBUG_LOG("[mypgpAccountManager.jsm - test_populate] Attemp db insertion with ("+test_mail+", "+test_isTrusted+")");	
+		add_stmt.params.new_email = email;
+		add_stmt.params.new_isTrusted = isTrusted ? 1 : 0;
+		add_stmt.params.new_pubkey_id = pubKeyId;
 
-		
-		var insert_statement = 
-			"INSERT INTO "+MYPGP_ACCOUNTS_TABLE_NAME+" ("+KEY_EMAIL+", "+KEY_ISTRUSTED+") VALUES ("+test_mail+", "+ test_isTrusted+")";
-
-		let insert_stmt = this.mDBConn.createStatement("INSERT INTO "+MYPGP_ACCOUNTS_TABLE_NAME+" (email) VALUES (:new_mail)");
-		insert_stmt.params.new_mail="test@test.org";
-		insert_stmt.executeAsync({
-			handleResult: function(aResultSet) {
-    			MypgpgCommon.DEBUG_LOG("Insertion successfull "+aResultSet);
-    	
-  			},
+		add_stmt.executeAsync({
+			handleResult: function(aResultSet) { },
 
 			handleError: function(aError) {
-				MypgpgCommon.ERROR_LOG("Error: " + aError.message);
+				MypgpCommon.ERROR_LOG("Error: " + aError.message);
 			},
 
 			handleCompletion: function(aReason) {
 				if (aReason != Components.interfaces.mozIStorageStatementCallback.REASON_FINISHED)
-			  		MypgpCommon.ERROR_LOG("Query canceled or aborted!");
+			  		MypgpCommon.ERROR_LOG("[mypgpAccountManager - addNewContact] Insertion canceled or aborted!");
+			  	else{
+			  		MypgpCommon.DEBUG_LOG("[mypgpAccountManager - addNewContact] Insertion of "+email+" successfull!");
+			  		let new_contact = {
+			  			email: 		email,
+			  			isTrusted: 	isTrusted,
+			  			pubKeyId: 	pubKeyId
+			  		};
+
+			  		MypgpAccountManager.mContacts.push(new_contact);
+			  	}
 			}	
 		});
-	},
 
-	test_query : function()
-	{
-
-		MypgpCommon.DEBUG_LOG("[mypgpAccountManager.jsm - test_populate] Attemp db query all mails");	
-
-		let query_stmt = this.mDBConn.createStatement("SELECT * FROM "+MYPGP_ACCOUNTS_TABLE_NAME);
-		
-		query_stmt.executeAsync({
-			handleResult: function(aResultSet) {
-	    		for (let row = aResultSet.getNextRow(); row; row = aResultSet.getNextRow()) {
-	      			let value = row.getResultByName(KEY_EMAIL);
-					MypgpCommon.DEBUG_LOG("QUERY RESULT: "+value);
-				}
-  			},
-
-			handleError: function(aError) {
-				MypgpgCommon.ERROR_LOG("Error: " + aError.message);
-			},
-
-			handleCompletion: function(aReason) {
-				if (aReason != Components.interfaces.mozIStorageStatementCallback.REASON_FINISHED)
-			  		MypgpCommon.ERROR_LOG("Query canceled or aborted!");
-			}	
-		});	
 	},
 
 	terminate : function()
@@ -171,7 +139,10 @@ var MypgpAccountManager = {
 			debug_str = "MyPGP Contacts <"+this.mContacts.length+">\n";
 
 			for(var i=0; i < this.mContacts.length; i++){
-				debug_str = debug_str + i+": "+this.mContacts[i]+";\n";
+				debug_str = debug_str + i+": ("+
+					this.mContacts[i].email+
+					", "+this.mContacts[i].isTrusted+
+					", "+this.mContacts[i].pubKeyId+");\n";
 			}	
 
 			MypgpCommon.DEBUG_LOG("[mypgpAccountManager - DEBUG]\n"+debug_str);
