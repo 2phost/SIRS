@@ -15,7 +15,7 @@
 
 	<!-- Broadcasters -->
 	<broadcasterset>
-    	<broadcaster id="bcNoKeySelected" 	disabled="true"/>
+    	<broadcaster id="bcNoKeySelected" 		disabled="true"/>
     	<broadcaster id="bcNoFocusedContact" 	disabled="true"/>
 	</broadcasterset>	
 

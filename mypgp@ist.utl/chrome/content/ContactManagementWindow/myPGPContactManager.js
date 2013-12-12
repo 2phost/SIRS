@@ -80,6 +80,7 @@ var focusedContact = {
 		this.pubKeyFile = null;
 		this.isTrusted = false;
 		this.isChanged = { modified: false, trust : false, pubKey: false };
+		toggleIsChanged();
 	},
 
 	selectKey: function(key)
@@ -142,7 +143,7 @@ function focusDetailedContact(event){
   	}else if(event != null){
 	 	// do not propagate double clicks
 	  	event.stopPropagation();
-	}
+	}	
 
 	//Clear the contact info
 	focusedContact.unfocus();
@@ -190,9 +191,6 @@ function toggleIsChanged(){
 		input_save_button.disabled=true;
 		input_cancel_button.disabled=true;
 	}
-
-	MypgpCommon.DEBUG_LOG("(myPGPContactManager.js : toggleIsChanged)\n");
-	
 }
 
 function saveChanges(){
@@ -215,26 +213,19 @@ function saveChanges(){
 
 		focusDetailedContact();
 	}
-
-	
 }
 
 function cancelChanges(){
-	<!-- TODO rollback changes -->
-	toggleIsChanged();
+
+
 
 	MypgpCommon.DEBUG_LOG("(myPGPContactManager.js : cancelChanges) TODO must be implemented\n");
+
 
 	focusDetailedContact();
 }
 
 function establishTrust(){
-
-	var params = {trust:false};
-
-	<!--TODO: modificar mensagem de prompt dependendo se está a confiar ou a deixar de confiar -->
-	if(input_focusedContact_isTrusted.checked)
-		;
 
 	var result = mypgpWindowManager.openSpecialConfirmPromptDialog(
 		"Establecer confiança com "+focusedContact.username,
@@ -332,11 +323,7 @@ function emailKey(){
  */
 function exitContactManager(){
 
-	var params = {cancel:false, save:false};
-
 	if(focusedContact.isChanged){
-		//window.openDialog("chrome://mypgp/content/ContactManagementWindow/myPGPSaveBeforeExit.xul", "",
-		//						"chrome, dialog, modal, resizable=yes", params).focus();
 
 		var result = mypgpWindowManager.openSpecialConfirmPromptDialog(
 			"Sair do Gestor de Contactos "+focusedContact.username,
@@ -350,11 +337,9 @@ function exitContactManager(){
 				
 			window.close();
 		}
+	}else{
+		window.close();
 	}
-
-	window.close();
-
-	MypgpCommon.DEBUG_LOG("(myPGPContactManager.js : exitContactManager) TODO must be implemented\n");
 }
 
 function openContactImport(){
@@ -362,7 +347,7 @@ function openContactImport(){
 	window.close();
 	mypgpWindowManager.openContactAddressBook(window);
 	MypgpCommon.DEBUG_LOG("[myPGPContactManager.js - openContactImport]\n");
-	
+
 }
 
 function openAbout(){
@@ -373,5 +358,3 @@ function openAbout(){
 function openHelp(){
 
 }
-
-window.addEventListener("unload", exitContactManager, false);
