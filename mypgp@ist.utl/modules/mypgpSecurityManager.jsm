@@ -30,11 +30,14 @@ var MypgpSecurityManager = {
 
 		var account = tbAccountManagerSvc.defaultAccount.QueryInterface(nsIMsgAccount);
 
+		let mPub = FileUtils.getFile("Home", ["myPGP", "myKeys", "pub_"+account.defaultIdentity.email+".key"]);
+		let mPriv = FileUtils.getFile("Home", ["myPGP", "myKeys", "priv_"+account.defaultIdentity.email+".key"]);
+
 		this.defaultSecureAccount = {
 			name: 			account.defaultIdentity.identityName,
 			email: 			account.defaultIdentity.email,
-			pubKeyFile: 	null, //TODO: load public key file
-			privKeyFile: 	null, //TODO: load private key file
+			pubKeyFile: 	mPub.exists() ? mPub : null,
+			privKeyFile: 	mPriv.exists() ? mPriv : null,
 			cert: 			null //TODO: load certificate file
 		};
 	
@@ -46,18 +49,21 @@ var MypgpSecurityManager = {
 				account = accounts.queryElementAt(i, Components.interfaces.nsIMsgAccount);
 				
 				if(account.defaultIdentity != null && account.defaultIdentity.email != this.defaultSecureAccount.email){
+
+					let mPub = FileUtils.getFile("Home", ["myPGP", "myKeys", "pub_"+account.defaultIdentity.email+".key"]);
+					let mPriv = FileUtils.getFile("Home", ["myPGP", "myKeys", "priv_"+account.defaultIdentity.email+".key"]);
+
 					let nAcc = {
 						name: 			account.defaultIdentity.identityName,
 						email: 			account.defaultIdentity.email,
-						pubKeyFile: 	null, //TODO: load public key file
-						privKeyFile: 	null, //TODO: load private key file
+						pubKeyFile: 	mPub.exists() ? mPub : null,
+						privKeyFile: 	mPriv.exists() ? mPriv : null,
 						cert: 			null //TODO: load certificate file
 					};			
 
 					this.otherSecureAccounts.push(nAcc);
 				}
 			}
-
 		} else { // Gecko < 17
 		
 			for (var i = 0; i < accounts.Count(); i++) {

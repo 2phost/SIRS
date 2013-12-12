@@ -1,5 +1,6 @@
 Components.utils.import("resource://mypgp/mypgpCommon.jsm");
 Components.utils.import("resource://mypgp/mypgpWindowManager.jsm");
+Components.utils.import("resource://mypgp/mypgpSecurityManager.jsm");
 
 <!-- Local Vars -->
 var current_tab = 1;
@@ -9,6 +10,7 @@ var selected_key = null;
 window.addEventListener("load", function(e){
 
 	MypgpCommon.DEBUG_LOG("(KeyManagement) Starting key management window\n");
+	MypgpSecurityManager.DEBUG_STATE();
 
 }, false);
 
