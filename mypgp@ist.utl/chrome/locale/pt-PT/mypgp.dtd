@@ -42,6 +42,7 @@
 <!ENTITY mypgp.label.details				"Detalhes">
 <!ENTITY mypgp.label.key 					"Chave">
 <!ENTITY mypgp.label.keys 					"Chaves">
+<!ENTITY mypgp.label.sign_key				"Assinar Chave">
 <!ENTITY mypgp.label.knownkeys			"Chaves Conhecidas">
 <!ENTITY mypgp.label.revokedkeys			"Chaves Revogadas">
 

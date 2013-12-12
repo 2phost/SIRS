@@ -37,8 +37,12 @@
 							observes="bcNoKeySelected"/>
 
 				<menuseparator/>
-				<menuitem id="meny_keys_send" label="&mypgp.cntmng.emailkeys;"
+				<menuitem id="menu_keys_send" label="&mypgp.cntmng.emailkeys;"
 							oncommand="emailKey()"
+							observes="bcNoKeySelected"/>
+				<menuseparator/>
+				<menuitem id="menu_keys_sign" label="&mypgp.label.sign_key;"
+							oncommand="signKey()"
 							observes="bcNoKeySelected"/>
 				<menuseparator/>
 				<menuitem id="menu_keys_close" label="&mypgp.label.close;" command="close_cmd"/>

@@ -302,6 +302,11 @@ function emailKey(){
 	MypgpCommon.DEBUG_LOG("(myPGPContactManager.js : emailKey) TODO must be implemented\n");
 }
 
+
+function signKey(){
+	alert("TODO: must be implementd");
+}
+
 /**
  * exitContactManager
  */
