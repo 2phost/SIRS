@@ -290,10 +290,14 @@ function exportKey(){
  * Given the selected key, a email window is opened with the selected key file added as an attachment */
 function emailKey(){
 
-	mypgpWindowManager.composeMail(window,
-									focusedContact.username,
-									focusedContact.email,
-									focusedContact.key);
+	if(focusedContact.pubKeyFile != null)
+		mypgpWindowManager.composeKeyTransferMail(
+			window,
+			focusedContact.username,
+			focusedContact.email,
+			focusedContact.pubKeyFile);
+	else
+		MypgpCommon.ERROR_LOG("[myPGPContactManager.js - emailKey] Key file is undefined.");
 
 	MypgpCommon.DEBUG_LOG("(myPGPContactManager.js : emailKey) TODO must be implemented\n");
 }

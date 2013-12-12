@@ -182,5 +182,17 @@ var mypgpFileManager = {
 
 		MypgpCommon.DEBUG_LOG("(mypgpFileManager.jsm : createTmpFile) Returning file at "+tmpFile.path);
 		return tmpFile;
+	},
+
+	createTmpKeyFile: function(keyFile)
+	{
+		if(keyFile != null){
+			tmpKeyFile = FileUtils.getFile(TMP_DIR, [MYPGP_DIR, keyFile.leafName]);
+			keyFile.copyTo(tmpKeyFile.parent, tmpKeyFile.leafName);
+			return tmpKeyFile;
+		}else{
+			MypgpCommon.ERROR_LOG("[mypgpFileManager.jsm - createTmpKeyFile] ERROR: Key file is undefined.");
+			return null;
+		}
 	}
 };

@@ -126,16 +126,6 @@ var mypgpWindowManager = {
 	composeMail: function (win, keyOwnerId, keyOwnerMail, attachment)
 	{
 
-		/*
-		var params = Components.classes[COMPOSE_FIELDS_CONTRACT].createInstance(nsIMsgCompFields);
-
-		var att = Components.classes[ATTACHMENT_CONTRACT].createInstance(nsIMsgAttachment);
-		att.name = "Chave - "+keyOwnerId;
-		att.url = attachment.path;
-		att.contentType = "file/rfc4880"; /*OpenPGP RFC */
-		/*att.temporary = false;
-
-		param.addAttachment(att);*/
 
 		//Create the attachment
 		var tmpFile = mypgpFileManager.createTmpFile("test", "IMMA JUST A TESTRING");
@@ -166,6 +156,38 @@ var mypgpWindowManager = {
 		msgComposeParams.format = nsIMsgCompFormat.Default;
 		msgComposeParams.originalMsgURI = "";
 		msgComposeService.OpenComposeWindowWithParams("", msgComposeParams);
+	},
+
+	composeKeyTransferMail: function(win, keyOwnerId, keyOwnerMail, keyFile)
+	{
+		MypgpCommon.DEBUG_LOG("[mypgpWindowManager - composeKeyTransferMail] Starting ...");
+		var tmpKeyFile = mypgpFileManager.createTmpKeyFile(keyFile);
+
+		if(tmpKeyFile != null){
+			var tmpKeyFileURI = tIOService.newFileURI(tmpKeyFile);
+			var att = Components.classes[ATTACHMENT_CONTRACT].createInstance(nsIMsgAttachment);
+			att.url = tmpKeyFileURI.spec;
+			att.name= tmpKeyFile.leafName;
+			att.temporary = true;
+			att.contentType = "application/pgp-keys";
+
+			//Create the Message
+			var msgCompFields = Components.classes[COMPOSE_FIELDS_CONTRACT].createInstance(nsIMsgCompFields);
+			var accountManager = Components.classes[ACCOUNT_MANAGER_CONTRACT].createInstance(nsIMsgAccountManager);
+			var msgComposeService = Components.classes[MESSENGER_COMPOSE_CONTRACT].createInstance(nsIMsgComposeService);
+			var msgComposeParams = Components.classes[MSG_COMP_PARAMS_CONTRACT].createInstance(nsIMsgComposeParams);
+			var sURL="mailto:?subject=<Chave%20de%20"+keyOwnerId+"%20:%20"+keyOwnerMail+">";
+			var aURI = tIOService.newURI(sURL, null, null); 
+			
+			msgCompFields.addAttachment(att);
+			msgComposeParams.composeFields = msgCompFields;
+			msgComposeParams.identity = accountManager.defaultAccount.defaultIdentity;
+			msgComposeParams.type = nsIMsgCompFormat.New;
+			msgComposeParams.format = nsIMsgCompFormat.Default;
+			msgComposeParams.originalMsgURI = "";
+			msgComposeService.OpenComposeWindowWithParams("", msgComposeParams);
+		}else
+			MypgpCommon.ERROR_LOG("[mypgpWindowManager - composeKeyTransferMail] ERROR: Temporary key file is undefined.");
 	},
 
 	openConfirmPromptDialog: function(title, dialog)
