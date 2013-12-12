@@ -49,6 +49,7 @@ using CryptoPP::AES;
 using CryptoPP::RSA;
 using CryptoPP::InvertibleRSAFunction;
 using CryptoPP::RSAES_OAEP_SHA_Encryptor;
+using CryptoPP::RSAES_OAEP_SHA_Decryptor;
 
 #include <cryptopp/cryptlib.h>
 using CryptoPP::PrivateKey;
@@ -57,6 +58,11 @@ using CryptoPP::PublicKey;
 #include <cryptopp/files.h>
 using CryptoPP::FileSink;
 using CryptoPP::FileSource;
+using CryptoPP::ArraySink;
+
+#include "cryptopp/filters.h"
+using CryptoPP::StringSource;
+using CryptoPP::ArraySource;
 
 #include "cryptopp/osrng.h"
 using CryptoPP::AutoSeededRandomPool;
