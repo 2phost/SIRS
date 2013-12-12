@@ -15,38 +15,41 @@ const CNTMNG_TITLE			= "Gestão de Contactos";
 const ADDRBOOK_TITLE			= "Importar contactos";
 
 // MyPGP Chrome
-const ABOUT 					= "chrome://mypgp/content/mypgpAbout.xul";
+const ABOUT 				= "chrome://mypgp/content/mypgpAbout.xul";
 const PREFERENCES 			= "chrome://mypgp/content/PreferencesWindow/myPGPManagement.xul";
-const KEYMANAGEMENT 			= "chrome://mypgp/content/KeyManagementWindow/myPGPKeyManagement.xul";
-const KEYGEN 					= "chrome://mypgp/content/KeyManagementWindow/myPGPKeyGeneration.xul";
+const KEYMANAGEMENT 		= "chrome://mypgp/content/KeyManagementWindow/myPGPKeyManagement.xul";
+const KEYGEN 				= "chrome://mypgp/content/KeyManagementWindow/myPGPKeyGeneration.xul";
 const CONTACTMANAGEMENT 	= "chrome://mypgp/content/ContactManagementWindow/myPGPContactManager.xul";
 const CONTACT_ADDRBOOK		= "chrome://mypgp/content/ContactManagementWindow/myPGPContactAddressBook.xul";
 
+
 //THUNDERBIRD ContractIDs
-const MESSENGER_COMPOSE_CONTRACT	= "@mozilla.org/messengercompose;1";
-const IO_SERVICE_CONTRACT			= "@mozilla.org/network/io-service;1";
+const MESSENGER_COMPOSE_CONTRACT= "@mozilla.org/messengercompose;1";
+const IO_SERVICE_CONTRACT		= "@mozilla.org/network/io-service;1";
 const FILE_PICKER_CONTRACT 		= "@mozilla.org/filepicker;1";
-const ATTACHMENT_CONTRACT			= "@mozilla.org/messengercompose/attachment;1";
-const COMPOSE_FIELDS_CONTRACT		= "@mozilla.org/messengercompose/composefields;1";
+const ATTACHMENT_CONTRACT		= "@mozilla.org/messengercompose/attachment;1";
+const COMPOSE_FIELDS_CONTRACT	= "@mozilla.org/messengercompose/composefields;1";
 const ACCOUNT_MANAGER_CONTRACT	= "@mozilla.org/messenger/account-manager;1";
 const MSG_COMP_PARAMS_CONTRACT	= "@mozilla.org/messengercompose/composeparams;1";
+const PROMPT_SERVICE_CONTRACT	= "@mozilla.org/embedcomp/prompt-service;1"
 
 //THUNDERBIRD Interfaces
 const nsIMsgComposeService	= Components.interfaces.nsIMsgComposeService;
 const nsIIOService			= Components.interfaces.nsIIOService;
 const nsIFilePicker			= Components.interfaces.nsIFilePicker;
-const nsIFile 					= Components.interfaces.nsIFile;
+const nsIFile 				= Components.interfaces.nsIFile;
 const nsIMsgAttachment		= Components.interfaces.nsIMsgAttachment;
 const nsIMsgCompFields		= Components.interfaces.nsIMsgCompFields;
 const nsIMsgAccountManager	= Components.interfaces.nsIMsgAccountManager;
 const nsIMsgComposeParams	= Components.interfaces.nsIMsgComposeParams;
 const nsIMsgCompFormat		= Components.interfaces.nsIMsgCompFormat;		
+const nsIPromptService 		= Components.interfaces.nsIPromptService
 
 //THUNDERBIRD Components & Services
 const tMsgComposeService 	= Components.classes[MESSENGER_COMPOSE_CONTRACT].getService(nsIMsgComposeService);
 const tIOService 				= Components.classes[IO_SERVICE_CONTRACT].getService(nsIIOService);
 const tFilePicker 			= Components.classes[FILE_PICKER_CONTRACT].createInstance();
-
+const tbPromptService		= Components.classes[PROMPT_SERVICE_CONTRACT].getService(nsIPromptService);
 
 var mypgpWindowManager = {
 
@@ -190,29 +193,30 @@ var mypgpWindowManager = {
 			MypgpCommon.ERROR_LOG("[mypgpWindowManager - composeKeyTransferMail] ERROR: Temporary key file is undefined.");
 	},
 
+	
+	/* Prompt Windows */
+	openAlertPromptDialog : function(title, dialog)
+	{
+		tbPromptService.alert(null, title, dialog);
+	},
+
 	openConfirmPromptDialog: function(title, dialog)
 	{
-		var prompts = Components.classes["@mozilla.org/embedcomp/prompt-service;1"]
-                        .getService(Components.interfaces.nsIPromptService);
-
-		var result = prompts.confirm(null, title, dialog);
+		var result = tbPromptService.confirm(null, title, dialog);
 
 		return result;
 	},
 
 	openSpecialConfirmPromptDialog: function(title, dialog, btn1_title, btn2_title)
 	{
-		var prompts = Components.classes["@mozilla.org/embedcomp/prompt-service;1"]
-			.getService(Components.interfaces.nsIPromptService);
-
 		var check = {value: false};                  // default the checkbox to false
 
 		var flags = 
-			prompts.BUTTON_POS_0 * prompts.BUTTON_TITLE_IS_STRING +
-			prompts.BUTTON_POS_2 * prompts.BUTTON_TITLE_IS_STRING  +
-			prompts.BUTTON_POS_1 * prompts.BUTTON_TITLE_CANCEL;
+			tbPromptService.BUTTON_POS_0 * tbPromptService.BUTTON_TITLE_IS_STRING +
+			tbPromptService.BUTTON_POS_2 * tbPromptService.BUTTON_TITLE_IS_STRING  +
+			tbPromptService.BUTTON_POS_1 * tbPromptService.BUTTON_TITLE_CANCEL;
 
-		var button = prompts.confirmEx(null, title, dialog,
+		var button = tbPromptService.confirmEx(null, title, dialog,
 		   flags, btn1_title, "", btn2_title, null, check);
 
 		var result = {opt1 : false, opt2: false, cancel: true};
@@ -230,7 +234,6 @@ var mypgpWindowManager = {
 				return result;
 		}
 	}
-
 };
 
 

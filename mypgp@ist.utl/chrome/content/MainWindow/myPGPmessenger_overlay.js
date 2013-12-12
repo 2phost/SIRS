@@ -7,6 +7,7 @@ Components.utils.import("resource://mypgp/mypgpSecurityManager.jsm");
 window.addEventListener("load", function(e){
 	
 	MypgpAccountManager.init();
+	MypgpSecurityManager.init();
 	mypgpFileManager.init();
 	
 }, false);
@@ -20,8 +21,7 @@ window.addEventListener("unload", function(e){
 function openAbout(){
 	mypgpWindowManager.openAbout(window);
 
-	MypgpSecurityManager.init();
-	MypgpSecurityManager.DEBUG_STATE();
+
 }
 
 

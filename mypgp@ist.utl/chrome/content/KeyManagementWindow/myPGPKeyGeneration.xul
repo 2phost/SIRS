@@ -56,7 +56,7 @@
 					<menuitem id="keygen_mediumkey"
 						value="1" label="1024" selected="true"/>
 					<menuitem id="keygen_largekey" 
-						value="2" label="2048"/>
+						value="0" label="2048"/>
 				</menupopup>
 			</menulist>	
 		</hbox>

@@ -1,5 +1,4 @@
 Components.utils.import("resource://gre/modules/FileUtils.jsm");
-
 Components.utils.import("resource://mypgp/mypgpCommon.jsm");
 
 var EXPORTED_SYMBOLS = [ "MypgpSecurityManager" ];
@@ -38,17 +37,6 @@ var MypgpSecurityManager = {
 			privKeyFile: 	null, //TODO: load private key file
 			cert: 			null //TODO: load certificate file
 		};
-
-		/*
-
-		let testPubKey = FileUtils.getFile("Home", ["myPGP", "myKeys", "pub.key"]);
-		let testPrivKey = FileUtils.getFile("Home", ["myPGP", "myKeys", "priv.key"]);
-
-		MypgpCommon.DEBUG_LOG("PUB:"+testPubKey.path);
-		MypgpCommon.DEBUG_LOG("PRIV:"+testPrivKey.path);
-
-		mypgpSecure.keygen(1, testPubKey.path, testPrivKey.path);
-		*/
 	
 		this.otherSecureAccounts = new Array();
 
@@ -90,6 +78,41 @@ var MypgpSecurityManager = {
 		}
 
 		MypgpCommon.DEBUG_LOG("[mypgpSecurityManager - init] Security Manager has been initiated.");
+
+	},
+
+	generateKeyPair : function(email, keySize)
+	{
+		//TODO: caminho deve ser constuido nas preferencias
+
+		let mPubKey = FileUtils.getFile("Home", ["myPGP", "myKeys", "pub_"+email+".key"]);
+		let mPrivKey = FileUtils.getFile("Home", ["myPGP", "myKeys", "priv_"+email+".key"]);
+
+		mypgpSecure.keygen(keySize, mPubKey.path, mPrivKey.path);
+
+		MypgpCommon.DEBUG_LOG("[mypgpSecurityManager - generateKeyPair]\n"+
+			"Created new key pair for user <"+email+"> "+
+			"with size "+keySize);
+
+		//TODO genererate certificate
+
+		if(email == this.defaultSecureAccount.email){
+			this.defaultSecureAccount.pubKeyFile = mPubKey;
+			this.defaultSecureAccount.privKeyFile = mPrivKey;
+			//TODO assign certificate
+		}else{
+
+			for(var i = 0; i < this.otherSecureAccounts.length; i++)
+				if(this.otherSecureAccounts[i].email == email){
+					this.otherSecureAccounts[i].pubKeyFile = mPubKey;
+					this.otherSecureAccounts[i].privKeyFile = mPrivKey;
+					//TODO assign certificate
+				}
+		}
+	},
+
+	generateCertificate : function(email, validity)
+	{
 
 	},
 
