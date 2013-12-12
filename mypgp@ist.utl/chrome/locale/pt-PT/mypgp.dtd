@@ -38,6 +38,7 @@
 <!ENTITY mypgp.label.validity				"Validade">
 <!ENTITY mypgp.label.size					"Tamanho">	
 <!ENTITY mypgp.label.revoked				"Revogada">
+<!ENTITY mypgp.label.revoke 				"Revogar">
 <!ENTITY mypgp.label.trusted				"Confiada">
 <!ENTITY mypgp.label.details				"Detalhes">
 <!ENTITY mypgp.label.key 					"Chave">
@@ -51,6 +52,7 @@
 
 <!-- Key Management -->
 <!ENTITY mypgp.keymng.mykeys				"Minhas Chaves">
+<!ENTITY mypgp.keymng.mypubkey			"Minha Chave Pública">
 <!ENTITY mypgp.keymng.otherskeys			"Gestão de Chaves">
 <!ENTITY mypgp.keymng.createkeys			"Criar novo par de chaves">
 <!ENTITY mypgp.keymng.importkeys			"Importar chaves de ficheiro">
