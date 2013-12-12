@@ -3,15 +3,6 @@ Components.utils.import("resource://mypgp/mypgpFileManager.jsm");
 Components.utils.import("resource://mypgp/mypgpWindowManager.jsm");
 Components.utils.import("resource://mypgp/mypgpAccountManager.jsm");
 
-<!-- Local Vars -->
-var addr_contacts = [];
-
-
-<!-- Interfaces -->
-var nsIAbManager = Components.interfaces.nsIAbManager;
-var nsIAbDirectory = Components.interfaces.nsIAbDirectory;
-var nsIAbCard = Components.interfaces.nsIAbCard;
-
 <!-- Component Vars -->
 var input_contacts = null;
 var input_contactsChildren = null;
@@ -41,16 +32,11 @@ var broadcasterHandler = {
 	focusContact: function()
 	{
 		this.BcNoFocusedContact.setAttribute("disabled", "false");
-	},
 
-	selectKey: function ()
-	{
-		this.BcNoKeySelected.setAttribute("disabled", "false");
-	},
-
-	deselectKey: function ()
-	{
-		this.BcNoKeySelected.setAttribute("disabled", "true");
+		if(focusedContact.pubKeyId != null && focusedContact.pubKeyFile != null)
+			this.BcNoKeySelected.setAttribute("disabled", "false");
+		else
+			this.BcNoKeySelected.setAttribute("disabled", "true");
 	}
 };
 
@@ -216,12 +202,6 @@ function saveChanges(){
 }
 
 function cancelChanges(){
-
-
-
-	MypgpCommon.DEBUG_LOG("(myPGPContactManager.js : cancelChanges) TODO must be implemented\n");
-
-
 	focusDetailedContact();
 }
 
@@ -295,11 +275,11 @@ function importKey(){
  * file system as a file */
 function exportKey(){
 
-	var file = mypgpWindowManager.openFileBrowsingWindow(window, "Exportar Chave", true, null);
+	var file = mypgpWindowManager.openFileBrowsingWindow(window, "Exportar Chave", true, focusedContact.pubKeyId);
 	/*TODO: Passar a chave para o mypgpFileManager */
 	
 	if(file != null){
-		mypgpFileManager.writeKeyAsFile(file, null, "TODO: must pass the key");
+		mypgpFileManager.exportKey(focusedContact.pubKeyFile, file);
 		MypgpCommon.DEBUG_LOG("(myPGPContactManager.js : importKey) "+file.path+"\n");
 	}
 }

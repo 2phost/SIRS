@@ -51,19 +51,28 @@ var mypgpFileManager = {
 		}
 	},
 
+	exportKey: function (keyFile, destFile){
+		if(keyFile != null){
+			keyFile.copyTo(destFile.parent, destFile.leafName);
+		}else
+			MypgpCommon.ERROR_LOG("[mypgpFileManager.jsm - exportKey]\n ERROR: Key file is undefined.");
+
+	},
+
 	/**
 	 *
 	 * @param {nsIFile} file
 	 * @param {} flags
 	 * @param {string} data
 	 */
-	writeKeyAsFile: function (file, flags, data)
+	writeKeyAsFile: function (file, flags, keyFile)
 	{
 		file.createUnique(nsIFile.NORMAL_FILE_TYPE, 0600);
 
 		fileOutputStream = FileUtils.openSafeFileOutputStream(file);
 		outputConverter.charset = "UTF-8";
-
+		//TODO se calhar era uma solucao mais inteligente usar o nsIFile.copyTo
+		var data = readDataFromFile(keyFile);
 		fileInputStream = outputConverter.convertToInputStream(data);
 
 		NetUtil.asyncCopy(fileInputStream, fileOutputStream, function(status){

@@ -89,13 +89,19 @@ var mypgpWindowManager = {
 		win.openDialog(CONTACT_ADDRBOOK, ADDRBOOK_TITLE, null);
 	},
 
-	openFileBrowsingWindow: function (win, title, save)
+	openFileBrowsingWindow: function (win, title, save, pubKeyId)
 	{
 		var file = null;
 		var file_picker = tFilePicker.QueryInterface(nsIFilePicker);
 		var mode = save ? nsIFilePicker.modeSave : nsIFilePicker.modeOpen;
 
 		file_picker.init(win, title, mode);
+		file_picker.defaultExtension = KEY_EXT;
+
+		if(save){
+			MypgpCommon.DEBUG_LOG("----->"+pubKeyId);
+			file_picker.defaultString = pubKeyId;
+		}
 
 		if(!this.filters_appended){
 			file_picker.appendFilter("Chaves", KEY_EXT);

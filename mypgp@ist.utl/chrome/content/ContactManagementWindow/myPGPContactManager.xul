@@ -155,10 +155,10 @@
 				<hbox flex="0" align="right">
 					<command id="cntmng_cancel_cmd" oncommand="cancelChanges();"/>
 					<button id="cntmng_save_btn" label="&mypgp.label.save;"
-							observes="bcNoFocusedContact"
+							disabled="true"
 							oncommand="saveChanges()"/>
 					<button id="cntmng_cancel_btn" label="&mypgp.label.cancel;"
-							observes="bcNoFocusedContact"
+							disabled="true"
 							oncommand="cancelChanges();"/> 
 				</hbox>
 			</vbox>
