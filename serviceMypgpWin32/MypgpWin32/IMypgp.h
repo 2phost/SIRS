@@ -50,8 +50,8 @@ class NS_NO_VTABLE IMypgp : public nsISupports {
   /* void decrypt (in string cyphertext, in string keysession, in long keySize, in long ivSize, out string plain_Text); */
   NS_IMETHOD Decrypt(const char * cyphertext, const char * keysession, int32_t keySize, int32_t ivSize, char * *plain_Text) = 0;
 
-  /* void keygen (in unsigned long type, in string path); */
-  NS_IMETHOD Keygen(uint32_t type, const char * path) = 0;
+  /* void keygen (in unsigned long type, in string publicPath, in string privatePath); */
+  NS_IMETHOD Keygen(uint32_t type, const char * publicPath, const char * privatePath) = 0;
 
   /* void sessionKeygen (in long keySize, in long ivSize, out string keySession); */
   NS_IMETHOD SessionKeygen(int32_t keySize, int32_t ivSize, char * *keySession) = 0;
@@ -71,7 +71,7 @@ class NS_NO_VTABLE IMypgp : public nsISupports {
   NS_IMETHOD DecryptSession(const char * encryptSession, int32_t encryptSessionSize, const char * keyPath, char * *sessionKey, int32_t *sessionKeySize); \
   NS_IMETHOD Encrypt(const char * plaintext, const char * keysession, int32_t keySize, int32_t ivSize, char * *cypher_Text); \
   NS_IMETHOD Decrypt(const char * cyphertext, const char * keysession, int32_t keySize, int32_t ivSize, char * *plain_Text); \
-  NS_IMETHOD Keygen(uint32_t type, const char * path); \
+  NS_IMETHOD Keygen(uint32_t type, const char * publicPath, const char * privatePath); \
   NS_IMETHOD SessionKeygen(int32_t keySize, int32_t ivSize, char * *keySession); \
   NS_IMETHOD Add(int32_t a, int32_t b, int32_t *_retval); 
 
@@ -83,7 +83,7 @@ class NS_NO_VTABLE IMypgp : public nsISupports {
   NS_IMETHOD DecryptSession(const char * encryptSession, int32_t encryptSessionSize, const char * keyPath, char * *sessionKey, int32_t *sessionKeySize) { return _to DecryptSession(encryptSession, encryptSessionSize, keyPath, sessionKey, sessionKeySize); } \
   NS_IMETHOD Encrypt(const char * plaintext, const char * keysession, int32_t keySize, int32_t ivSize, char * *cypher_Text) { return _to Encrypt(plaintext, keysession, keySize, ivSize, cypher_Text); } \
   NS_IMETHOD Decrypt(const char * cyphertext, const char * keysession, int32_t keySize, int32_t ivSize, char * *plain_Text) { return _to Decrypt(cyphertext, keysession, keySize, ivSize, plain_Text); } \
-  NS_IMETHOD Keygen(uint32_t type, const char * path) { return _to Keygen(type, path); } \
+  NS_IMETHOD Keygen(uint32_t type, const char * publicPath, const char * privatePath) { return _to Keygen(type, publicPath, privatePath); } \
   NS_IMETHOD SessionKeygen(int32_t keySize, int32_t ivSize, char * *keySession) { return _to SessionKeygen(keySize, ivSize, keySession); } \
   NS_IMETHOD Add(int32_t a, int32_t b, int32_t *_retval) { return _to Add(a, b, _retval); } 
 
@@ -95,7 +95,7 @@ class NS_NO_VTABLE IMypgp : public nsISupports {
   NS_IMETHOD DecryptSession(const char * encryptSession, int32_t encryptSessionSize, const char * keyPath, char * *sessionKey, int32_t *sessionKeySize) { return !_to ? NS_ERROR_NULL_POINTER : _to->DecryptSession(encryptSession, encryptSessionSize, keyPath, sessionKey, sessionKeySize); } \
   NS_IMETHOD Encrypt(const char * plaintext, const char * keysession, int32_t keySize, int32_t ivSize, char * *cypher_Text) { return !_to ? NS_ERROR_NULL_POINTER : _to->Encrypt(plaintext, keysession, keySize, ivSize, cypher_Text); } \
   NS_IMETHOD Decrypt(const char * cyphertext, const char * keysession, int32_t keySize, int32_t ivSize, char * *plain_Text) { return !_to ? NS_ERROR_NULL_POINTER : _to->Decrypt(cyphertext, keysession, keySize, ivSize, plain_Text); } \
-  NS_IMETHOD Keygen(uint32_t type, const char * path) { return !_to ? NS_ERROR_NULL_POINTER : _to->Keygen(type, path); } \
+  NS_IMETHOD Keygen(uint32_t type, const char * publicPath, const char * privatePath) { return !_to ? NS_ERROR_NULL_POINTER : _to->Keygen(type, publicPath, privatePath); } \
   NS_IMETHOD SessionKeygen(int32_t keySize, int32_t ivSize, char * *keySession) { return !_to ? NS_ERROR_NULL_POINTER : _to->SessionKeygen(keySize, ivSize, keySession); } \
   NS_IMETHOD Add(int32_t a, int32_t b, int32_t *_retval) { return !_to ? NS_ERROR_NULL_POINTER : _to->Add(a, b, _retval); } 
 
@@ -167,8 +167,8 @@ NS_IMETHODIMP _MYCLASS_::Decrypt(const char * cyphertext, const char * keysessio
     return NS_ERROR_NOT_IMPLEMENTED;
 }
 
-/* void keygen (in unsigned long type, in string path); */
-NS_IMETHODIMP _MYCLASS_::Keygen(uint32_t type, const char * path)
+/* void keygen (in unsigned long type, in string publicPath, in string privatePath); */
+NS_IMETHODIMP _MYCLASS_::Keygen(uint32_t type, const char * publicPath, const char * privatePath)
 {
     return NS_ERROR_NOT_IMPLEMENTED;
 }
