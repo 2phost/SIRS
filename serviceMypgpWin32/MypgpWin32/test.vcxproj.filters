@@ -15,25 +15,20 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\serviceMypgp\Mypgp.cpp">
+    <ClCompile Include="MypgpModule.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\serviceMypgp\MypgpModule.cpp">
+    <ClCompile Include="Mypgp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\serviceMypgp\Mypgp.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="IMypgp.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <CustomBuild Include="Mypgp.idl">
-      <Filter>Source Files</Filter>
-    </CustomBuild>
+    <ClInclude Include="Mypgp.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="IMypgp.xpt" />

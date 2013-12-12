@@ -89,22 +89,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\serviceMypgp\Mypgp.cpp" />
-    <ClCompile Include="..\..\serviceMypgp\MypgpModule.cpp" />
+    <ClCompile Include="Mypgp.cpp" />
+    <ClCompile Include="MypgpModule.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="Mypgp.idl">
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ProjectDir)xpidl-build.bat %(Filename)%(Extension)
-</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\%(Filename).h;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(ProjectDir)xpidl-build.bat %(Filename)%(Extension)
-</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\%(Filename).h;%(Outputs)</Outputs>
-    </CustomBuild>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\..\serviceMypgp\Mypgp.h" />
     <ClInclude Include="IMypgp.h" />
+    <ClInclude Include="Mypgp.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="IMypgp.xpt" />

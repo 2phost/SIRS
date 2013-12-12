@@ -6,11 +6,10 @@
 <window id="myPGPKeyGeneration.xul"
 		title="&mypgp.keymng.keygen;"
 		orient="vertical"
-		width="500px" height="500px"
 		screenX="50%" screenY="50%"
 		xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
-		<script type="application/javascript" src="chrome://mypgp/content/KeyManagementWindow/myPGPKeyGeneration.js"/>
+	<script type="application/javascript" src="chrome://mypgp/content/KeyManagementWindow/myPGPKeyGeneration.js"/>
 
 	<!-- Window -->
 	<separator/>
@@ -25,12 +24,12 @@
 		</hbox>
 	</groupbox>
 
-	<separator/>
-
+	
 	<!-- Key Validity Box -->
-	<groupbox id="keygen_validity" flex="1">
+	<groupbox id="keygen_validity" flex="0">
 		<caption label="&mypgp.keymng.validity;"/>
-		<hbox flex="1">
+		<separator/>
+		<hbox>
 			<label value="&mypgp.keymng.keyduration;"/>
 			<textbox id="keygen_expiration" size="3" maxlength="3" value="0"/>
 			<menulist id="keygen_exp_opts" value="365">
@@ -45,42 +44,35 @@
 			<checkbox id="keygen_infinitekey" label="&mypgp.keymng.everlastingkey;" oncommand="everlastingKey()"/>
 		</hbox>
 	</groupbox>
-	
-	<separator/>
 
 	<!-- Key Algorithmic Properties Box -->
 	<groupbox id="keygen_keyproperties" flex="1">
 		<caption label="&mypgp.keymng.keyproperties;"/>
-		<hbox flex="1">
+		<hbox>
 			<label value="&mypgp.keymng.keysize;"/>
 			<menulist id="keygen_keysize_list">
 				<menupopup>
 					<!-- TODO: lista deve ir buscar os valores ao commons -->
-					<menuitem id="keygen_mediumkey" value="1024" label="1024" selected="true"/>
-					<menuitem id="keygen_largekey" value="2048" label="2048"/>
+					<menuitem id="keygen_mediumkey"
+						value="1" label="1024" selected="true"/>
+					<menuitem id="keygen_largekey" 
+						value="2" label="2048"/>
 				</menupopup>
 			</menulist>	
 		</hbox>
 	</groupbox>
-
-	<separator/>
-
-	<!-- Key Generation Box -->
-	<groupbox id="keygen_keygen" flex="0">
-		<caption label="&mypgp.keymng.keygen;"/>
+	
+	<vbox>	
 		<hbox align="right">
 			<command id="keygen_create_cmd" oncommand="generateNewKeyPair()"/>
 			<command id="keygen_cancel_cmd" oncommand=""/>
+			<command id="keygen_close_cmd" oncommand="window.close();"/>
+
 			<button id="keygen_create_btn" label="&mypgp.label.create;" command="keygen_create_cmd"/>
 			<button id="keygen_cancel_btn" label="&mypgp.label.cancel;" command="keygen_cancel_cmd" disabled="true"/>
+			<button id="keygen_close_btn" label="&mypgp.label.close;" command="keygen_close_cmd"/>
 		</hbox>
-		<label id="warn_lbl" label="" style="color: red"/>
-	</groupbox>
-		
-	<hbox align="right">
-		<command id="keygen_close_cmd" oncommand="window.close();"/>
-		<button id="keygen_close_btn" label="&mypgp.label.close;" command="keygen_close_cmd"/>
-	</hbox>
+	</vbox>
 		
 	<statusbar>
 		<spacer flex="1"/>
