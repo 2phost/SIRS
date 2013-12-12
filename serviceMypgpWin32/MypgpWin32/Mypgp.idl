@@ -37,7 +37,7 @@ interface IMypgp : nsISupports
 	/**
 	 * Generate Private/Public Key
 	 */
-	void keygen(in unsigned long type, in string path);
+	void keygen(in unsigned long type, in string publicPath, in string privatePath);
 
 	/**
 	 * Generate Session Key and return it

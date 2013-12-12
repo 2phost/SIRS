@@ -199,8 +199,8 @@ NS_IMETHODIMP Mypgp::DecryptSession(const char * encryptSession, int32_t encrypt
     return NS_OK;
 }
 
-/* void keygen (in unsigned long type, in string path); */
-NS_IMETHODIMP Mypgp::Keygen(uint32_t type, const char * path)
+/* void keygen (in unsigned long type, in string publicPath, in string privatePath); */
+NS_IMETHODIMP Mypgp::Keygen(uint32_t type, const char * publicPath, const char * privatePath)
 {
 	int keysize;
 
@@ -220,16 +220,6 @@ NS_IMETHODIMP Mypgp::Keygen(uint32_t type, const char * path)
 	RSA::PrivateKey rsaPrivate(parameters);
 	RSA::PublicKey rsaPublic(parameters);
 
-
-	/* Save Keys */
-	char *publicPath = (char*)NS_Alloc(sizeof(char) * (strlen(path)+16));
-	strncpy(publicPath, path, strlen(path));
-	strncat(publicPath, "mypgpPublic.key", 16);
-
-	char *privatePath = (char*)NS_Alloc(sizeof(char) * (strlen(path)+17));
-	strncpy(privatePath, path, strlen(path));
-	strncat(privatePath, "mypgpPrivate.key", 17);
-
 	rsaPublic.Save(
         FileSink( publicPath, true /*binary*/ ).Ref()
     );
@@ -237,9 +227,6 @@ NS_IMETHODIMP Mypgp::Keygen(uint32_t type, const char * path)
 	rsaPrivate.Save(
         FileSink( privatePath, true /*binary*/ ).Ref()
     );
-
-	NS_Free(publicPath);
-	NS_Free(privatePath);	
 
     return NS_OK;
 }
