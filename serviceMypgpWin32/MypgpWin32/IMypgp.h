@@ -32,20 +32,29 @@ class NS_NO_VTABLE IMypgp : public nsISupports {
     SHORT_KEY = 1U
   };
 
-  /* void secureMsg (in string plaintext, in long lenght, in string keyPath); */
-  NS_IMETHOD SecureMsg(const char * plaintext, int32_t lenght, const char * keyPath) = 0;
+  /* void secureMsg (in string plaintext, in string cypherPath, in string keyPath); */
+  NS_IMETHOD SecureMsg(const char * plaintext, const char * cypherPath, const char * keyPath) = 0;
 
-  /* string encrypt (in string plaintext, in string keysession); */
-  NS_IMETHOD Encrypt(const char * plaintext, const char * keysession, char * *_retval) = 0;
+  /* string unSecureMsg (in string cypherPath, in string keyPath); */
+  NS_IMETHOD UnSecureMsg(const char * cypherPath, const char * keyPath, char * *_retval) = 0;
 
-  /* string decrypt (in string cyphertext, in string keysession); */
-  NS_IMETHOD Decrypt(const char * cyphertext, const char * keysession, char * *_retval) = 0;
+  /* void encryptSession (in string sessionKey, in long sessionKeySize, in string keyPath, out string encryptSession, out long encryptSessionSize); */
+  NS_IMETHOD EncryptSession(const char * sessionKey, int32_t sessionKeySize, const char * keyPath, char * *encryptSession, int32_t *encryptSessionSize) = 0;
+
+  /* void decryptSession (in string encryptSession, in long encryptSessionSize, in string keyPath, out string sessionKey, out long sessionKeySize); */
+  NS_IMETHOD DecryptSession(const char * encryptSession, int32_t encryptSessionSize, const char * keyPath, char * *sessionKey, int32_t *sessionKeySize) = 0;
+
+  /* void encrypt (in string plaintext, in string keysession, in long keySize, in long ivSize, out string cypher_Text); */
+  NS_IMETHOD Encrypt(const char * plaintext, const char * keysession, int32_t keySize, int32_t ivSize, char * *cypher_Text) = 0;
+
+  /* void decrypt (in string cyphertext, in string keysession, in long keySize, in long ivSize, out string plain_Text); */
+  NS_IMETHOD Decrypt(const char * cyphertext, const char * keysession, int32_t keySize, int32_t ivSize, char * *plain_Text) = 0;
 
   /* void keygen (in unsigned long type, in string path); */
   NS_IMETHOD Keygen(uint32_t type, const char * path) = 0;
 
-  /* string sessionKeygen (in long keySize, in long ivSize); */
-  NS_IMETHOD SessionKeygen(int32_t keySize, int32_t ivSize, char * *_retval) = 0;
+  /* void sessionKeygen (in long keySize, in long ivSize, out string keySession); */
+  NS_IMETHOD SessionKeygen(int32_t keySize, int32_t ivSize, char * *keySession) = 0;
 
   /* long add (in long a, in long b); */
   NS_IMETHOD Add(int32_t a, int32_t b, int32_t *_retval) = 0;
@@ -56,29 +65,38 @@ class NS_NO_VTABLE IMypgp : public nsISupports {
 
 /* Use this macro when declaring classes that implement this interface. */
 #define NS_DECL_IMYPGP \
-  NS_IMETHOD SecureMsg(const char * plaintext, int32_t lenght, const char * keyPath); \
-  NS_IMETHOD Encrypt(const char * plaintext, const char * keysession, char * *_retval); \
-  NS_IMETHOD Decrypt(const char * cyphertext, const char * keysession, char * *_retval); \
+  NS_IMETHOD SecureMsg(const char * plaintext, const char * cypherPath, const char * keyPath); \
+  NS_IMETHOD UnSecureMsg(const char * cypherPath, const char * keyPath, char * *_retval); \
+  NS_IMETHOD EncryptSession(const char * sessionKey, int32_t sessionKeySize, const char * keyPath, char * *encryptSession, int32_t *encryptSessionSize); \
+  NS_IMETHOD DecryptSession(const char * encryptSession, int32_t encryptSessionSize, const char * keyPath, char * *sessionKey, int32_t *sessionKeySize); \
+  NS_IMETHOD Encrypt(const char * plaintext, const char * keysession, int32_t keySize, int32_t ivSize, char * *cypher_Text); \
+  NS_IMETHOD Decrypt(const char * cyphertext, const char * keysession, int32_t keySize, int32_t ivSize, char * *plain_Text); \
   NS_IMETHOD Keygen(uint32_t type, const char * path); \
-  NS_IMETHOD SessionKeygen(int32_t keySize, int32_t ivSize, char * *_retval); \
+  NS_IMETHOD SessionKeygen(int32_t keySize, int32_t ivSize, char * *keySession); \
   NS_IMETHOD Add(int32_t a, int32_t b, int32_t *_retval); 
 
 /* Use this macro to declare functions that forward the behavior of this interface to another object. */
 #define NS_FORWARD_IMYPGP(_to) \
-  NS_IMETHOD SecureMsg(const char * plaintext, int32_t lenght, const char * keyPath) { return _to SecureMsg(plaintext, lenght, keyPath); } \
-  NS_IMETHOD Encrypt(const char * plaintext, const char * keysession, char * *_retval) { return _to Encrypt(plaintext, keysession, _retval); } \
-  NS_IMETHOD Decrypt(const char * cyphertext, const char * keysession, char * *_retval) { return _to Decrypt(cyphertext, keysession, _retval); } \
+  NS_IMETHOD SecureMsg(const char * plaintext, const char * cypherPath, const char * keyPath) { return _to SecureMsg(plaintext, cypherPath, keyPath); } \
+  NS_IMETHOD UnSecureMsg(const char * cypherPath, const char * keyPath, char * *_retval) { return _to UnSecureMsg(cypherPath, keyPath, _retval); } \
+  NS_IMETHOD EncryptSession(const char * sessionKey, int32_t sessionKeySize, const char * keyPath, char * *encryptSession, int32_t *encryptSessionSize) { return _to EncryptSession(sessionKey, sessionKeySize, keyPath, encryptSession, encryptSessionSize); } \
+  NS_IMETHOD DecryptSession(const char * encryptSession, int32_t encryptSessionSize, const char * keyPath, char * *sessionKey, int32_t *sessionKeySize) { return _to DecryptSession(encryptSession, encryptSessionSize, keyPath, sessionKey, sessionKeySize); } \
+  NS_IMETHOD Encrypt(const char * plaintext, const char * keysession, int32_t keySize, int32_t ivSize, char * *cypher_Text) { return _to Encrypt(plaintext, keysession, keySize, ivSize, cypher_Text); } \
+  NS_IMETHOD Decrypt(const char * cyphertext, const char * keysession, int32_t keySize, int32_t ivSize, char * *plain_Text) { return _to Decrypt(cyphertext, keysession, keySize, ivSize, plain_Text); } \
   NS_IMETHOD Keygen(uint32_t type, const char * path) { return _to Keygen(type, path); } \
-  NS_IMETHOD SessionKeygen(int32_t keySize, int32_t ivSize, char * *_retval) { return _to SessionKeygen(keySize, ivSize, _retval); } \
+  NS_IMETHOD SessionKeygen(int32_t keySize, int32_t ivSize, char * *keySession) { return _to SessionKeygen(keySize, ivSize, keySession); } \
   NS_IMETHOD Add(int32_t a, int32_t b, int32_t *_retval) { return _to Add(a, b, _retval); } 
 
 /* Use this macro to declare functions that forward the behavior of this interface to another object in a safe way. */
 #define NS_FORWARD_SAFE_IMYPGP(_to) \
-  NS_IMETHOD SecureMsg(const char * plaintext, int32_t lenght, const char * keyPath) { return !_to ? NS_ERROR_NULL_POINTER : _to->SecureMsg(plaintext, lenght, keyPath); } \
-  NS_IMETHOD Encrypt(const char * plaintext, const char * keysession, char * *_retval) { return !_to ? NS_ERROR_NULL_POINTER : _to->Encrypt(plaintext, keysession, _retval); } \
-  NS_IMETHOD Decrypt(const char * cyphertext, const char * keysession, char * *_retval) { return !_to ? NS_ERROR_NULL_POINTER : _to->Decrypt(cyphertext, keysession, _retval); } \
+  NS_IMETHOD SecureMsg(const char * plaintext, const char * cypherPath, const char * keyPath) { return !_to ? NS_ERROR_NULL_POINTER : _to->SecureMsg(plaintext, cypherPath, keyPath); } \
+  NS_IMETHOD UnSecureMsg(const char * cypherPath, const char * keyPath, char * *_retval) { return !_to ? NS_ERROR_NULL_POINTER : _to->UnSecureMsg(cypherPath, keyPath, _retval); } \
+  NS_IMETHOD EncryptSession(const char * sessionKey, int32_t sessionKeySize, const char * keyPath, char * *encryptSession, int32_t *encryptSessionSize) { return !_to ? NS_ERROR_NULL_POINTER : _to->EncryptSession(sessionKey, sessionKeySize, keyPath, encryptSession, encryptSessionSize); } \
+  NS_IMETHOD DecryptSession(const char * encryptSession, int32_t encryptSessionSize, const char * keyPath, char * *sessionKey, int32_t *sessionKeySize) { return !_to ? NS_ERROR_NULL_POINTER : _to->DecryptSession(encryptSession, encryptSessionSize, keyPath, sessionKey, sessionKeySize); } \
+  NS_IMETHOD Encrypt(const char * plaintext, const char * keysession, int32_t keySize, int32_t ivSize, char * *cypher_Text) { return !_to ? NS_ERROR_NULL_POINTER : _to->Encrypt(plaintext, keysession, keySize, ivSize, cypher_Text); } \
+  NS_IMETHOD Decrypt(const char * cyphertext, const char * keysession, int32_t keySize, int32_t ivSize, char * *plain_Text) { return !_to ? NS_ERROR_NULL_POINTER : _to->Decrypt(cyphertext, keysession, keySize, ivSize, plain_Text); } \
   NS_IMETHOD Keygen(uint32_t type, const char * path) { return !_to ? NS_ERROR_NULL_POINTER : _to->Keygen(type, path); } \
-  NS_IMETHOD SessionKeygen(int32_t keySize, int32_t ivSize, char * *_retval) { return !_to ? NS_ERROR_NULL_POINTER : _to->SessionKeygen(keySize, ivSize, _retval); } \
+  NS_IMETHOD SessionKeygen(int32_t keySize, int32_t ivSize, char * *keySession) { return !_to ? NS_ERROR_NULL_POINTER : _to->SessionKeygen(keySize, ivSize, keySession); } \
   NS_IMETHOD Add(int32_t a, int32_t b, int32_t *_retval) { return !_to ? NS_ERROR_NULL_POINTER : _to->Add(a, b, _retval); } 
 
 #if 0
@@ -113,20 +131,38 @@ _MYCLASS_::~_MYCLASS_()
   /* destructor code */
 }
 
-/* void secureMsg (in string plaintext, in long lenght, in string keyPath); */
-NS_IMETHODIMP _MYCLASS_::SecureMsg(const char * plaintext, int32_t lenght, const char * keyPath)
+/* void secureMsg (in string plaintext, in string cypherPath, in string keyPath); */
+NS_IMETHODIMP _MYCLASS_::SecureMsg(const char * plaintext, const char * cypherPath, const char * keyPath)
 {
     return NS_ERROR_NOT_IMPLEMENTED;
 }
 
-/* string encrypt (in string plaintext, in string keysession); */
-NS_IMETHODIMP _MYCLASS_::Encrypt(const char * plaintext, const char * keysession, char * *_retval)
+/* string unSecureMsg (in string cypherPath, in string keyPath); */
+NS_IMETHODIMP _MYCLASS_::UnSecureMsg(const char * cypherPath, const char * keyPath, char * *_retval)
 {
     return NS_ERROR_NOT_IMPLEMENTED;
 }
 
-/* string decrypt (in string cyphertext, in string keysession); */
-NS_IMETHODIMP _MYCLASS_::Decrypt(const char * cyphertext, const char * keysession, char * *_retval)
+/* void encryptSession (in string sessionKey, in long sessionKeySize, in string keyPath, out string encryptSession, out long encryptSessionSize); */
+NS_IMETHODIMP _MYCLASS_::EncryptSession(const char * sessionKey, int32_t sessionKeySize, const char * keyPath, char * *encryptSession, int32_t *encryptSessionSize)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* void decryptSession (in string encryptSession, in long encryptSessionSize, in string keyPath, out string sessionKey, out long sessionKeySize); */
+NS_IMETHODIMP _MYCLASS_::DecryptSession(const char * encryptSession, int32_t encryptSessionSize, const char * keyPath, char * *sessionKey, int32_t *sessionKeySize)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* void encrypt (in string plaintext, in string keysession, in long keySize, in long ivSize, out string cypher_Text); */
+NS_IMETHODIMP _MYCLASS_::Encrypt(const char * plaintext, const char * keysession, int32_t keySize, int32_t ivSize, char * *cypher_Text)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* void decrypt (in string cyphertext, in string keysession, in long keySize, in long ivSize, out string plain_Text); */
+NS_IMETHODIMP _MYCLASS_::Decrypt(const char * cyphertext, const char * keysession, int32_t keySize, int32_t ivSize, char * *plain_Text)
 {
     return NS_ERROR_NOT_IMPLEMENTED;
 }
@@ -137,8 +173,8 @@ NS_IMETHODIMP _MYCLASS_::Keygen(uint32_t type, const char * path)
     return NS_ERROR_NOT_IMPLEMENTED;
 }
 
-/* string sessionKeygen (in long keySize, in long ivSize); */
-NS_IMETHODIMP _MYCLASS_::SessionKeygen(int32_t keySize, int32_t ivSize, char * *_retval)
+/* void sessionKeygen (in long keySize, in long ivSize, out string keySession); */
+NS_IMETHODIMP _MYCLASS_::SessionKeygen(int32_t keySize, int32_t ivSize, char * *keySession)
 {
     return NS_ERROR_NOT_IMPLEMENTED;
 }

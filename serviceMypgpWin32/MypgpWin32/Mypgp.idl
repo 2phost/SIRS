@@ -15,13 +15,24 @@ interface IMypgp : nsISupports
     /**
      * Creates an object with session key encrypted plus ciphertext
      */
-    void secureMsg(in string plaintext, in long lenght, in string keyPath);
+    void secureMsg(in string plaintext, in string cypherPath, in string keyPath);
+    
+    /**
+     * Return PlainText from an object with session key encrypted plus ciphertext
+     */
+    string unSecureMsg(in string cypherPath, in string keyPath);
 
+	/**
+	 * Encrypt/Decrypt sessionKey with publickey/privatekey
+	 */
+	void encryptSession(in string sessionKey, in long sessionKeySize, in string keyPath, out string encryptSession, out long encryptSessionSize);
+	void decryptSession(in string encryptSession, in long encryptSessionSize, in string keyPath, out string sessionKey, out long sessionKeySize);
+	 
 	/**
 	 * Encrypt/Decrypt msgs from keysession
 	 */
-	string encrypt(in string plaintext, in string keysession);
-	string decrypt(in string cyphertext, in string keysession);
+	void encrypt(in string plaintext, in string keysession, in long keySize, in long ivSize, out string cypher_Text);
+	void decrypt(in string cyphertext, in string keysession, in long keySize, in long ivSize, out string plain_Text);
 
 	/**
 	 * Generate Private/Public Key
@@ -31,7 +42,7 @@ interface IMypgp : nsISupports
 	/**
 	 * Generate Session Key and return it
 	 */
-	string sessionKeygen(in long keySize, in long ivSize);
+	void sessionKeygen(in long keySize, in long ivSize, out string keySession);
 	
 
 	long add(in long a, in long b);
