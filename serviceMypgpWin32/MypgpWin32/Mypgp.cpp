@@ -1,4 +1,5 @@
 #include "Mypgp.h"
+#include <cstdlib>
 
 static NS_DEFINE_CID(kMsgComposeSecureCID, MYPGP_CID);
 
@@ -45,7 +46,7 @@ NS_IMETHODIMP Mypgp::SecureMsg(const char * plaintext, const char * cypherPath, 
 	**********************/
 	
 	int outfileSize = strlen(plaintext) + encryptSessionSize;
-	char * outfileData = (char *)NS_Alloc(sizeof(unsigned char) * outfileSize);
+	char * outfileData = (char *)malloc(sizeof(unsigned char) * outfileSize);
 
 	
   for(i=0; i<encryptSessionSize; i++){
@@ -75,15 +76,15 @@ NS_IMETHODIMP Mypgp::UnSecureMsg(const char * cypherPath, const char * keyPath, 
 	
   std::string s;
   FileSource file( cypherPath, true, new HexDecoder(new CryptoPP::StringSink( s ) ));
-	
-  char * encryptSession = (char *)NS_Alloc(sizeof(unsigned char)*256);
+
+  char * encryptSession = (char *)malloc(sizeof(unsigned char)*256);
   for(i=0; i<256; i++){
 	encryptSession[i] = s[i];
   }
 	
 
   int cypherTextSize = 0;
-  char * cypherText = (char *)NS_Alloc(sizeof(unsigned char)*(s.length() - 256));
+  char * cypherText = (char *)malloc(sizeof(unsigned char)*(s.length() - 256));
   for(i=256, j=0 ; i<s.length(); i++, j++){
 	cypherText[j] = s[i];
 	cypherTextSize++;
@@ -105,7 +106,7 @@ NS_IMETHODIMP Mypgp::UnSecureMsg(const char * cypherPath, const char * keyPath, 
   Decrypt(cypherText, keySession, CryptoPP::CIPHER::DEFAULT_KEYLENGTH, CryptoPP::CIPHER::BLOCKSIZE, &plainText);
 	
 
-  *_retval = (char *)NS_Alloc(sizeof(unsigned char) * (cypherTextSize+1));
+  *_retval = (char *)malloc(sizeof(unsigned char) * (cypherTextSize+1));
   for(i=0; i < cypherTextSize; i++){
 	(*_retval)[i] = plainText[i];
   }
@@ -147,12 +148,12 @@ NS_IMETHODIMP Mypgp::EncryptSession(const char * sessionKey, int32_t sessionKeyS
 
   *encryptSessionSize = encryptor.CiphertextLength( sessionKeySize );
 	
-  char *keyEncrypted = (char *)NS_Alloc(sizeof(unsigned char) * *encryptSessionSize );
+  char *keyEncrypted = (char *)malloc(sizeof(unsigned char) * *encryptSessionSize );
 		    
   //Encrypt (RandomNumberGenerator &rng, const byte *plaintext, size_t plaintextLength, byte *ciphertext, const NameValuePairs &parameters=g_nullNameValuePairs) const =0
   encryptor.Encrypt( rng, (unsigned char *)sessionKey, sessionKeySize, (unsigned char *)keyEncrypted);
     
-  *encryptSession = (char *)NS_Alloc(sizeof(unsigned char) * *encryptSessionSize);
+  *encryptSession = (char *)malloc(sizeof(unsigned char) * *encryptSessionSize);
   for(i=0; i < *encryptSessionSize; i++){
 	(*encryptSession)[i] = keyEncrypted[i];
   }
@@ -194,12 +195,12 @@ NS_IMETHODIMP Mypgp::DecryptSession(const char * encryptSession, int32_t encrypt
     
   *sessionKeySize = decryptor.MaxPlaintextLength( encryptSessionSize );
     
-  char *keyDecrypted = (char *)NS_Alloc(sizeof(unsigned char) * *sessionKeySize );
+  char *keyDecrypted = (char *)malloc(sizeof(unsigned char) * *sessionKeySize );
   
   /* Decrypt (RandomNumberGenerator &rng, const byte *ciphertext, size_t ciphertextLength, byte *plaintext, const NameValuePairs &parameters=g_nullNameValuePairs) const =0 */
   decryptor.Decrypt( rng, (unsigned char *)encryptSession, encryptSessionSize, (unsigned char *)keyDecrypted);
     
-  *sessionKey = (char *)NS_Alloc(sizeof(unsigned char) * *sessionKeySize);
+  *sessionKey = (char *)malloc(sizeof(unsigned char) * *sessionKeySize);
   for(i=0; i < *sessionKeySize; i++){
 	(*sessionKey)[i] = keyDecrypted[i];
   }
@@ -248,9 +249,9 @@ NS_IMETHODIMP Mypgp::SessionKeygen(int32_t keySize, int32_t ivSize, char * *keyS
   int i, j;
 
   /* Standard - CryptoPP::CIPHER::DEFAULT_KEYLENGTH */
-  char *key = (char *)NS_Alloc(sizeof(unsigned char)*keySize);
+  char *key = (char *)malloc(sizeof(unsigned char)*keySize);
   /* Standard - CryptoPP::CIPHER::BLOCKSIZE */
-  char *iv = (char *)NS_Alloc(sizeof(unsigned char)*ivSize);
+  char *iv = (char *)malloc(sizeof(unsigned char)*ivSize);
 
   AutoSeededRandomPool rnd;
 
@@ -260,7 +261,7 @@ NS_IMETHODIMP Mypgp::SessionKeygen(int32_t keySize, int32_t ivSize, char * *keyS
   // Generate a random IV
   rnd.GenerateBlock((unsigned char *)iv, ivSize);	
 
-  *keySession = (char *)NS_Alloc(sizeof(unsigned char)*(keySize + ivSize));
+  *keySession = (char *)malloc(sizeof(unsigned char)*(keySize + ivSize));
   for(i=0; i < ivSize; i++){
 	(*keySession)[i] = iv[i];
   }
@@ -289,14 +290,14 @@ NS_IMETHODIMP Mypgp::Encrypt(const char * plaintext, const char * keysession, in
 	iv[j] = (unsigned char)keysession[i];
   }
 
-  char *cypherText = (char *)NS_Alloc(sizeof(unsigned char) * strlen(plaintext));
+  char *cypherText = (char *)malloc(sizeof(unsigned char) * strlen(plaintext));
 	
   // Encryptor
   CFB_Mode<AES>::Encryption cfbEncryption(key, sizeof(key), iv);
   cfbEncryption.ProcessData((unsigned char *)cypherText, (unsigned char *)plaintext, strlen(plaintext));
 
 
-  *cypher_Text = (char *)NS_Alloc(sizeof(unsigned char) * strlen(plaintext));
+  *cypher_Text = (char *)malloc(sizeof(unsigned char) * strlen(plaintext));
   for(i=0; i < strlen(plaintext); i++){
 	(*cypher_Text)[i] = cypherText[i];
   }
@@ -324,13 +325,13 @@ NS_IMETHODIMP Mypgp::Decrypt(const char * cyphertext, const char * keysession, i
   }
 
 	
-  char *plainText = (char *)NS_Alloc(sizeof(unsigned char) * strlen(cyphertext));
+  char *plainText = (char *)malloc(sizeof(unsigned char) * strlen(cyphertext));
 	
   // Decryptor
   CFB_Mode< AES >::Decryption cfbDecryption(key, sizeof(key), iv);
   cfbDecryption.ProcessData((unsigned char *)plainText, (unsigned char *)cyphertext, strlen(cyphertext));
 	
-  *plain_Text = (char *)NS_Alloc(sizeof(unsigned char) * strlen(cyphertext));
+  *plain_Text = (char *)malloc(sizeof(unsigned char) * strlen(cyphertext));
   for(i=0; i < strlen(cyphertext); i++){
 	(*plain_Text)[i] = plainText[i];
   }

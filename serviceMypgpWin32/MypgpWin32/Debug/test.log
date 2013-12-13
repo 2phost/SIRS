@@ -1,4 +1,4 @@
-﻿Build started 13/12/2013 05:15:09.
+﻿Build started 13/12/2013 05:46:22.
      1>Project "C:\Users\rodrigo\Development\MyPGP\SIRS\serviceMypgpWin32\MypgpWin32\test.vcxproj" on node 2 (build target(s)).
      1>InitializeBuildStatus:
          Touching "Debug\MypgpWin32.unsuccessfulbuild".
@@ -26,4 +26,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:00.51
+Time Elapsed 00:00:00.53

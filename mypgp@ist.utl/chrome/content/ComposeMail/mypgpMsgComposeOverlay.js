@@ -1,6 +1,14 @@
 Components.utils.import("resource://mypgp/mypgpCommon.jsm");
 Components.utils.import("resource://mypgp/mypgpSecurityManager.jsm");
 
+const IO_SERVICE_CONTRACT	= "@mozilla.org/network/io-service;1";
+const ATTACHMENT_CONTRACT	= "@mozilla.org/messengercompose/attachment;1";
+
+const nsIIOService			= Components.interfaces.nsIIOService;
+const nsIMsgAttachment		= Components.interfaces.nsIMsgAttachment;
+
+const tbIOService 			= Components.classes[IO_SERVICE_CONTRACT].getService(nsIIOService);
+
 if (! MyPGP) var MyPGP = {};
 
 MyPGP.msg = {
@@ -122,16 +130,32 @@ MyPGP.msg = {
 			let attachmentFile = MypgpSecurityManager.cipherTextToFile(null, plaintext);
 
 			if(attachmentFile != null){
-				/*
-				var tmpKeyFileURI = tIOService.newFileURI(tmpKeyFile);
-				var att = Components.classes[ATTACHMENT_CONTRACT].createInstance(nsIMsgAttachment);
-				att.url = tmpKeyFileURI.spec;
-				att.name= tmpKeyFile.leafName;
-				att.temporary = true;
-				att.contentType = "application/pgp-keys";
 
-				gMsgCompose.compFields.
-				*/
+				MypgpCommon.DEBUG_LOG("[mypgpMsgComposeOverlay - ()] Ciphered Attachment created at "+attachmentFile.path);
+				try{
+					var tmpFileURI = tbIOService.newFileURI(attachmentFile);
+					MypgpCommon.DEBUG_LOG("1");
+					var att = Components.classes[ATTACHMENT_CONTRACT].createInstance(nsIMsgAttachment);
+					MypgpCommon.DEBUG_LOG("2");
+					att.url = tmpFileURI.spec;
+					MypgpCommon.DEBUG_LOG("3");
+					att.name= attachmentFile.leafName;
+					MypgpCommon.DEBUG_LOG("4");
+					att.temporary = true;
+					MypgpCommon.DEBUG_LOG("5");
+					att.contentType = "application/pgp-keys";
+					MypgpCommon.DEBUG_LOG("6");
+
+					gMsgCompose.compFields.addAttachment(att);
+
+					MypgpCommon.DEBUG_LOG("7");
+
+
+					MypgpCommon.DEBUG_LOG("[mypgpMsgComposeOverlay - ()]\n"+
+						attachmentFile.leafName+" attached to the message.");
+				}catch(error){
+					MypgpCommon.ERROR_LOG("[mypgpMsgComposeOverlay - ()] ERROR: "+error);
+				}
 			}
 
 			/*
