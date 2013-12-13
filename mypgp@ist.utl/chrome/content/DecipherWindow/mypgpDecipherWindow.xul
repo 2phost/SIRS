@@ -23,10 +23,15 @@
 				<!-- Menu Items -->	
 				<menuitem id="import_cipher" label="&mypgp.decipher.import;"
 					oncommand="importCipherFile()"/>
-				<menuitem id="keymng_export_keys" label="&mypgp.decipher.export;" 
+				<menuitem id="export_plaintext" label="&mypgp.decipher.export;" 
 					command="keymng_export_keys_cmd"/>
 
 				<menuseparator id="keymng_menuseparator_1"/>
+
+				<menuitem id="import_kdk" label="Importar chave" 
+					oncommand="importKdk()"/>
+
+				<menuseparator id="keymng_menuseparator_2"/>
 
 				<menuitem id="keymng_close" label="&mypgp.label.close;" oncommand="window.close()"/>
 
@@ -41,6 +46,14 @@
 		</hbox>
 		<caption/>
 		<vbox flex="1">
+			<hbox flex="0">
+				<label flex="1" value="Email Cifrado:"/>
+				<textbox id="ciphered_email" flex="1" readonly="true" multiline="false" value="none"/>
+			</hbox>
+			<hbox flex="0">
+				<label flex="1" value="Chave:"/>
+				<textbox id="kdk" flex="1" readonly="true" multiline="false" value="none"/>
+			</hbox>
 			<textbox id="deciphered_email" flex="1" multiline="true" readonly="true" value="none"/>
 			<hbox flex="0" align="right">
 				<button label="&mypgp.decipher.title;" oncommand="decipherEmail()"/>
