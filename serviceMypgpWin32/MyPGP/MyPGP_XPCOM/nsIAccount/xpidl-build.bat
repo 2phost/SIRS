@@ -1,2 +1,0 @@
-D:\Projects\xulrunner-sdk\sdk\bin\header.py -ID:\Projects\xulrunner-sdk\idl --cachedir=\tmp -o nsIMypgpAccount.h %1
-D:\Projects\xulrunner-sdk\sdk\bin\typelib.py -ID:\Projects\xulrunner-sdk\idl --cachedir=\tmp -o nsIMypgpAccount.xpt %1

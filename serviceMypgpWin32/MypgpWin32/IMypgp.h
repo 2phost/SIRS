@@ -56,6 +56,9 @@ class NS_NO_VTABLE IMypgp : public nsISupports {
   /* void sessionKeygen (in long keySize, in long ivSize, out string keySession); */
   NS_IMETHOD SessionKeygen(int32_t keySize, int32_t ivSize, char * *keySession) = 0;
 
+  /* void createCertificate (in string publicKeyPath, in string privateKeyPath, in string name, in string validaty, in unsigned long type, in string path); */
+  NS_IMETHOD CreateCertificate(const char * publicKeyPath, const char * privateKeyPath, const char * name, const char * validaty, uint32_t type, const char * path) = 0;
+
   /* long add (in long a, in long b); */
   NS_IMETHOD Add(int32_t a, int32_t b, int32_t *_retval) = 0;
 
@@ -73,6 +76,7 @@ class NS_NO_VTABLE IMypgp : public nsISupports {
   NS_IMETHOD Decrypt(const char * cyphertext, const char * keysession, int32_t keySize, int32_t ivSize, char * *plain_Text); \
   NS_IMETHOD Keygen(uint32_t type, const char * publicPath, const char * privatePath); \
   NS_IMETHOD SessionKeygen(int32_t keySize, int32_t ivSize, char * *keySession); \
+  NS_IMETHOD CreateCertificate(const char * publicKeyPath, const char * privateKeyPath, const char * name, const char * validaty, uint32_t type, const char * path); \
   NS_IMETHOD Add(int32_t a, int32_t b, int32_t *_retval); 
 
 /* Use this macro to declare functions that forward the behavior of this interface to another object. */
@@ -85,6 +89,7 @@ class NS_NO_VTABLE IMypgp : public nsISupports {
   NS_IMETHOD Decrypt(const char * cyphertext, const char * keysession, int32_t keySize, int32_t ivSize, char * *plain_Text) { return _to Decrypt(cyphertext, keysession, keySize, ivSize, plain_Text); } \
   NS_IMETHOD Keygen(uint32_t type, const char * publicPath, const char * privatePath) { return _to Keygen(type, publicPath, privatePath); } \
   NS_IMETHOD SessionKeygen(int32_t keySize, int32_t ivSize, char * *keySession) { return _to SessionKeygen(keySize, ivSize, keySession); } \
+  NS_IMETHOD CreateCertificate(const char * publicKeyPath, const char * privateKeyPath, const char * name, const char * validaty, uint32_t type, const char * path) { return _to CreateCertificate(publicKeyPath, privateKeyPath, name, validaty, type, path); } \
   NS_IMETHOD Add(int32_t a, int32_t b, int32_t *_retval) { return _to Add(a, b, _retval); } 
 
 /* Use this macro to declare functions that forward the behavior of this interface to another object in a safe way. */
@@ -97,6 +102,7 @@ class NS_NO_VTABLE IMypgp : public nsISupports {
   NS_IMETHOD Decrypt(const char * cyphertext, const char * keysession, int32_t keySize, int32_t ivSize, char * *plain_Text) { return !_to ? NS_ERROR_NULL_POINTER : _to->Decrypt(cyphertext, keysession, keySize, ivSize, plain_Text); } \
   NS_IMETHOD Keygen(uint32_t type, const char * publicPath, const char * privatePath) { return !_to ? NS_ERROR_NULL_POINTER : _to->Keygen(type, publicPath, privatePath); } \
   NS_IMETHOD SessionKeygen(int32_t keySize, int32_t ivSize, char * *keySession) { return !_to ? NS_ERROR_NULL_POINTER : _to->SessionKeygen(keySize, ivSize, keySession); } \
+  NS_IMETHOD CreateCertificate(const char * publicKeyPath, const char * privateKeyPath, const char * name, const char * validaty, uint32_t type, const char * path) { return !_to ? NS_ERROR_NULL_POINTER : _to->CreateCertificate(publicKeyPath, privateKeyPath, name, validaty, type, path); } \
   NS_IMETHOD Add(int32_t a, int32_t b, int32_t *_retval) { return !_to ? NS_ERROR_NULL_POINTER : _to->Add(a, b, _retval); } 
 
 #if 0
@@ -175,6 +181,12 @@ NS_IMETHODIMP _MYCLASS_::Keygen(uint32_t type, const char * publicPath, const ch
 
 /* void sessionKeygen (in long keySize, in long ivSize, out string keySession); */
 NS_IMETHODIMP _MYCLASS_::SessionKeygen(int32_t keySize, int32_t ivSize, char * *keySession)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* void createCertificate (in string publicKeyPath, in string privateKeyPath, in string name, in string validaty, in unsigned long type, in string path); */
+NS_IMETHODIMP _MYCLASS_::CreateCertificate(const char * publicKeyPath, const char * privateKeyPath, const char * name, const char * validaty, uint32_t type, const char * path)
 {
     return NS_ERROR_NOT_IMPLEMENTED;
 }

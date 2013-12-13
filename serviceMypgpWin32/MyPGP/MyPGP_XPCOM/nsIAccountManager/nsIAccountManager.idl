@@ -1,8 +1,0 @@
-#include "nsISupports.idl"
-
-[scriptable, uuid(432af7c9-f3de-4b5d-98f9-5bc5aea057e2)]
-interface nsIMypgpAccountManager : nsISupports
-{
-  attribute AString name;
-};
-
