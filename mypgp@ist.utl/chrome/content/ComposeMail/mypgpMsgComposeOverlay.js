@@ -9,6 +9,9 @@ const nsIMsgAttachment		= Components.interfaces.nsIMsgAttachment;
 
 const tbIOService 			= Components.classes[IO_SERVICE_CONTRACT].getService(nsIIOService);
 
+const tbAccountManager 		= Components.classes["@mozilla.org/messenger/account-manager;1"]
+                        		.getService(Components.interfaces.nsIMsgAccountManager);
+
 if (! MyPGP) var MyPGP = {};
 
 MyPGP.msg = {
@@ -94,6 +97,7 @@ MyPGP.msg = {
   		if( !(sendMsgType == nsIMsgCompDeliverMode.Now || sendMsgType == nsIMsgCompDeliverMode.Later) )  
     		return;  
 
+    	if(this.secureMode){
 			// alter subject  
 			// you should save changes to both message composition fields and subject widget  
 			let original_subject = gMsgCompose.compFields.subject;
@@ -117,39 +121,36 @@ MyPGP.msg = {
 				} else {  
 					editor.insertHTML("<p>Assunto: "+original_subject+"</p><br>");
 					plaintext = editor.outputToString("text/html", 2);
-				}  
+				}
+
+				editor.selectAll();
+				editor.deleteSelection(editor.eNext, editor.eStrip);
+
 				editor.endTransaction();  
 
 			} catch(ex) { 
 				MypgpCommon.ERROR_LOG("[mypgpMsgComposerOverlay - ()] ERROR:"+ex);
 				Components.utils.reportError(ex);  
 				return false;  
-			}  
+			} 
 
-
-			let attachmentFile = MypgpSecurityManager.cipherTextToFile(null, plaintext);
+			let from = getCurrentIdentity().email;
+			let attachmentFile = MypgpSecurityManager.cipherTextToFile(from, plaintext);
 
 			if(attachmentFile != null){
 
 				MypgpCommon.DEBUG_LOG("[mypgpMsgComposeOverlay - ()] Ciphered Attachment created at "+attachmentFile.path);
 				try{
 					var tmpFileURI = tbIOService.newFileURI(attachmentFile);
-					MypgpCommon.DEBUG_LOG("1");
 					var att = Components.classes[ATTACHMENT_CONTRACT].createInstance(nsIMsgAttachment);
-					MypgpCommon.DEBUG_LOG("2");
 					att.url = tmpFileURI.spec;
-					MypgpCommon.DEBUG_LOG("3");
 					att.name= attachmentFile.leafName;
-					MypgpCommon.DEBUG_LOG("4");
 					att.temporary = true;
-					MypgpCommon.DEBUG_LOG("5");
 					att.contentType = "application/pgp-keys";
-					MypgpCommon.DEBUG_LOG("6");
 
 					gMsgCompose.compFields.addAttachment(att);
 
-					MypgpCommon.DEBUG_LOG("7");
-
+					toggleSecure();
 
 					MypgpCommon.DEBUG_LOG("[mypgpMsgComposeOverlay - ()]\n"+
 						attachmentFile.leafName+" attached to the message.");
@@ -157,14 +158,9 @@ MyPGP.msg = {
 					MypgpCommon.ERROR_LOG("[mypgpMsgComposeOverlay - ()] ERROR: "+error);
 				}
 			}
-
-			/*
-		if (! this.encryptMsg(sendMsgType)) {
-     		event.preventDefault();
-	       	event.stopPropagation();
-     	}	
-			*/
-     
+		}else
+			MypgpCommon.DEBUG_LOG("[mypgpMsgComposeOverlay - ()]\n"+
+						"Sending regular mail.");
 	}
 
 }
