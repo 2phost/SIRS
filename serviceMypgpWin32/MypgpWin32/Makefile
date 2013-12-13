@@ -6,7 +6,7 @@ XPIDL	       ?= $(GECKO_SDK_PATH)/bin/xpidl
 HEADERPY	   ?= $(GECKO_SDK_PATH)/sdk/bin/header.py
 TYPELIBPY      ?= $(GECKO_SDK_PATH)/sdk/bin/typelib.py
 
-CXX	       = clang++
+CXX	       = g++ #clang++
 
 XPIDLSRCS	= \
 		Mypgp.idl \

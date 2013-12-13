@@ -3,48 +3,52 @@
 [scriptable, uuid(f380ecd6-5e8d-4e11-8d85-d16a8e28e6d0)]
 interface IMypgp : nsISupports
 {
-	/**
-	*  Create Types 
-	*
-	*  LONG_KEY    - 2046 bits key.
-	*  SHORT_KEY   - 1024 bits key.
-	*/
-	const unsigned long LONG_KEY = 0;
-	const unsigned long SHORT_KEY = 1;
+  /**
+   *  Create Types 
+   *
+   *  LONG_KEY    - 2046 bits key.
+   *  SHORT_KEY   - 1024 bits key.
+   */
+  const unsigned long LONG_KEY = 0;
+  const unsigned long SHORT_KEY = 1;
 
-    /**
-     * Creates an object with session key encrypted plus ciphertext
-     */
-    void secureMsg(in string plaintext, in string cypherPath, in string keyPath);
+  /**
+   * Creates an object with session key encrypted plus ciphertext
+   */
+  void secureMsg(in string plaintext, in string cypherPath, in string keyPath);
     
-    /**
-     * Return PlainText from an object with session key encrypted plus ciphertext
-     */
-    string unSecureMsg(in string cypherPath, in string keyPath);
+  /**
+   * Return PlainText from an object with session key encrypted plus ciphertext
+   */
+  string unSecureMsg(in string cypherPath, in string keyPath);
 
-	/**
-	 * Encrypt/Decrypt sessionKey with publickey/privatekey
-	 */
-	void encryptSession(in string sessionKey, in long sessionKeySize, in string keyPath, out string encryptSession, out long encryptSessionSize);
-	void decryptSession(in string encryptSession, in long encryptSessionSize, in string keyPath, out string sessionKey, out long sessionKeySize);
+  /**
+   * Encrypt/Decrypt sessionKey with publickey/privatekey
+   */
+  void encryptSession(in string sessionKey, in long sessionKeySize, in string keyPath, out string encryptSession, out long encryptSessionSize);
+  void decryptSession(in string encryptSession, in long encryptSessionSize, in string keyPath, out string sessionKey, out long sessionKeySize);
 	 
-	/**
-	 * Encrypt/Decrypt msgs from keysession
-	 */
-	void encrypt(in string plaintext, in string keysession, in long keySize, in long ivSize, out string cypher_Text);
-	void decrypt(in string cyphertext, in string keysession, in long keySize, in long ivSize, out string plain_Text);
+  /**
+   * Encrypt/Decrypt msgs from keysession
+   */
+  void encrypt(in string plaintext, in string keysession, in long keySize, in long ivSize, out string cypher_Text);
+  void decrypt(in string cyphertext, in string keysession, in long keySize, in long ivSize, out string plain_Text);
 
-	/**
-	 * Generate Private/Public Key
-	 */
-	void keygen(in unsigned long type, in string publicPath, in string privatePath);
+  /**
+   * Generate Private/Public Key
+   */
+  void keygen(in unsigned long type, in string publicPath, in string privatePath);
+  
+  /**
+   * Generate Session Key and return it
+   */
+  void sessionKeygen(in long keySize, in long ivSize, out string keySession);
 
-	/**
-	 * Generate Session Key and return it
-	 */
-	void sessionKeygen(in long keySize, in long ivSize, out string keySession);
-	
+  /**
+   * Create a certificate
+   */
+  void createCertificate(in string publicKeyPath, in string privateKeyPath, in string name, in string validaty, in unsigned long type, in string path);
 
-	long add(in long a, in long b);
+  long add(in long a, in long b);
 };
 	

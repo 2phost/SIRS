@@ -45,6 +45,16 @@ using CryptoPP::CFB_Mode;
 #include "cryptopp/aes.h"
 using CryptoPP::AES;
 
+#include "cryptopp/pssr.h"
+using CryptoPP::PSS;
+
+#include "cryptopp/sha.h"
+using CryptoPP::SHA1;
+
+#include "cryptopp/hex.h"
+using CryptoPP::HexEncoder;
+using CryptoPP::HexDecoder;
+
 #include "cryptopp/rsa.h"
 using CryptoPP::RSA;
 using CryptoPP::InvertibleRSAFunction;
