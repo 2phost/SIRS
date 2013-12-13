@@ -129,9 +129,6 @@ var MypgpSecurityManager = {
 		if(email == this.defaultSecureAccount.email && this.defaultSecureAccount.pubKeyFile != null){
 
 			mypgpSecure.secureMsg(plaintext, tempCipherText.path, this.defaultSecureAccount.pubKeyFile.path);
-			
-			MypgpCommon.DEBUG_LOG("Cipher Text Path:"+tempCipherText.path);
-			MypgpCommon.DEBUG_LOG("Pub Key Path:"+this.defaultSecureAccount.pubKeyFile.path);
 
 			return tempCipherText;
 
@@ -139,6 +136,13 @@ var MypgpSecurityManager = {
 			MypgpCommon.ERROR_LOG("SO FUNCIONA PARA CONTA DEFAULT");
 			return null;
 		}
+	},
+
+
+	decipherFileToText : function(cipherFile, privKeyFile, keySize){
+
+
+		return mypgpSecure.unSecureMsg(cipherFile.path, privKeyFile.path, keySize);
 	},
 
 	terminate : function ()

@@ -1,5 +1,6 @@
 Components.utils.import("resource://mypgp/mypgpCommon.jsm");
 Components.utils.import("resource://mypgp/mypgpSecurityManager.jsm");
+Components.utils.import("resource://mypgp/mypgpFileManager.jsm");
 
 const IO_SERVICE_CONTRACT	= "@mozilla.org/network/io-service;1";
 const ATTACHMENT_CONTRACT	= "@mozilla.org/messengercompose/attachment;1";

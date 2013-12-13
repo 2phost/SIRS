@@ -48,7 +48,7 @@
 <!ENTITY mypgp.label.revokedkeys			"Chaves Revogadas">
 
 <!-- MainWindow - messenger.xul overlay -->
-<!ENTITY mypgp.messenger.decypher		"Descifrar">
+<!ENTITY mypgp.messenger.decypher		"Descifrar Mensagem">
 
 <!-- Key Management -->
 <!ENTITY mypgp.keymng.mykeys				"Minhas Chaves">
@@ -82,3 +82,8 @@
 <!ENTITY mypgp.cntmng.trust.trust			"Confio">
 <!ENTITY mypgp.cntmng.trust.prompt			"Confirma que confia completamente neste contacto?">
 <!ENTITY mypgp.cntmng.trust.warning			"ATENÇÃO">
+
+<!ENTITY mypgp.decipher.title			"Descifrar Email">
+<!ENTITY mypgp.decipher.menu			"Emails">
+<!ENTITY mypgp.decipher.import			"Importar email cifrado">
+<!ENTITY mypgp.decipher.export			"Exportar email descifrado">

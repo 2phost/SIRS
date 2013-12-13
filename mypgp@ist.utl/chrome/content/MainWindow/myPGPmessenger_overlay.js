@@ -4,26 +4,29 @@ Components.utils.import("resource://mypgp/mypgpAccountManager.jsm");
 Components.utils.import("resource://mypgp/mypgpFileManager.jsm");
 Components.utils.import("resource://mypgp/mypgpSecurityManager.jsm");
 
+
 window.addEventListener("load", function(e){
-	
+
 	MypgpAccountManager.init();
 	MypgpSecurityManager.init();
 	mypgpFileManager.init();
+
 	
 }, false);
 
-window.addEventListener("unload", function(e){
+window.addEventListener("unload", function(){
 
 	MypgpAccountManager.terminate();
 
 }, false);
 
-function openAbout(){
-	mypgpWindowManager.openAbout(window);
-
-
+function decipherMessage(){
+	mypgpWindowManager.openDecipherWindow(window);
 }
 
+function openAbout(){
+	mypgpWindowManager.openAbout(window);
+}
 
 function openPreferences(){
 	mypgpWindowManager.openPreferences(window);
