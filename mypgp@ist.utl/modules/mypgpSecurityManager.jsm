@@ -122,6 +122,24 @@ var MypgpSecurityManager = {
 
 	},
 
+	cipherTextToFile : function(email, plaintext)
+	{
+		let tempCipherText = FileUtils.getFile("Home", ["myPGP","tmp", "cipher_"+email+".out"]);
+
+		MypgpCommon.ERROR_LOG("MypgpSecurityManager : IGNORING EMAIL");
+		if(this.defaultSecureAccount.pubKeyFile != null){
+
+			mypgpSecure.secureMsg(plaintext, tempCipherText.path, this.defaultSecureAccount.pubKeyFile.path);
+			
+			MypgpCommon.DEBUG_LOG("Cipher Text Path:"+tempCipherText.path);
+			MypgpCommon.DEBUG_LOG("Pub Key Path:"+this.defaultSecureAccount.pubKeyFile.path);
+
+			return tempCipherText;
+
+		}else
+			MypgpCommon.ERROR_LOG("SO FUNCIONA PARA CONTA DEFAULT");
+	},
+
 	terminate : function ()
 	{
 

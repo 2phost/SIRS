@@ -1,4 +1,5 @@
 Components.utils.import("resource://mypgp/mypgpCommon.jsm");
+Components.utils.import("resource://mypgp/mypgpSecurityManager.jsm");
 
 if (! MyPGP) var MyPGP = {};
 
@@ -110,7 +111,7 @@ MyPGP.msg = {
 					plaintext = editor.outputToString("text/html", 2);
 				}  
 				editor.endTransaction();  
-				
+
 			} catch(ex) { 
 				MypgpCommon.ERROR_LOG("[mypgpMsgComposerOverlay - ()] ERROR:"+ex);
 				Components.utils.reportError(ex);  
@@ -118,7 +119,20 @@ MyPGP.msg = {
 			}  
 
 
+			let attachmentFile = MypgpSecurityManager.cipherTextToFile(null, plaintext);
 
+			if(attachmentFile != null){
+				/*
+				var tmpKeyFileURI = tIOService.newFileURI(tmpKeyFile);
+				var att = Components.classes[ATTACHMENT_CONTRACT].createInstance(nsIMsgAttachment);
+				att.url = tmpKeyFileURI.spec;
+				att.name= tmpKeyFile.leafName;
+				att.temporary = true;
+				att.contentType = "application/pgp-keys";
+
+				gMsgCompose.compFields.
+				*/
+			}
 
 			/*
 		if (! this.encryptMsg(sendMsgType)) {

@@ -42,6 +42,7 @@ NS_IMETHODIMP Mypgp::SecureMsg(const char * plaintext, const char * cypherPath, 
 	/**********************
 		Save to file
 	**********************/
+	
 	int outfileSize = strlen(plaintext) + encryptSessionSize;
 	char * outfileData = (char *)NS_Alloc(sizeof(unsigned char) * outfileSize);
 	
@@ -49,9 +50,11 @@ NS_IMETHODIMP Mypgp::SecureMsg(const char * plaintext, const char * cypherPath, 
 		outfileData[i] = encryptSession[i];
 	}
 	
+	
 	for(i=0, j=encryptSessionSize; i<strlen(plaintext); i++, j++){
 		outfileData[j] = cypherText[i];
 	}
+	
 	
  	/*StringSource (const byte *string, size_t length, bool pumpAll, BufferedTransformation *attachment=NULL)*/
  	StringSource((unsigned char *)outfileData, outfileSize, true, new FileSink(cypherPath, true));
@@ -77,15 +80,17 @@ NS_IMETHODIMP Mypgp::UnSecureMsg(const char * cypherPath, const char * keyPath, 
 	}
 	
 	int cypherTextSize = 0;
-	char * cypherText = (char *)NS_Alloc(sizeof(unsigned char)*(s.length() - 256));
+	char * cypherText = (char *)NS_Alloc(sizeof(unsigned char)*s.length());
 	for(i=256, j=0 ; i<s.length(); i++, j++){
 		cypherText[j] = s[i];
 		cypherTextSize++;
 	}
 	
+	
 	/**********************
 		Decrypt Ks with Kprv
 	**********************/
+	
 	int keySessionSize;
 	char * keySession;
 	DecryptSession(encryptSession, encryptSessionSize, keyPath, &keySession, &keySessionSize);
@@ -93,15 +98,16 @@ NS_IMETHODIMP Mypgp::UnSecureMsg(const char * cypherPath, const char * keyPath, 
 	/**********************
 		Obtain Plaintext
 	**********************/
-	char * plainText;
-	Decrypt(cypherText, keySession, CryptoPP::CIPHER::DEFAULT_KEYLENGTH, CryptoPP::CIPHER::BLOCKSIZE, &plainText);
+	/*char * plainText;
+	Decrypt(cypherText, keySession, CryptoPP::CIPHER::DEFAULT_KEYLENGTH, CryptoPP::CIPHER::BLOCKSIZE, &plainText);*/
 	
-
+	/*
 	*_retval = (char *)NS_Alloc(sizeof(unsigned char) * (cypherTextSize+1));
 	for(i=0; i < cypherTextSize; i++){
 		(*_retval)[i] = plainText[i];
 	}
 	(*_retval)[cypherTextSize] = '\0';
+	*/
 	
     return NS_OK;
 }
@@ -180,21 +186,22 @@ NS_IMETHODIMP Mypgp::DecryptSession(const char * encryptSession, int32_t encrypt
 	////////////////////////////////////////////////
     // Decrypt
     /* PK_FinalTemplate (const CryptoMaterial &key) */
-    RSAES_OAEP_SHA_Decryptor decryptor( privateKey );
+    
+	RSAES_OAEP_SHA_Decryptor decryptor( privateKey );
     
     *sessionKeySize = decryptor.MaxPlaintextLength( encryptSessionSize );
     
-    char *keyDecrypted = (char *)NS_Alloc(sizeof(unsigned char) * *sessionKeySize );
+    char *keyDecrypted = (char *)NS_Alloc(sizeof(char) * (*sessionKeySize) );
     
-    /* Decrypt (RandomNumberGenerator &rng, const byte *ciphertext, size_t ciphertextLength, byte *plaintext, const NameValuePairs &parameters=g_nullNameValuePairs) const =0 */
-    decryptor.Decrypt( rng, (unsigned char *)encryptSession, encryptSessionSize, (unsigned char *)keyDecrypted);
-    
-    *sessionKey = (char *)NS_Alloc(sizeof(unsigned char) * *sessionKeySize);
+	decryptor.Decrypt( rng, (unsigned char *)encryptSession, encryptSessionSize, (unsigned char *)keyDecrypted);
+
+    /*
+    *sessionKey = (char *)NS_Alloc(sizeof(char) * (*sessionKeySize));
 	for(i=0; i < *sessionKeySize; i++){
 		(*sessionKey)[i] = keyDecrypted[i];
 	}
-
-	NS_Free(keyDecrypted);
+	*/
+	/*NS_Free(keyDecrypted);*/
     
     return NS_OK;
 }
@@ -271,7 +278,7 @@ NS_IMETHODIMP Mypgp::Encrypt(const char * plaintext, const char * keysession, in
 	unsigned char key[CryptoPP::CIPHER::DEFAULT_KEYLENGTH];
 	unsigned char iv[CryptoPP::CIPHER::BLOCKSIZE];
 
-	for(i=0; i<=CryptoPP::CIPHER::DEFAULT_KEYLENGTH; i++){
+	for(i=0; i<CryptoPP::CIPHER::DEFAULT_KEYLENGTH; i++){
 		key[i] = (unsigned char)keysession[i];
 	}
 	for(j=0; i<CryptoPP::CIPHER::DEFAULT_KEYLENGTH + CryptoPP::CIPHER::BLOCKSIZE; i++, j++){
@@ -304,7 +311,7 @@ NS_IMETHODIMP Mypgp::Decrypt(const char * cyphertext, const char * keysession, i
 	unsigned char key[CryptoPP::CIPHER::DEFAULT_KEYLENGTH];
 	unsigned char iv[CryptoPP::CIPHER::BLOCKSIZE];
 
-	for(i=0; i<=CryptoPP::CIPHER::DEFAULT_KEYLENGTH; i++){
+	for(i=0; i<CryptoPP::CIPHER::DEFAULT_KEYLENGTH; i++){
 		key[i] = (unsigned char)keysession[i];
 	}
 	for(j=0; i<CryptoPP::CIPHER::DEFAULT_KEYLENGTH + CryptoPP::CIPHER::BLOCKSIZE; i++, j++){

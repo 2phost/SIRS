@@ -1,6 +1,8 @@
-﻿Build started 12/12/2013 20:19:25.
+﻿Build started 13/12/2013 03:58:00.
      1>Project "C:\Users\rodrigo\Development\MyPGP\SIRS\serviceMypgpWin32\MypgpWin32\test.vcxproj" on node 2 (rebuild target(s)).
-     1>InitializeBuildStatus:
+     1>_PrepareForClean:
+         Deleting file "Debug\MypgpWin32.lastbuildstate".
+       InitializeBuildStatus:
          Creating "Debug\MypgpWin32.unsuccessfulbuild" because "AlwaysCreate" was specified.
        ClCompile:
          C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /ID:\Projects\Cryptopp5.6.2 /I"D:\Projects\xulrunner-sdk\include\nspr" /I"D:\Projects\xulrunner-sdk\include" /ZI /nologo /W0 /WX- /Od /Oy- /D WIN32 /D _WINDOWS /D _USRDLL /D XP_WIN /D XP_WIN32 /D _WINDLL /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MD /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt Mypgp.cpp MypgpModule.cpp -D_ITERATOR_DEBUG_LEVEL=0 
@@ -33,4 +35,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:04.45
+Time Elapsed 00:00:02.70
