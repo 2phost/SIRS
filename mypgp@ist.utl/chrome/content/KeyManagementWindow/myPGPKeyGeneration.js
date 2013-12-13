@@ -101,6 +101,7 @@ function generateNewKeyPair(event){
 	
 	MypgpSecurityManager.generateKeyPair(key_owner, input_keysize.selectedItem.value);
 	//TODO: generate the certiticate
+	MypgpSecurityManager.generateCertificate("DUDU", key_owner, "2014", input_keysize.selectedItem.value)
 	MypgpSecurityManager.DEBUG_STATE();
 
 

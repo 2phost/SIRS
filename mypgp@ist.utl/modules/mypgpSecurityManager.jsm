@@ -117,9 +117,9 @@ var MypgpSecurityManager = {
 		}
 	},
 
-	generateCertificate : function(email, validity)
+	generateCertificate : function(name, email, validaty, size)
 	{
-
+	
 	},
 
 	cipherTextToFile : function(email, plaintext)
