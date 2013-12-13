@@ -117,7 +117,11 @@ MyPGP.msg = {
 				} else {  
 					editor.insertHTML("<p>Assunto: "+original_subject+"</p><br>");
 					plaintext = editor.outputToString("text/html", 2);
-				}  
+				}
+
+				editor.selectAll();
+				editor.deleteSelection(editor.eNext, editor.eStrip);
+
 				editor.endTransaction();  
 
 			} catch(ex) { 
