@@ -1,6 +1,5 @@
 Components.utils.import("resource://mypgp/mypgpCommon.jsm");
 
-
 if (! MyPGP) var MyPGP = {};
 
 MyPGP.msg = {
@@ -56,8 +55,9 @@ MyPGP.msg = {
 
 		// Get plain text
 		try {  
+			
 			this.originText = this.getTextEditor('text/plain', 4);
-			this.replaceTextEditor("Olá Pompeu");
+				
 			
 			try {
 				var mypgpSvc = MypgpCommon.getService();
@@ -77,13 +77,56 @@ MyPGP.msg = {
 
 	sendMessageListener: function (event) {
 		MypgpCommon.DEBUG_LOG("mypgpMsgComposeOverlay.js: Mypgp.msg.sendMessageListener\n");
+
 		var msgcomposeWindow = document.getElementById("msgcomposeWindow");
     	var sendMsgType = msgcomposeWindow.getAttribute("msgtype");
 
+    	// do not continue unless this is an actual send event  
+  		if( !(sendMsgType == nsIMsgCompDeliverMode.Now || sendMsgType == nsIMsgCompDeliverMode.Later) )  
+    		return;  
+
+			// alter subject  
+			// you should save changes to both message composition fields and subject widget  
+			let original_subject = gMsgCompose.compFields.subject;
+			gMsgCompose.compFields.subject = "Esta mensagem foi cifrada por MyPGP@ist"; //TODO : escolher melhor subj  
+			document.getElementById("msgSubject").value = gMsgCompose.compFields.subject;  
+
+
+			var plaintext;
+			 
+			try {  
+				var editor = GetCurrentEditor();  
+				var editor_type = GetCurrentEditorType();  
+				
+				editor.beginTransaction();  
+				editor.beginningOfDocument(); // seek to beginning  
+				
+				if( editor_type == "textmail" || editor_type == "text" ) {  
+					editor.insertText("Assunto: "+original_subject);
+					editor.insertLineBreak();
+					plaintext = editor.outputToString("text/plain", 4);  	  
+				} else {  
+					editor.insertHTML("<p>Assunto: "+original_subject+"</p><br>");
+					plaintext = editor.outputToString("text/html", 2);
+				}  
+				editor.endTransaction();  
+				
+			} catch(ex) { 
+				MypgpCommon.ERROR_LOG("[mypgpMsgComposerOverlay - ()] ERROR:"+ex);
+				Components.utils.reportError(ex);  
+				return false;  
+			}  
+
+
+
+
+			/*
 		if (! this.encryptMsg(sendMsgType)) {
      		event.preventDefault();
-       	event.stopPropagation();
+	       	event.stopPropagation();
      	}	
+			*/
+     
 	}
 
 }
