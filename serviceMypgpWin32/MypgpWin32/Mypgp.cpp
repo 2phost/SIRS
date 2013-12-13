@@ -343,10 +343,148 @@ NS_IMETHODIMP Mypgp::Decrypt(const char * cyphertext, const char * keysession, i
   return NS_OK;
 }
 
-/* void createCertificate (in string publicKeyPath, in string privateKeyPath, in string name, in string validaty, in unsigned long type, in string path); */
-NS_IMETHODIMP Mypgp::CreateCertificate(const char * publicKeyPath, const char * privateKeyPath, const char * name, const char * validaty, uint32_t type, const char * path)
+/* string sign (in string publicKeyPath, in string privateKeyPath, in string name, in string validaty, in unsigned long type); */
+NS_IMETHODIMP Mypgp::Sign(const char * publicKeyPath, const char * privateKeyPath, const char * name, const char * validaty, uint32_t type, char * *_retval)
 {
+  AutoSeededRandomPool rng;
+
+  /***************
+   * Load PrivateKey to sign
+   ***************/
+  RSA::PrivateKey privateKey;
+	
+  /* Load (BufferedTransformation &bt) */
+  /* FileSource (const char *filename, bool pumpAll, BufferedTransformation *attachment=NULL, bool binary=true) */
+  privateKey.Load(
+				  FileSource( privateKeyPath, true, NULL, true /*binary*/ ).Ref()
+				  );
+	
+  bool key_ok = privateKey.Validate(rng, 3);
+  if(!key_ok)
+	cout << "Not a valid private key\n";
+  else
+	cout << "Valid private key\n";
   
+
+  int i, j;
+
+  // Load public Key
+  std::string s;
+  FileSource file( publicKeyPath, true, new CryptoPP::StringSink( s ) );
+	
+  char * publicKey = (char *)NS_Alloc(sizeof(unsigned char) * s.length());
+  for(i=0; i<s.length(); i++){
+	publicKey[i] = s[i];
+  }
+
+  // Elements Sizes
+  size_t publicKeySize = s.length();
+  size_t nameSize = strlen(name);
+  size_t validatySize = strlen(validaty);
+  
+  // Total Elements Size
+  size_t msgSize = nameSize + publicKeySize + validatySize;
+
+  // Message to sign
+  unsigned char *msg = (unsigned char *)NS_Alloc(msgSize);
+  
+  for(i=0, j=0; i<nameSize; i++, j++){
+	msg[j] = name[i];
+  }
+  for(i=0; i<validatySize; i++, j++){
+	msg[j] = validaty[i];
+  }
+  for(i=0; i<publicKeySize; i++, j++){
+	msg[j] = publicKey[i];
+  }
+  
+
+  // Signer Object
+  CryptoPP::RSASS<PSS, SHA1>::Signer signer(privateKey);
+
+  // Create signature space
+  size_t length = signer.MaxSignatureLength();
+  char *signature = (char *)NS_Alloc(sizeof(unsigned char)*length);
+
+  // sign the message
+  signer.SignMessage(rng, msg, msgSize, (unsigned char*)signature);
+ 
+  std::string signatureEncoded;
+  StringSource((unsigned char*)signature, length, true, new HexEncoder(new CryptoPP::StringSink( signatureEncoded ) )); 
+  /*************
+  *   Return signature
+  *************/
+  *_retval = (char *)NS_Alloc(sizeof(unsigned char)*(signatureEncoded.length()+1));
+  for(i=0; i<signatureEncoded.length(); i++){
+  	(*_retval)[i] = signatureEncoded[i];
+  }
+  (*_retval)[signatureEncoded.length()] = '\0';
+  
+  return NS_OK;
+}
+
+/* long verifier (in string publicKeyPath, in string privateKeyPath, in string name, in string validaty, in unsigned long type, in string signature); */
+NS_IMETHODIMP Mypgp::Verifier(const char * publicKeyPath, const char * privateKeyPath, const char * name, const char * validaty, uint32_t type, const char * signature, int32_t *_retval)
+{
+  AutoSeededRandomPool rng;
+
+  /***************
+   * Load PublicKey to verify
+   ***************/
+  RSA::PublicKey pubKey;
+	
+  /* Load (BufferedTransformation &bt) */
+  /* FileSource (const char *filename, bool pumpAll, BufferedTransformation *attachment=NULL, bool binary=true) */
+  pubKey.Load(
+				  FileSource( publicKeyPath, true, NULL, true /*binary*/ ).Ref()
+				  );
+	
+  bool key_ok = pubKey.Validate(rng, 3);
+  if(!key_ok)
+	cout << "Not a valid public key\n";
+  else
+	cout << "Valid public key\n";
+	
+  
+  int i, j;
+
+  // Load public Key
+  std::string s;
+  FileSource file( publicKeyPath, true, new CryptoPP::StringSink( s ) );
+	
+  char * publicKey = (char *)NS_Alloc(sizeof(unsigned char) * s.length());
+  for(i=0; i<s.length(); i++){
+	publicKey[i] = s[i];
+  }
+
+  // Elements Sizes
+  size_t publicKeySize = s.length();
+  size_t nameSize = strlen(name);
+  size_t validatySize = strlen(validaty);
+  
+  // Total Elements Size
+  size_t msgSize = nameSize + publicKeySize + validatySize;
+
+  // Message to sign
+  unsigned char *msg = (unsigned char *)NS_Alloc(msgSize);
+  
+  for(i=0, j=0; i<nameSize; i++, j++){
+	msg[j] = name[i];
+  }
+  for(i=0; i<validatySize; i++, j++){
+	msg[j] = validaty[i];
+  }
+  for(i=0; i<publicKeySize; i++, j++){
+	msg[j] = publicKey[i];
+  }
+  
+  CryptoPP::RSASS<PSS, SHA1>::Verifier verifier(pubKey);
+  // Verify
+  std::string sign;
+  StringSource((unsigned char *)signature, strlen(signature), true, new HexDecoder(new CryptoPP::StringSink( sign ) ));
+  
+  
+  *_retval = verifier.VerifyMessage(msg, msgSize, (unsigned char *)sign.c_str(), sign.length());
 
   return NS_OK;
 }

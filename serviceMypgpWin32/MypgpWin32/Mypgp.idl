@@ -45,9 +45,10 @@ interface IMypgp : nsISupports
   void sessionKeygen(in long keySize, in long ivSize, out string keySession);
 
   /**
-   * Create a certificate
+   * Sign/Verifier
    */
-  void createCertificate(in string publicKeyPath, in string privateKeyPath, in string name, in string validaty, in unsigned long type, in string path);
+  string sign(in string publicKeyPath, in string privateKeyPath, in string name, in string validaty, in unsigned long type);
+  long verifier(in string publicKeyPath, in string privateKeyPath, in string name, in string validaty, in unsigned long type, in string signature);
 
   long add(in long a, in long b);
 };
