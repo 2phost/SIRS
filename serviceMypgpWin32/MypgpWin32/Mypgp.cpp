@@ -16,8 +16,8 @@ Mypgp::~Mypgp()
   /* destructor code */
 }
 
-/* void secureMsg (in string plaintext, in string cypherPath, in string keyPath); */
-NS_IMETHODIMP Mypgp::SecureMsg(const char * plaintext, const char * cypherPath, const char * keyPath)
+/* long secureMsg (in string plaintext, in string cypherPath, in string keyPath); */
+NS_IMETHODIMP Mypgp::SecureMsg(const char * plaintext, const char * cypherPath, const char * keyPath, int32_t *_retval)
 {
   int i, j;
   /**********************
@@ -61,31 +61,33 @@ NS_IMETHODIMP Mypgp::SecureMsg(const char * plaintext, const char * cypherPath, 
   /*StringSource (const byte *string, size_t length, bool pumpAll, BufferedTransformation *attachment=NULL)*/
   StringSource((unsigned char *)outfileData, outfileSize, true, new HexEncoder (new FileSink(cypherPath, true)));
 
-
+  *_retval = encryptSessionSize;
   return NS_OK;
 }
 
-/* string unSecureMsg (in string cypherPath, in string keyPath); */
-NS_IMETHODIMP Mypgp::UnSecureMsg(const char * cypherPath, const char * keyPath, char * *_retval)
+/* string unSecureMsg (in string cypherPath, in string keyPath, in long encryptSessionSize); */
+NS_IMETHODIMP Mypgp::UnSecureMsg(const char * cypherPath, const char * keyPath, int32_t encryptSessionSize, char * *_retval)
 {
   int i, j;
   /**********************
 		Read from file
   **********************/
-  int encryptSessionSize = 256; // encryptSessionSize is always 256
-	
   std::string s;
   FileSource file( cypherPath, true, new HexDecoder(new CryptoPP::StringSink( s ) ));
 
-  char * encryptSession = (char *)malloc(sizeof(unsigned char)*256);
-  for(i=0; i<256; i++){
+  int sSize = s.length();
+
+  char * encryptSession = (char *)NS_Alloc(sizeof(unsigned char)*encryptSessionSize);
+  for(i=0; i<encryptSessionSize; i++){
+
 	encryptSession[i] = s[i];
   }
-	
-
+  
   int cypherTextSize = 0;
-  char * cypherText = (char *)malloc(sizeof(unsigned char)*(s.length() - 256));
-  for(i=256, j=0 ; i<s.length(); i++, j++){
+
+  char * cypherText = (char *)NS_Alloc(sizeof(unsigned char) * (sSize - encryptSessionSize) );
+  for(i=encryptSessionSize, j=0 ; i<s.length(); i++, j++){
+
 	cypherText[j] = s[i];
 	cypherTextSize++;
   }
