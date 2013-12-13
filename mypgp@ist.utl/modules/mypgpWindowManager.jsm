@@ -21,6 +21,7 @@ const KEYMANAGEMENT 		= "chrome://mypgp/content/KeyManagementWindow/myPGPKeyMana
 const KEYGEN 				= "chrome://mypgp/content/KeyManagementWindow/myPGPKeyGeneration.xul";
 const CONTACTMANAGEMENT 	= "chrome://mypgp/content/ContactManagementWindow/myPGPContactManager.xul";
 const CONTACT_ADDRBOOK		= "chrome://mypgp/content/ContactManagementWindow/myPGPContactAddressBook.xul";
+const DECIPHER 				= "chrome://mypgp/content/DecipherWindow/mypgpDecipherWindow.xul";
 
 
 //THUNDERBIRD ContractIDs
@@ -31,7 +32,7 @@ const ATTACHMENT_CONTRACT		= "@mozilla.org/messengercompose/attachment;1";
 const COMPOSE_FIELDS_CONTRACT	= "@mozilla.org/messengercompose/composefields;1";
 const ACCOUNT_MANAGER_CONTRACT	= "@mozilla.org/messenger/account-manager;1";
 const MSG_COMP_PARAMS_CONTRACT	= "@mozilla.org/messengercompose/composeparams;1";
-const PROMPT_SERVICE_CONTRACT	= "@mozilla.org/embedcomp/prompt-service;1"
+const PROMPT_SERVICE_CONTRACT	= "@mozilla.org/embedcomp/prompt-service;1";
 
 //THUNDERBIRD Interfaces
 const nsIMsgComposeService	= Components.interfaces.nsIMsgComposeService;
@@ -43,7 +44,7 @@ const nsIMsgCompFields		= Components.interfaces.nsIMsgCompFields;
 const nsIMsgAccountManager	= Components.interfaces.nsIMsgAccountManager;
 const nsIMsgComposeParams	= Components.interfaces.nsIMsgComposeParams;
 const nsIMsgCompFormat		= Components.interfaces.nsIMsgCompFormat;		
-const nsIPromptService 		= Components.interfaces.nsIPromptService
+const nsIPromptService 		= Components.interfaces.nsIPromptService;
 
 //THUNDERBIRD Components & Services
 const tMsgComposeService 	= Components.classes[MESSENGER_COMPOSE_CONTRACT].getService(nsIMsgComposeService);
@@ -92,14 +93,20 @@ var mypgpWindowManager = {
 		win.openDialog(CONTACT_ADDRBOOK, ADDRBOOK_TITLE, null);
 	},
 
-	openFileBrowsingWindow: function (win, title, save, pubKeyId)
+	openDecipherWindow: function (win)
 	{
+		win.openDialog(DECIPHER, null, null);
+	},
+
+	openFileBrowsingWindow: function (win, title, filter, filterName, save, pubKeyId)
+	{
+
 		var file = null;
-		var file_picker = tFilePicker.QueryInterface(nsIFilePicker);
+		var file_picker = Components.classes[FILE_PICKER_CONTRACT].createInstance(nsIFilePicker);
 		var mode = save ? nsIFilePicker.modeSave : nsIFilePicker.modeOpen;
 
 		file_picker.init(win, title, mode);
-		file_picker.defaultExtension = KEY_EXT;
+		file_picker.defaultExtension = filter;
 
 		if(save){
 			MypgpCommon.DEBUG_LOG("----->"+pubKeyId);
@@ -107,7 +114,7 @@ var mypgpWindowManager = {
 		}
 
 		if(!this.filters_appended){
-			file_picker.appendFilter("Chaves", KEY_EXT);
+			file_picker.appendFilter(filterName, filter);
 			this.filters_appended = true;
 		}
 
